@@ -251,8 +251,28 @@ Let's look at some devices
 - Amazon:  you can get everything here!
 - Heltec: an original manufactuerer
 - Lilygo: they have a good supply chain
-- Alibaba : It's hard to find things, but everything is for sale here.f
+- Alibaba : It's hard to find things, but everything is for sale there, it's just hard to make sure you are ordering devices and not socks for the devices (featured in the description).
 - IoTone Japan : sales@iotone.jp
+
+---
+
+## Projects
+
+- Localize Meshtastic iOS to Japanese: we are doing it!!! https://github.com/meshtastic/Meshtastic-Apple/pull/1292#issuecomment-3002212278 (please follow this issue to put pressure on them to take the PR)
+- For learning: set up a private network
+- Set up Meshtastic CLI to operate your devices instead of a phone
+- Create an aplication layer for a Pub/Sub protocol on top of any meshtastic network (without firmware changes)
+- Create a "robot" communication language using the chat channel to let AIs speak to each other and coordinate IoT device activity
+
+---
+
+## Let's build the first Kyushu WAN
+
+We need a handful of nodes in "high places":
+- Kyushi University
+- Fukuoka Tower
+- Hakata Tower
+- Your "Mansion"
 
 ---
 
