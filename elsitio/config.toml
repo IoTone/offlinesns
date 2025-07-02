@@ -1,0 +1,13 @@
+# baseURL = "https://mywebsite.org"
+languageCode = "en-us"
+title = "OfflineSNS 日本"
+theme = "reveal-hugo"
+enableEmoji = true
+
+[markup.goldmark.renderer]
+unsafe = true
+
+[outputFormats.Reveal]
+baseName = "index"
+mediaType = "text/html"
+isHTML = true
