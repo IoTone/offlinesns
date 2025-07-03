@@ -334,8 +334,5 @@ We need a handful of nodes in "high places":
 
 ---
 
-Thankyou
-ありがとうございました
-
 {{< slide background-image="/images/meshtastic_wide.png" >}}
 
