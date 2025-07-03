@@ -1,0 +1,45 @@
+[package]
+name = "datasync-proto"
+version = "0.1.1"
+edition = "2021"
+
+[[example]]
+name = "basic_serial"
+
+[[example]]
+name = "basic_ble"
+required-features = ["bluetooth-le"]
+
+[dependencies]
+socketioxide = { version = "0.14.1", features = [
+    "extensions",
+    "state",
+] }
+
+# futures = "0.3.27"
+tower = { version = "0.4.13", default-features = false }
+tracing = "0.1.37"
+tracing-subscriber = "0.3.18"
+axum = "0.7.5"
+hyper-util.version = "0.1.1"
+hyper = { version = "1.0.1", features = ["http1", "server"] }
+# tokio = { version =  "1.35.0", features = ["rt-multi-thread", "macros"] }
+tokio = { version = "1.43.0", features = ["full"] }
+tokio-serial = "5.4.5"
+tokio-util = "0.7.13"
+log = "0.4.25"
+
+tower-http = { version = "0.5.0", features = ["cors", "fs"] }
+serde = { version = "1.0.193", features = ["derive"] }
+serde_json = "1.0.108"
+meshtastic = "0.1.6"
+
+#TODO: drop pinning of the bluez-async version once we move the MSRV to 1.84 and we can use
+#MSRV-aware resolver instead of this hack. See
+#https://blog.rust-lang.org/2025/01/09/Rust-1.84.0/#cargo-considers-rust-versions-for-dependency-version-selection
+[target.'cfg(target_os = "linux")'.dependencies]
+bluez-async = { version = "=0.8.0", optional = true }
+
+[dev-dependencies]
+fern = { version = "0.7.1", features = ["colored"] }
+humantime = "2.1.0"
