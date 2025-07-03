@@ -175,7 +175,7 @@ In Japan it is hard to find a place 5G network doesn't work.  But out at sea, or
 
 ## Use Cases
 
-### 6. Industrial IoT / Freigh & Logistics
+### 6. Industrial IoT / Freight & Logistics
 
 Easy math suggests the savings from using a free Meshtastic/LoRa network vs using mBIoT / 5G service X N nodes in an IoT deployment is significant savings.  It isn't perfect for all use cases, but it is good enough for many use cases.
 
@@ -324,12 +324,13 @@ We need a handful of nodes in "high places":
 
 ## Call To Action
 
-- Get involved: Github
+- Get involved: Github: https://github.com/IoTone/offlinesns
+- Contact: (David) djk @ iotone.jp
 
 ---
 
-<!-- Thankyou
-ありがとうございました -->
+Thankyou
+ありがとうございました
 
 {{< slide background-image="/images/meshtastic_wide.png" >}}
 
