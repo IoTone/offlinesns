@@ -72,6 +72,7 @@ impl UserCnt {
     }
 }
 
+
 /// Set up the logger to output to stdout  
 /// **Note:** the invocation of this function is commented out in main by default.
 #[allow(dead_code)]
@@ -93,7 +94,7 @@ fn setup_logger() -> Result<(), fern::InitError> {
     Ok(())
 }
 
-async fn run_meshtastic() -> anyhow::Result<()> {
+async fn run_meshtastic(io: SocketIo) -> anyhow::Result<()> {
     // Uncomment this to enable logging
     // setup_logger()?;
 
@@ -121,6 +122,16 @@ async fn run_meshtastic() -> anyhow::Result<()> {
     // the attached serial port.
     while let Some(decoded) = decoded_listener.recv().await {
         println!("Received: {:?}", decoded);
+        match io.emit("meshtastic-packet", &decoded) {
+            Ok(()) => {
+                // Emitted successfully
+                println!("›› sent packet to clients: {:?}", decoded);
+            }
+            Err(err) => {
+                // Only if something goes wrong with the socket emit:
+                eprintln!("⚠️ emit error: {:?}", err);
+            }
+        }
     }
 
     // Note that in this specific example, this will only be called when
@@ -140,7 +151,7 @@ async fn run_ws() -> anyhow::Result<()> {
 
     info!("Starting server libOFFSNS");
 
-    let (layer, io) = SocketIo::builder().with_state(UserCnt::new()).build_layer();
+    let (layer,io) = SocketIo::builder().with_state(UserCnt::new()).build_layer();
 
     io.ns("/", |s: SocketRef| {
         s.on(
@@ -191,7 +202,7 @@ async fn run_ws() -> anyhow::Result<()> {
             |s: SocketRef, user_cnt: State<UserCnt>, Extension::<Username>(username)| {
                 let num_users = user_cnt.remove_user();
                 let res = Res::UserEvent {
-                    num_users,
+                    num_users, 
                     username,
                 };
                 s.broadcast().emit("user left", res).ok();
