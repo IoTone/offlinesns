@@ -10,10 +10,10 @@ title = "Offline SNS"
 
 ---
 
+- Mesh Networking 101
 - An Overview of Meshtastic
-- Technology Overview
 - Demo
-- Projects
+- Projects (we can do some coding)
 - Call to Action
 
 ---
