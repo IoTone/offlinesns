@@ -203,7 +203,11 @@ At large festivals, political protests, etc., it can be difficult to maintain co
 
 Like Wifi or Bluetooth, Meshtastic operates without subscriptions.  There is no "carrier" to pay unless you are operating on a privately funded network.  The only costs are creating the network: antennas, routers, repeaters, edge devices, cables, solar.
 
+---
 
+## Proximity of Communications (is Hyperlocal and MWAN scale)
+
+- < 1m OK (0 hops) : fine for simple device communication nearby 
 --- 
 
 ## Device Zoo
@@ -291,8 +295,22 @@ We need a handful of nodes in "high places":
 - Node list globally (Japan has 7 < ) https://meshmap.net/
 - Our PR to get JA localization added to the iOS app https://github.com/meshtastic/Meshtastic-Apple/pull/1292
 - OfflineSNS Notes from IoTone Japan https://note.com/truedata_iotone
+- Japanese Meshtastic Group (FB): https://www.facebook.com/groups/1749997532422254
+- Global Communities: https://github.com/meshtastic/meshtastic/blob/master/docs/community/local-groups.mdx
+
+## Github Repos / Meshtastic
+
+- Interesting Olama/NodeJS integration https://github.com/NerdsCorp/meshtastic-controller
 
 ---
+
+## Videos
+
+- Get Started Fast: https://www.youtube.com/watch?v=gH-K9fRuhfQ&t=8s
+- Getting Started: https://www.youtube.com/watch?v=DUz6cVSaSl4
+- A complete offgrid setup: https://www.youtube.com/watch?v=_v11m2FQQZU&t=466s
+- Getting Started / Antennas: https://www.youtube.com/watch?v=F6w4QtYE6L8
+- Meshtastic vs Meshcore: https://www.youtube.com/watch?v=tXoAhebQc0c
 
 ## Call To Action
 
