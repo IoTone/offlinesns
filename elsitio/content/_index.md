@@ -42,6 +42,7 @@ Thing about the previous photo
 - Mesh Frabric is strong because it can survive tears
 - Other mesh "nets" can carry the load if one area is weak
 - The "edges" of a net may connect to something
+- Quick demo to show how a mesh works using people
 
 ---
 
