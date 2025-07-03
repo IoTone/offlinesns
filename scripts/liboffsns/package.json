@@ -1,0 +1,29 @@
+{
+  "name": "liboffsns",
+  "version": "1.0.0",
+  "description": "A pub sub library for building offline SNS applications on top of meshtastic core.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/IoTone/offlinesns.git"
+  },
+  "keywords": [
+    "sns",
+    "offline",
+    "iot",
+    "meshtastic",
+    "lora"
+  ],
+  "author": "truedat101",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/IoTone/offlinesns/issues"
+  },
+  "homepage": "https://github.com/IoTone/offlinesns#readme",
+  "dependencies": {
+    "meshtastic-js": "^0.0.3"
+  }
+}
