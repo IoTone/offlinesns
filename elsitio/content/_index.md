@@ -51,6 +51,7 @@ Pro / Con of A Mesh Network
 - +Able to self heal
 - -Lower Bandwidth
 - -May be less energy efficient
+- -Protocol overhead is hire, spectrum saturates more quickly
 - -May require specialized hardware
 
 ---
