@@ -253,11 +253,11 @@ Let's look at some devices
 
 ## Get Your Devices
 
-- Amazon:  you can get everything here!
-- Heltec: an original manufactuerer
-- Lilygo: they have a good supply chain
+- Amazon:  you can get everything here https://www.amazon.co.jp/s?k=meshtastic
+- Heltec: an original manufactuerer https://heltec.org/
+- Lilygo: they have a great designs: https://lilygo.cc/collections/lora-or-gps
 - Alibaba : It's hard to find things, but everything is for sale there, it's just hard to make sure you are ordering devices and not socks for the devices (featured in the description).
-- IoTone Japan : sales@iotone.jp
+- IoTone Japan : We have 8 units in stock sales@iotone.jp
 
 ---
 
