@@ -61,7 +61,7 @@ Pro / Con of A Mesh Network
 
 ## Problem Statement
 
-We need an always available, public (privacy focused) network for communications to share messages, location, send telemetry, and convey information, that is zero cost to use, and resistant to nature or human intervention, and capable of operating over metro-WAN scale areas without wired interconnect.
+We need an always available, public (privacy focused) network for communications to share messages, location, send telemetry, convey timely information, that is zero cost to use, resistant to nature or human intervention, and capable of operating over metro-WAN scale areas without wired interconnect.
 
 ---
 
