@@ -261,6 +261,16 @@ Let's look at some devices
 
 ---
 
+## Demos
+
+- Peer To Peer Chat / Range Test
+- Flash Meshtastic Firmware using Chrome
+- 3D Print a Case
+- Meshtastic CLI demo
+- Other stuff??
+
+---
+
 ## Projects (page 1)
 
 - Localize Meshtastic iOS
