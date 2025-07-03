@@ -256,14 +256,21 @@ Let's look at some devices
 
 ---
 
-## Projects
+## Projects (page 1)
 
-- Localize Meshtastic iOS to Japanese: we are doing it!!!
+- Localize Meshtastic iOS
+- Localize Meshtastic Docs 日本語 (Maybe AI can help ... it's a huge task)
 - For learning: set up a private network
 - Set up Meshtastic CLI to operate your devices instead of a phone
+- Hardware 3d cases
+
+---
+
+## Projects (page 2)
+
+- Get the HeltecV3 "exception" filed for the "GITEKI" mark: https://www.tele.soumu.go.jp/e/sys/equ/tech/
 - Create an aplication layer for a Pub/Sub protocol on top of any meshtastic network (without firmware changes)
 - Create a "robot" communication language using the chat channel to let AIs speak to each other and coordinate IoT device activity
-- Hardware 3d cases
 
 ---
 
@@ -273,14 +280,16 @@ We need a handful of nodes in "high places":
 - Kyushi University
 - Fukuoka Tower
 - Hakata Tower
-- Your "Mansion"
+- Your "Mansion", Your Office rooftop
 
 ---
 
 ## Resources
 
 - http://meshtastic.org
-- https://meshmap.net/
+- Node list globally (Japan has 7 < ) https://meshmap.net/
+- Our PR to get JA localization added to the iOS app https://github.com/meshtastic/Meshtastic-Apple/pull/1292
+- OfflineSNS Notes from IoTone Japan https://note.com/truedata_iotone
 
 ---
 
