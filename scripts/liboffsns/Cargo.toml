@@ -34,6 +34,10 @@ serde = { version = "1.0.193", features = ["derive"] }
 serde_json = "1.0.108"
 meshtastic = "0.1.6"
 
+fern = { version = "0.7.1", features = ["colored"] }
+humantime = "2.1.0"
+anyhow = "1.0.98"
+
 #TODO: drop pinning of the bluez-async version once we move the MSRV to 1.84 and we can use
 #MSRV-aware resolver instead of this hack. See
 #https://blog.rust-lang.org/2025/01/09/Rust-1.84.0/#cargo-considers-rust-versions-for-dependency-version-selection

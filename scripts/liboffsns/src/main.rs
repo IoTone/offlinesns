@@ -26,6 +26,14 @@ use tracing::info;
 use tracing_subscriber::FmtSubscriber;
 use std::sync::Arc;
 
+extern crate meshtastic;
+
+use std::io::{self, BufRead};
+use std::time::SystemTime;
+
+use meshtastic::api::StreamApi;
+use meshtastic::utils;
+
 #[derive(Deserialize, Serialize, Debug, Clone)]
 #[serde(transparent)]
 struct Username(String);
@@ -64,13 +72,73 @@ impl UserCnt {
     }
 }
 
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
+/// Set up the logger to output to stdout  
+/// **Note:** the invocation of this function is commented out in main by default.
+#[allow(dead_code)]
+fn setup_logger() -> Result<(), fern::InitError> {
+    fern::Dispatch::new()
+        .format(|out, message, record| {
+            out.finish(format_args!(
+                "[{} {} {}] {}",
+                humantime::format_rfc3339_seconds(SystemTime::now()),
+                record.level(),
+                record.target(),
+                message
+            ))
+        })
+        .level(log::LevelFilter::Trace)
+        .chain(std::io::stdout())
+        .apply()?;
+
+    Ok(())
+}
+
+async fn run_meshtastic() -> anyhow::Result<()> {
+    // Uncomment this to enable logging
+    // setup_logger()?;
+
+    let stream_api = StreamApi::new();
+
+    let available_ports = utils::stream::available_serial_ports()?;
+    println!("Available ports: {:?}", available_ports);
+    println!("Enter the name of a port to connect to:");
+
+    let stdin = io::stdin();
+    let entered_port = stdin
+        .lock()
+        .lines()
+        .next()
+        .expect("Failed to find next line")
+        .expect("Could not read next line");
+
+    let serial_stream = utils::stream::build_serial_stream(entered_port, None, None, None)?;
+    let (mut decoded_listener, stream_api) = stream_api.connect(serial_stream).await;
+
+    let config_id = utils::generate_rand_id();
+    let stream_api = stream_api.configure(config_id).await?;
+
+    // This loop can be broken with ctrl+c, or by disconnecting
+    // the attached serial port.
+    while let Some(decoded) = decoded_listener.recv().await {
+        println!("Received: {:?}", decoded);
+    }
+
+    // Note that in this specific example, this will only be called when
+    // the radio is disconnected, as the above loop will never exit.
+    // Typically you would allow the user to manually kill the loop,
+    // for example with tokio::select!.
+    let _stream_api = stream_api.disconnect().await?;
+
+    Ok(())
+}
+
+async fn run_ws() -> anyhow::Result<()> {
+    // Set up pub/sub for websocket
     let subscriber = FmtSubscriber::new();
 
     tracing::subscriber::set_global_default(subscriber)?;
 
-    info!("Starting server");
+    info!("Starting server libOFFSNS");
 
     let (layer, io) = SocketIo::builder().with_state(UserCnt::new()).build_layer();
 
@@ -142,5 +210,41 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3333").await.unwrap();
     axum::serve(listener, app).await.unwrap();
 
+    
+    Ok(())
+}
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+   
+    //
+    // Alternative
+    /*
+    // Spawn each future on the Tokio runtime
+    let mesh_task  = tokio::spawn(async { run_meshtastic().await });
+    let server_task = tokio::spawn(async { run_webserver().await });
+
+    // Wait for either to exit (or error)
+    tokio::select! {
+        res = mesh_task  => {
+            eprintln!("Meshtastic task ended: {:?}", res);
+        },
+        res = server_task => {
+            eprintln!("Webserver task ended: {:?}", res);
+        },
+    }
+     */
+    // Spawn the two independent futures…
+    let mesh_fut   = run_meshtastic();
+    let server_fut = run_ws();
+
+    // …then drive them together until *both* complete (or error).
+    let (mesh_res, server_res) = tokio::join!(mesh_fut, server_fut);
+
+    // Propagate errors if either returned Err:
+    mesh_res?;      // run_meshtastic()
+    server_res?;    // run_webserver()
+    
+
+    
     Ok(())
 }

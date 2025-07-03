@@ -308,6 +308,11 @@ We need a handful of nodes in "high places":
 - Japanese Meshtastic Group (FB): https://www.facebook.com/groups/1749997532422254
 - Global Communities: https://github.com/meshtastic/meshtastic/blob/master/docs/community/local-groups.mdx
 
+## More Resources
+
+- Some great tips on client settings, repeater settings, etc: https://pole1.co.uk/meshtastic-roles/
+
+
 ## Github Repos / Meshtastic
 
 - Interesting Olama/NodeJS integration https://github.com/NerdsCorp/meshtastic-controller
