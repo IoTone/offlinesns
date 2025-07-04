@@ -215,7 +215,7 @@ WiFi や Bluetooth のように、Meshtastic はサブスクリプションな�
 
 ---
 
-## デバイスズー
+## デバイス
 
 いくつかのデバイスを見てみましょう
 
@@ -269,7 +269,7 @@ WiFi や Bluetooth のように、Meshtastic はサブスクリプションな�
 -   Chrome を使用した Meshtastic ファームウェアのフラッシュ
 -   ケースの 3D プリント
 -   Meshtastic CLI デモ
--   その他？
+-   その他
 
 ---
 
