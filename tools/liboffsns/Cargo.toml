@@ -38,6 +38,7 @@ fern = { version = "0.7.1", features = ["colored"] }
 humantime = "2.1.0"
 anyhow = "1.0.98"
 once_cell = "1.21.3"
+chrono = "0.4.41"
 
 #TODO: drop pinning of the bluez-async version once we move the MSRV to 1.84 and we can use
 #MSRV-aware resolver instead of this hack. See
