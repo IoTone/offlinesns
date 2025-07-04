@@ -35,7 +35,8 @@ use std::time::SystemTime;
 use meshtastic::api::StreamApi;
 use meshtastic::utils;
 
-use once_cell::sync::Lazy;
+// use once_cell::sync::Lazy;
+use std::sync::OnceLock;
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 #[serde(transparent)]
@@ -96,19 +97,29 @@ fn setup_logger() -> Result<(), fern::InitError> {
     Ok(())
 }
 
-// Build the pair exactly once at first access
-static SOCKET_PAIR: Lazy<(SocketIoLayer, SocketIo)> =
-    Lazy::new(SocketIo::new_layer);
+/// Global OnceLock holding the (layer, handle) tuple.
+static SOCKET_PAIR: OnceLock<(SocketIoLayer, SocketIo)> = OnceLock::new();
 
-// Helpers to grab the layer or the handle
-pub fn socket_layer() -> SocketIoLayer {
-    // Clone so you can apply it in your router
-    SOCKET_PAIR.0.clone()
+/// Initialize the pair once and return a reference to it.
+fn socket_pair() -> &'static (SocketIoLayer, SocketIo) {
+    SOCKET_PAIR.get_or_init(|| {
+        // build_layer() reads your builder config and returns (layer, io)
+        SocketIo::builder()
+            .with_state(UserCnt::new())
+            .build_layer()
+    })
 }
 
-pub fn socket_io() -> &'static SocketIo {
-    &SOCKET_PAIR.1
+/// Cloneable Tower layer for mounting into your Axum app.
+fn socket_layer() -> SocketIoLayer {
+    socket_pair().0.clone()
 }
+
+/// Global handle you can `.emit(...).await` from anywhere.
+fn socket_io() -> &'static SocketIo {
+    &socket_pair().1
+}
+
 
 async fn run_meshtastic() -> anyhow::Result<()> {
     // Uncomment this to enable logging
@@ -137,6 +148,16 @@ async fn run_meshtastic() -> anyhow::Result<()> {
     // This loop can be broken with ctrl+c, or by disconnecting
     // the attached serial port.
     while let Some(decoded) = decoded_listener.recv().await {
+        let msg = Res::Message {
+                    username: Username("meshtastic".to_owned()),
+                    message: "we have data".to_owned(),
+        };
+        if let Err(e) = socket_io()
+                .emit("new message", &msg)
+                // .await
+        {
+            eprintln!("Socket.IO emit error: {:?}", e);
+        }
         println!("Received: {:?}", decoded);
     }
 
@@ -157,10 +178,10 @@ async fn run_ws() -> anyhow::Result<()> {
 
     info!("Starting server libOFFSNS");
 
-    let (layer, io) = SocketIo::builder().with_state(UserCnt::new()).build_layer();
+    // let (layer, io) = SocketIo::builder().with_state(UserCnt::new()).build_layer();
 
-    // socket_io().ns("/", |s: SocketRef| {
-    io.ns("/", |s: SocketRef| {
+    socket_io().ns("/", |s: SocketRef| {
+    // io.ns("/", |s: SocketRef| {
         s.on(
             "new message",
             |s: SocketRef, Data::<String>(msg), Extension::<Username>(username)| {
@@ -222,7 +243,7 @@ async fn run_ws() -> anyhow::Result<()> {
         .layer(
             ServiceBuilder::new()
                 .layer(CorsLayer::permissive()) // Enable CORS policy
-                .layer(layer),// .layer(socket_layer()),
+                .layer(socket_layer()), // .layer(layer),// 
         );
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3333").await.unwrap();
