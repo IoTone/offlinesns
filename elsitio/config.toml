@@ -1,8 +1,20 @@
 # baseURL = "https://mywebsite.org"
-languageCode = "en-us"
+defaultContentLanguage = "ja"
 title = "OfflineSNS 日本"
 theme = "reveal-hugo"
 enableEmoji = true
+
+[languages]
+  [languages.ja]
+    title = "OfflineSNS 日本"
+    languageCode = "ja"
+    languageName = "日本語"
+    weight = 1
+  [languages.en]
+    title = "OfflineSNS Japan"
+    languageCode = "en"
+    languageName = "English"
+    weight = 2
 
 [markup.goldmark.renderer]
 unsafe = true
