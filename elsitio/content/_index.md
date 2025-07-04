@@ -208,7 +208,12 @@ Like Wifi or Bluetooth, Meshtastic operates without subscriptions.  There is no 
 
 ## Proximity of Communications (is Hyperlocal and MWAN scale)
 
-- < 1m OK (0 hops) : fine for simple device communication nearby 
+- < 1m OK (0 hops) : fine for simple device communication nearby
+- 1m-300m (0 hops) : a suitable alternative to wifi or BLE for signaling, logging, chat
+- < 1km (>= 1 hops): small scale network, point to point comms between two sites
+- < 5km (>= 2 hops): multi-site network, coverage of neighborhoods
+- < 9km (>= 3 hops): metro-area network scale, tracking things moving around, robust
+
 --- 
 
 ## Device Zoo

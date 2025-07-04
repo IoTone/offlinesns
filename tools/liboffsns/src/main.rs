@@ -18,6 +18,7 @@ use std::sync::atomic::AtomicUsize;
 use serde::{Deserialize, Serialize};
 use socketioxide::{
     extract::{Data, Extension, SocketRef, State},
+    layer::SocketIoLayer,
     SocketIo,
 };
 use tower::ServiceBuilder;
@@ -33,6 +34,8 @@ use std::time::SystemTime;
 
 use meshtastic::api::StreamApi;
 use meshtastic::utils;
+
+use once_cell::sync::Lazy;
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 #[serde(transparent)]
@@ -93,6 +96,20 @@ fn setup_logger() -> Result<(), fern::InitError> {
     Ok(())
 }
 
+// Build the pair exactly once at first access
+static SOCKET_PAIR: Lazy<(SocketIoLayer, SocketIo)> =
+    Lazy::new(SocketIo::new_layer);
+
+// Helpers to grab the layer or the handle
+pub fn socket_layer() -> SocketIoLayer {
+    // Clone so you can apply it in your router
+    SOCKET_PAIR.0.clone()
+}
+
+pub fn socket_io() -> &'static SocketIo {
+    &SOCKET_PAIR.1
+}
+
 async fn run_meshtastic() -> anyhow::Result<()> {
     // Uncomment this to enable logging
     // setup_logger()?;
@@ -142,6 +159,7 @@ async fn run_ws() -> anyhow::Result<()> {
 
     let (layer, io) = SocketIo::builder().with_state(UserCnt::new()).build_layer();
 
+    // socket_io().ns("/", |s: SocketRef| {
     io.ns("/", |s: SocketRef| {
         s.on(
             "new message",
@@ -204,7 +222,7 @@ async fn run_ws() -> anyhow::Result<()> {
         .layer(
             ServiceBuilder::new()
                 .layer(CorsLayer::permissive()) // Enable CORS policy
-                .layer(layer),
+                .layer(layer),// .layer(socket_layer()),
         );
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3333").await.unwrap();
