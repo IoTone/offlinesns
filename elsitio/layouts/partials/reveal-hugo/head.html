@@ -1,0 +1,41 @@
+<style>
+    .language-switcher {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 9999;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 5px;
+        padding: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+    }
+
+    .language-switcher a {
+        display: inline-block;
+        padding: 5px 10px;
+        margin: 0 5px;
+        text-decoration: none;
+        color: #333;
+        border: 1px solid #333;
+        border-radius: 3px;
+        transition: all 0.3s ease;
+    }
+
+    .language-switcher a:hover {
+        background-color: #f0f0f0;
+        border-color: #333;
+    }
+
+    .language-switcher a.active {
+        background-color: #333;
+        color: white;
+        border-color: #333;
+    }
+
+    .language-switcher .flag {
+        font-size: 16px;
+        margin-right: 5px;
+    }
+</style>

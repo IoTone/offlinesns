@@ -1,0 +1,35 @@
+<!-- 言語切り替えボタン -->
+<div class="language-switcher">
+    {{- if hugo.IsMultilingual -}} {{- range .Site.Languages -}} {{- $lang :=
+    .Lang -}} {{- $baseUrl := "/" -}} {{- if eq $lang "en" -}} {{- $baseUrl =
+    "/en/" -}} {{- end -}} {{- if $.IsTranslated -}} {{- range $.Translations
+    -}} {{- if eq .Language.Lang $lang -}} {{- $baseUrl = .Permalink -}} {{- end
+    -}} {{- end -}} {{- end -}}
+
+    <a
+        href="#"
+        onclick="switchLanguage('{{ $baseUrl }}'); return false;"
+        class="{{ if eq $.Site.Language.Lang .Lang }}active{{ end }}"
+    >
+        {{- if eq .Lang "ja" -}} {{ .LanguageName }} {{- else if eq .Lang "en"
+        -}}{{ .LanguageName }} {{- end -}}
+    </a>
+    {{- end -}} {{- end -}}
+</div>
+
+<script>
+    function switchLanguage(baseUrl) {
+        // 現在のスライドの位置を取得
+        var currentHash = window.location.hash;
+
+        // 新しいURLを構築（現在のスライド位置を保持）
+        var newUrl = baseUrl;
+        if (currentHash && currentHash.length > 1) {
+            // ハッシュが存在する場合は、それを新しいURLに追加
+            newUrl = baseUrl + currentHash;
+        }
+
+        // 新しいURLに移動
+        window.location.href = newUrl;
+    }
+</script>
