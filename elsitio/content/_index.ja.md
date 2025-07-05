@@ -245,10 +245,6 @@ WiFi や Bluetooth のように、Meshtastic はサブスクリプションな�
 
 ---
 
-{{< slide background-image="/images/solar-vehicle-trackers-v0-jqyqfmz9vcaf1.webp" >}}
-
----
-
 {{< slide background-image="/images/built-my-first-node-to-accompany-my-uconsoles-lora-board-v0-ss5kf2a9mx9f1.webp" >}}
 
 ---
@@ -323,15 +319,15 @@ WiFi や Bluetooth のように、Meshtastic はサブスクリプションな�
 
 ## 動画
 
--   高速スタート：https://www.youtube.com/watch?v=gH-K9fRuhfQ&t=8s
--   入門：https://www.youtube.com/watch?v=DUz6cVSaSl4
--   完全なオフグリッドセットアップ：https://www.youtube.com/watch?v=_v11m2FQQZU&t=466s
--   入門/アンテナ：https://www.youtube.com/watch?v=F6w4QtYE6L8
--   Meshtastic vs Meshcore：https://www.youtube.com/watch?v=tXoAhebQc0c
+-   高速スタート https://www.youtube.com/watch?v=gH-K9fRuhfQ&t=8s
+-   入門 https://www.youtube.com/watch?v=DUz6cVSaSl4
+-   完全なオフグリッドセットアップ https://www.youtube.com/watch?v=_v11m2FQQZU&t=466s
+-   入門/アンテナ https://www.youtube.com/watch?v=F6w4QtYE6L8
+-   Meshtastic vs Meshcore https://www.youtube.com/watch?v=tXoAhebQc0c
 
 ## 行動への呼びかけ
 
--   参加してください：Github：https://github.com/IoTone/offlinesns
+-   参加してください：Github https://github.com/IoTone/offlinesns
 -   連絡先：（David）djk @ iotone.jp
 
 ---

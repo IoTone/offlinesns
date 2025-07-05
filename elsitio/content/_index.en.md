@@ -245,10 +245,6 @@ Let's look at some devices
 
 ---
 
-{{< slide background-image="/images/solar-vehicle-trackers-v0-jqyqfmz9vcaf1.webp" >}}
-
----
-
 {{< slide background-image="/images/built-my-first-node-to-accompany-my-uconsoles-lora-board-v0-ss5kf2a9mx9f1.webp" >}}
 
 ---
