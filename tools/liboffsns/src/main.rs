@@ -32,7 +32,7 @@ extern crate meshtastic;
 use std::io::{self, BufRead};
 use std::time::SystemTime;
 
-use meshtastic::api::StreamApi;
+use meshtastic::{api::StreamApi, protobufs::mesh_packet};
 use meshtastic::utils;
 
 // This import allows for decoding of mesh packets
@@ -128,13 +128,14 @@ fn socket_io() -> &'static SocketIo {
 /// borrowed from
 /// https://github.com/meshtastic/rust/blob/main/examples/message_filtering.rs
 ///
-fn handle_mesh_packet(mesh_packet: meshtastic::protobufs::MeshPacket) {
+fn handle_mesh_packet(mesh_packet: meshtastic::protobufs::MeshPacket) -> Option<String>   {
     // Remove `None` variants to get the payload variant
     let payload_variant = match mesh_packet.payload_variant {
         Some(payload_variant) => payload_variant,
         None => {
             println!("Received mesh packet with no payload variant, not handling...");
-            return;
+            // return;
+            return None;
         }
     };
 
@@ -145,7 +146,7 @@ fn handle_mesh_packet(mesh_packet: meshtastic::protobufs::MeshPacket) {
         }
         meshtastic::protobufs::mesh_packet::PayloadVariant::Encrypted(_encrypted_mesh_packet) => {
             println!("Received encrypted mesh packet, not handling...");
-            return;
+            return None;
         }
     };
 
@@ -162,25 +163,50 @@ fn handle_mesh_packet(mesh_packet: meshtastic::protobufs::MeshPacket) {
                 meshtastic::protobufs::Position::decode(packet_data.payload.as_slice()).unwrap();
 
             println!("Received position packet: {:?}", decoded_position);
+            let decoded_text_message = String::from_utf8(decoded_position.encode_to_vec()).unwrap();
+            Some(decoded_text_message)
         }
         meshtastic::protobufs::PortNum::TextMessageApp => {
             let decoded_text_message = String::from_utf8(packet_data.payload).unwrap();
 
             println!("Received text message packet: {:?}", decoded_text_message);
+            Some(decoded_text_message)
         }
         meshtastic::protobufs::PortNum::WaypointApp => {
             let decoded_waypoint =
                 meshtastic::protobufs::Waypoint::decode(packet_data.payload.as_slice()).unwrap();
 
             println!("Received waypoint packet: {:?}", decoded_waypoint);
+            let decoded_text_message = String::from_utf8(decoded_waypoint.encode_length_delimited_to_vec()).unwrap();
+        Some(decoded_text_message)
         }
         _ => {
             println!(
                 "Received mesh packet on port {:?}, not handling...",
                 packet_data.portnum
             );
+            return None;
         }
     }
+}
+
+/// Returns the payload text if this is a decoded (unencrypted) mesh packet.
+fn handle_mesh_packet2(mesh_packet: meshtastic::protobufs::MeshPacket) -> Option<String> {
+    // Early return if there's no payload variant
+    let payload = mesh_packet.payload_variant?;
+
+    // This crashes at line 201 TODO FIX
+    // Only handle the Decoded variant; drop Encrypted packets
+    let decoded = match payload {
+        meshtastic::protobufs::mesh_packet::PayloadVariant::Decoded(decoded_mesh_packet) => decoded_mesh_packet,
+        meshtastic::protobufs::mesh_packet::PayloadVariant::Encrypted(_) => return None,
+    };
+
+    // Extract the text_message field and take ownership of its String
+    // let text = decoded.text_msg?;
+    
+    let decoded_text_message = String::from_utf8(decoded.payload).unwrap();
+    Some(decoded_text_message)
 }
 /// This is where the meshtastic event loop is handled
 async fn run_meshtastic() -> anyhow::Result<()> {
@@ -210,27 +236,34 @@ async fn run_meshtastic() -> anyhow::Result<()> {
     // This loop can be broken with ctrl+c, or by disconnecting
     // the attached serial port.
     while let Some(decoded) = decoded_listener.recv().await {
-        /* 
+        
         let mut chan: String = "-1".to_owned();
         let mut nodeinf : String = "-".to_owned();
-        let mut packeto : String = "nil".to_owned();
-        let msgdata : String = "encrypted".to_owned();
+        let mut packeto : String = "nil".to_owned(); // the raw bytes?
+        let mut msgdata : Option<String> = Some(String::from("-"));
 
         // TODO: fix this so it can extract payloads properly
-    
-        match decoded.payload_variant {
+        let payload_variant = match decoded.payload_variant {
+            
+        // match decoded.payload_variant {
+
             Some(meshtastic::protobufs::from_radio::PayloadVariant::Channel(channel)) => {
                 // `channel` is now the inner value
                 println!("Got channel data: {:?}", channel);
                 chan = channel.index.to_string();
             }
 
-            Some(meshtastic::protobufs::from_radio::PayloadVariant::NodeInfo(data)) => {
+            Some(meshtastic::protobufs::from_radio::PayloadVariant::NodeInfo(nodeinfo)) => {
                 // handle other variants
-                println!("Got data payload: {:?}", data);
-                // nodeinf = data.;
+                println!("Got data payload: {:?}", nodeinfo);
+
+                // nodeinf = nodeinfo.to
+                nodeinf = format!("{:?}", nodeinfo);
             }
 
+            Some(meshtastic::protobufs::from_radio::PayloadVariant::Packet(mesh_packet)) => {
+                msgdata = handle_mesh_packet(mesh_packet);   
+            }
             None => {
                 // no payload was present
                 // NO-OP
@@ -241,14 +274,17 @@ async fn run_meshtastic() -> anyhow::Result<()> {
                 // NO-OP
                 //  println!("Received other FromRadio packet, not handling...");
             }
-        }
-        */
-        // let data = format!("Meshtastic : {}, from {} : {}", chan, nodeinf, msgdata);
+        };
         
 
+        
+
+        
+        // println!("Received text message packet: {:?}", decoded_text_message);
+    
         let dt = Utc::now();
         let timestamp: i64 = dt.timestamp();
-        let data = format!("{} - Raw Meshtastic Packet: {:?}", timestamp, decoded);
+        let data = format!("{} - Raw Meshtastic Packet: {:?} - {:?}", timestamp, nodeinf, msgdata);
         let msg = Res::Message {
             username: Username("meshtastic".to_owned()),
             message: data.to_owned(),
@@ -259,6 +295,8 @@ async fn run_meshtastic() -> anyhow::Result<()> {
         {
             eprintln!("Socket.IO emit error: {:?}", e);
         }
+
+        
 
         // println!("Received: {:?}", decoded);
     }
