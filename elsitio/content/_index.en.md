@@ -328,7 +328,7 @@ We need a handful of nodes in "high places":
 ## Call To Action
 
 -   Get involved: Github: https://github.com/IoTone/offlinesns
--   Contact: (David) djk @ iotone.jp
+-   Contact: (David) djk @ iotone.co.jp
 
 ---
 

@@ -328,7 +328,7 @@ WiFi や Bluetooth のように、Meshtastic はサブスクリプションな�
 ## 行動への呼びかけ
 
 -   参加してください：Github https://github.com/IoTone/offlinesns
--   連絡先：（David）djk @ iotone.jp
+-   連絡先：（David）djk @ iotone.co.jp
 
 ---
 
