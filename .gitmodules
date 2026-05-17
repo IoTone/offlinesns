@@ -1,3 +1,4 @@
 [submodule "meshmore-sns/meshmore_sns_app"]
 	path = meshmore-sns/meshmore_sns_app
 	url = git@github.com:IoTone/flutter-responsive-mobile-app-starter-iotj.git
+	branch = meshmore-sns
