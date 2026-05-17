@@ -195,10 +195,10 @@ on-device behaviour and the offline conformance vectors stay aligned.
 | M1 | Framing + core codec (app-start, self-info, get-contacts, device-time), unencrypted | Connect handshake decodes; vectors for core frames | TC2 (partial) | ✅ done |
 | M2 | Channel messaging + public-channel AES | Send/receive channel text; channel crypto KATs | TC2, TC3, TC4 | ✅ done |
 | M3 | Contacts + DM (X25519 ECDH + AES) + advert parse/Ed25519 verify | Direct messages; advert verification | TC2, TC3, TC4 | ✅ done (M3a codec + M3b crypto) |
-| M4 | Radio/device configuration | Read/write radio params and settings (supports R7) | TC2, TC4 | ⏭ next |
-| M5 | BLE transport in app + connection state machine | App connects to a real device over BLE | TC1 | ☐ |
-| M6 | End-to-end integration | Send/receive encrypted and unencrypted over a real device | TC1, TC3, TC4 | ☐ |
-| M7 | Hardening | Fuzz/error taxonomy, reconnection/backoff, full conformance gate enforced | TC2 (final) | ☐ |
+| M4 | Radio/device configuration | Read/write radio params and settings (supports R7) | TC2, TC4 | ✅ done |
+| M5 | BLE transport in app + connection state machine | App connects to a real device over BLE | TC1 | ✅ code done (on-device TC1 in M6) |
+| M6 | End-to-end integration | Send/receive encrypted and unencrypted over a real device | TC1, TC3, TC4 | 🔶 prep done (turnkey); on-device run pending hardware |
+| M7 | Hardening | Fuzz/error taxonomy, reconnection/backoff, full conformance gate enforced | TC2 (final) | ✅ done |
 
 ### Progress log
 
@@ -255,6 +255,57 @@ on-device behaviour and the offline conformance vectors stay aligned.
   (`vectors/m3b_x25519_kat.json`, via pynacl) covering the conversion,
   the full key exchange, and DH symmetry — our composition matches
   libsodium byte-for-byte. Conformance **81 tests green**.
+
+- **M4** (submodule commit _pending_): device/radio configuration
+  (R7). Encoders `setRadioParams` (0x0B), `setRadioTxPower` (0x0C),
+  `setAdvertLatLon` (0x0E), `setOtherParams` (0x26),
+  `setTuningParams` (0x15), `deviceQuery` (0x16), `getBatteryStorage`
+  (0x14); decoders `DEVICE_INFO` (0x0D, 82B) / `BATT_AND_STORAGE`
+  (0x0C); models `RadioParams`/`DeviceInfo`/`BatteryStorage`.
+  Conformance **97 tests green** (incl. negative int8 TX power and
+  ×1000/×1e6 scaling round-trips). The full R7 protocol surface (read
+  via SELF_INFO/DEVICE_INFO, write via the SET_* commands) is now
+  available to the app.
+
+- **M5** (submodule commit _pending_): BLE transport + connection
+  state machine, **in the Flutter app** (first milestone outside the
+  pure-Dart package). `MeshcoreConnection` — hardware-free state
+  machine (disconnected/handshaking/ready/reconnecting/failed) that
+  drives the APP_START→SELF_INFO handshake and decodes inbound frames;
+  `BleMeshcoreTransport` (flutter_blue_plus, the companion
+  NUS-style service, 1 notification == 1 frame); `BleConnector`
+  (scan/permission/connect/discover); `MeshcoreController`
+  (ChangeNotifier provider, injectable transport factory) wired into
+  `MultiProvider`. The state machine + controller are
+  **`flutter test`-covered with a fake transport (no hardware)** — 10
+  app tests green, `flutter analyze` clean. The flutter_blue_plus
+  paths are analyze-clean and validated on real hardware in M6 (TC1).
+
+- **M6 prep** (submodule commit _pending_; runbook in parent):
+  hardware-free half of M6, making the on-device step turnkey.
+  Decisive finding — the firmware `0x88` push carries the **full raw
+  OTA packet**, so both open items are resolvable **BLE-only, no
+  SDR**. Built: `RfLogFrame`/`OtaPacket`/`GrpTxtPayload` codec
+  (`docs/packet_format.md` at the pin), the `resolveChannelTail`
+  oracle, a skip-when-absent interop replay harness + schema, and an
+  app-side raw-frame capture + `exportGrpTxtFixture`. Operator
+  procedure: `meshmore-sns/M6-interop-runbook.md`. Conformance 103
+  green + 1 skipped (interop, until real captures land). The on-device
+  TC1/TC3/TC4 run + committing real fixtures is the remaining
+  hardware step.
+
+- **M7** (submodule commit _pending_): hardening; **TC2 final**.
+  Property-fuzz (seeded, 4000+ cases) proves `decode` /
+  `OtaPacket.parse` / `macThenDecrypt` / `resolveChannelTail` /
+  `edPublicKeyToMontgomeryU` are total. Found+fixed two real
+  totality gaps (`macThenDecrypt` non-aligned ciphertext;
+  degenerate Ed25519 point) and a real **controller stale-state
+  reconnect bug**. Error taxonomy tightened (dead kind removed,
+  invariant documented + asserted). App: `ReconnectPolicy`
+  (exp-backoff + full jitter) + `MeshcoreController` auto-reconnect.
+  Conformance: meshcore 111 + 1 skipped; app 17. The
+  `dart analyze --fatal-infos` + `dart test` (+ `flutter analyze/test`)
+  CI workflow is the **enforced merge gate**.
 
 ### Open crypto items (to confirm via M6 on-device interop fixture)
 
