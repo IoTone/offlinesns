@@ -10,6 +10,8 @@ Meshmore SNS is a mobile client built in Flutter, and used to communicate on the
 - Meshcore Github: https://github.com/meshcore-dev/MeshCore
 - Meshcore Flasher : https://meshcore.co.uk/flasher.html
 - Meshcore Wiki (Repeater setup, relevant to initial test config) : https://meshcore.co.uk/wiki.html#124-repeater
+- Seeed SenseCAP T1000-E + MeshCore setup (flash, "Companion Bluetooth" variant, BLE pair PIN 123456, LoRa region) : https://wiki.seeedstudio.com/sensecap_t1000_e_meshcore/
+- MeshCore v1.15.0 release notes (the pinned firmware; flash via flasher.meshcore.io) : https://blog.meshcore.io/2026/04/19/release-1-15-0
 
 ## Problem
 
@@ -66,7 +68,17 @@ test cases).
   header + README) and **asserted by a test**; it is bumped deliberately,
   never silently.
 - **Current pin:** tag `companion-v1.15.0`, commit
-  `dee3e26ac081a5c668c69b66c16a6544a44ddc5b`.
+  `dee3e26ac081a5c668c69b66c16a6544a44ddc5b` — the official
+  **MeshCore v1.15.0** release (2026-04-19,
+  <https://blog.meshcore.io/2026/04/19/release-1-15-0>; flash the
+  "Companion Bluetooth" build via <https://flasher.meshcore.io>).
+  The 1.15.0 notes document **no breaking** companion-protocol /
+  opcode / channel / crypto / packet-format changes, so the
+  transcription is valid for this release. Additive items:
+  *GROUP_DATA binary packets* (`PAYLOAD_TYPE_GRP_DATA` 0x06 /
+  `SEND_CHANNEL_DATAGRAM` 0x3E — opcodes known, payload body not yet
+  decoded → `UnsupportedFrame` by design; tracked future item) and
+  *Default Scope support*.
 - **Source precedence (learned in M1):** the markdown spec
   `docs/companion_protocol.md` is **incomplete** — it documents framing,
   UUIDs, APP_START, SELF_INFO, and OK/ERROR, but **omits field layouts
@@ -162,7 +174,10 @@ reference setup:
   on-device test target; iOS validated subsequently).
 - **Radio hardware:** **Seeed Studio T1000-E** tracker devices flashed
   with MeshCore firmware via the official flasher
-  (`https://meshcore.co.uk/flasher.html`).
+  (`https://meshcore.co.uk/flasher.html`). Device-specific setup
+  (flashing, **"Companion Bluetooth"** variant, BLE pairing PIN
+  `123456`, LoRa region):
+  `https://wiki.seeedstudio.com/sensecap_t1000_e_meshcore/`.
 - **Topology:** at least two T1000-E nodes so messages traverse the mesh
   rather than a single device loopback. Where a relay is needed to
   exercise multi-hop, one node is configured per the **Repeater** guidance
@@ -322,13 +337,26 @@ on-device behaviour and the offline conformance vectors stay aligned.
   Conformance: meshcore 111 + 1 skipped; app 17. The
   `dart analyze --fatal-infos` + `dart test` (+ `flutter analyze/test`)
   CI workflow is the **enforced merge gate**.
+- **M8** (submodule commit _pending_): external-reference review
+  (docs.meshcore.io + wirehack7 gist). **Closed open item #1**
+  (channel secret = `psk ‖ 0·16`). Fixed the channel-hash source
+  (`SHA256(psk16)[0]`, was hashing the 32-byte secret); added
+  `channelHashFromPsk` / `channelPskFromHashtag` (`#test` KAT) and
+  a public-PSK cross-source KAT; reworked `resolveChannelTail`
+  (`channelHashOk` tail-independent, MAC disambiguates). meshcore
+  113 + 1 skipped; app 30. analyze clean.
 
-### Open crypto items (to confirm via M6 on-device interop fixture)
+### Open crypto items
 
-1. **Channel secret tail** — `GroupChannel.secret[16..32]`. Strong
-   evidence (qr_codes.md: ecosystem only ever shares 16 bytes;
-   struct zero-init) ⇒ zeros; `channelSecretFromPsk` zero-fills.
-   Confirm with the channel-hash / MAC oracle (`Public` PSK is known).
+1. **Channel secret tail** — `GroupChannel.secret[16..32]`.
+   **✅ CLOSED (M8).** Authoritative: `docs.meshcore.io/companion_
+   protocol` ("32-byte variant unsupported") + the wirehack7
+   packet-builder gist ("PSK + zero pad to 32 bytes"); verified
+   locally. The 32-byte secret is **`psk ‖ 0x00·16`** — exactly
+   `channelSecretFromPsk`. Also corrected (M8): the on-air channel
+   hash is `SHA256(psk16)[0]` (`PATH_HASH_SIZE`=1), keyed on the
+   16-byte PSK, not the 32-byte secret. The M6 on-device oracle
+   remains as a regression anchor, no longer the sole proof.
 2. **`ed25519_key_exchange` exact bytes** — *largely closed in M3b*:
    anchored to RFC 8032/7748 **and** offline libsodium KATs (the
    conversion, full key-exchange, and DH symmetry all match libsodium
@@ -336,10 +364,14 @@ on-device behaviour and the offline conformance vectors stay aligned.
    confirm against a *real MeshCore device* DM exchange in M6 (low
    risk — libsodium is the reference implementation for this map).
 
-Reverse-engineering path for both: source archaeology → reference-
-client (meshcore.py / meshcore.js) differential → channel-hash air
-oracle → MAC oracle on a T1000-E (M6). The known `Public` channel
-PSK makes the channel-hash oracle a one-packet test.
+Item #2 reverse-engineering path: source archaeology → reference-
+client differential → MAC oracle on a T1000-E (M6). (Item #1 needed
+none of this in the end — the external docs/gist settled it.)
+
+External references used to close #1 (M8):
+- Official companion protocol — https://docs.meshcore.io/companion_protocol/
+- wirehack7 GRP_TXT packet-builder gist —
+  https://gist.github.com/wirehack7/1c2b3fa04886705aee0b6e3d42570e6f
 
 Commit hashes refer to the `meshmore-sns` branch of the
 `flutter-responsive-mobile-app-starter-iotj` submodule.

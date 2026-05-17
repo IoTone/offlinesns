@@ -12,6 +12,16 @@ oracle, replay harness) is already built and `dart test`-green.
   firmware, tag `companion-v1.15.0` (commit `dee3e26ac0…`), via
   <https://meshcore.co.uk/flasher.html>. Record the exact flashed
   version — it must match the pin in `packages/meshcore`.
+- **Firmware:** flash the **MeshCore v1.15.0 "Companion Bluetooth"**
+  build from <https://flasher.meshcore.io>
+  ([release notes](https://blog.meshcore.io/2026/04/19/release-1-15-0))
+  — this is the pinned version (`companion-v1.15.0` / `dee3e26`).
+- **Device setup guide (authoritative for the T1000-E):**
+  <https://wiki.seeedstudio.com/sensecap_t1000_e_meshcore/> — covers
+  flashing (Web Flasher serial-DFU **or** drag-and-drop UF2), choosing
+  the **"Companion Bluetooth"** variant, BLE pairing (**default PIN
+  `123456`**), and LoRa-region/GPS config. Use this for the actual
+  flashing/pairing steps; the version must match the pin above.
 - Optionally a Repeater-configured node for multi-hop
   (<https://meshcore.co.uk/wiki.html#124-repeater>).
 
@@ -22,8 +32,11 @@ Call them **A** (paired to the phone over BLE) and **B** (sender).
 1. `cd meshmore-sns/meshmore_sns_app/responsive_starter_app && flutter run`
    on the Android phone (release or debug).
 2. Grant Bluetooth (and, pre-Android-12, Location) permissions.
-3. `MeshcoreController.connect()` → expect state
-   `handshaking → ready` and `selfInfo` populated. **TC1 pass.**
+3. In-app: `Settings → Diagnostics & connect → Scan & connect`
+   (drives `MeshcoreController.connect()`). If the OS prompts for a
+   BLE pairing PIN, it is **`123456`** (T1000-E default — see the
+   Seeed wiki above). Expect state `handshaking → ready` and
+   `selfInfo` populated. **TC1 pass.**
 
 ## Part 2 — TC3/TC4: send / receive, encrypted + unencrypted
 

@@ -248,8 +248,9 @@ committed to the `meshmore-sns` submodule branch).
 | ID | Deliverable | Status |
 |----|-------------|--------|
 | U0 | Theme foundation: `MmTokens` + all 6 presets (D default), `ThemeController` (Provider, persisted via `shared_preferences`), wired into `MaterialApp`; a Personalization screen with the live preset/font/accessibility picker | ✅ done (submodule `cbb80b9`; 24 app tests) |
-| U1 | Nav shell: 5-view `PageView` swipe + long-press quick-nav (R11); Settings hub → 3 sub-screen routes (go_router) | ⏭ next |
-| U2 | Dashboard (D "monolith" layout) wired to `MeshcoreController` (link/peers/channel/events) | ☐ |
+| U1 | Nav shell: 5-view `PageView` swipe + long-press quick-nav (R11); Settings hub → 3 sub-screen routes (go_router) | ✅ done (submodule `1ef39df`; 27 app tests) |
+| UD | **Diagnostics & connect** screen (parallel, unblocks hardware): real Connect/disconnect, live state, raw frame log, test sends, in-app M6 channel-tail oracle + fixture export | ✅ done (submodule `pending`; 30 app tests) |
+| U2 | Dashboard (D "monolith" layout) wired to `MeshcoreController` (link/peers/channel/events) | ⏭ next |
 | U3 | Chat (collapsible, channel switch, R6) + TTS toggle wiring (R5) | ☐ |
 | U4 | Nodes screen; Device configuration screen → M4/R7 commands | ☐ |
 | U5 | App settings + About/Terms (R9/R10); l10n EN/JA (R4) | ☐ |
