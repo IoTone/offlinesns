@@ -29,6 +29,22 @@ While Meshcore protocol is open source, the client is not open source.  We want 
 - R9: app has an about screen with the app information
 - R10: app has a Terms and Condition
 - R11: app has a swipe gesture to left or right to navigate to diferent views, and a long press on the icon to get a navigation menu. 
+- R12: app ships an **audible theme pack** matching the selected
+  design concept (UI/event sounds, alert tones, TTS voice character).
+  Every audible cue MUST have a synchronised non-audible equivalent
+  (visual + optional haptic); the sound pack is mutable independently
+  of TTS and a "visual + haptic only" mode is provided.
+- R13: app is **accessible and hearing-impaired-friendly**: no
+  information conveyed by sound (or colour) alone; WCAG-aligned
+  (AA+ contrast, ≥48dp targets); honours OS bold-text, text-scale,
+  high-contrast, reduce-motion and reduce-sound/silent settings;
+  all actionable widgets carry semantic labels.
+- R14: app has a **user-customizable appearance & profile**: theme
+  presets (incl. the design-concept themes + a high-contrast and a
+  night/low-power preset) and a custom palette, font family & size
+  scale, audio-alert and accessibility preferences; settings persist
+  per user/profile. Reached from Settings (Device configuration,
+  App settings, Profile & personalization sub-screens).
 
 ## Meshcore Protocol Implementation Plan
 

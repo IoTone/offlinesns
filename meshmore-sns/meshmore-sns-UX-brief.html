@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meshmore SNS — UX Design Brief (6 concepts)</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#06070d;color:#e6ecf5;line-height:1.55;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+  header,footer{padding:24px clamp(16px,4vw,48px)}
+  header{border-bottom:1px solid #1d2436;background:#0a0e1a}
+  h1{margin:0 0 6px;font-size:22px;letter-spacing:.04em}
+  .sub{color:#9fb0c8;font-size:14px;max-width:74ch}
+  .note{background:#161b26;border:1px solid #2a3346;border-radius:8px;
+    padding:10px 14px;margin:14px 0;font-size:13px;color:#9fb0c8}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));
+    gap:26px;padding:26px clamp(16px,4vw,48px)}
+  .concept{background:#0d111c;border:1px solid #1d2436;border-radius:14px;
+    overflow:hidden}
+  .concept h2{margin:0;padding:16px 18px;font-size:18px;letter-spacing:.05em;
+    border-bottom:1px solid #1d2436}
+  .tag{font-size:12px;color:#7c8aa3;font-weight:400;display:block;margin-top:4px}
+  .cbody{padding:18px;display:flex;flex-direction:column;gap:16px}
+  .phones{display:flex;gap:14px;flex-wrap:wrap}
+  .phone{width:212px;border-radius:24px;border:2px solid #2a3346;padding:9px;
+    background:#000}
+  .scr{border-radius:16px;overflow:hidden;font-size:11px;min-height:380px;
+    display:flex;flex-direction:column}
+  .bar{display:flex;justify-content:space-between;padding:7px 9px;font-size:9px;
+    letter-spacing:.04em}
+  .pill{border:1px solid currentColor;border-radius:99px;padding:0 5px;
+    font-size:8px}
+  .lbl{font-size:8.5px;color:#8aa;letter-spacing:.14em;padding:2px 9px}
+  .card{border-radius:8px;padding:7px 9px;margin:5px 9px;font-size:9.5px}
+  .row{display:flex;gap:6px;margin:5px 9px}.row .card{flex:1;margin:0}
+  .mono{font-family:ui-monospace,Menlo,Consolas,monospace}
+  .chat{margin-top:auto;border-top:1px solid #ffffff22;padding:7px 9px;
+    font-size:9.5px}
+  .me{text-align:right;opacity:.85}
+  .box{background:#ffffff14;border-radius:6px;padding:4px 7px;flex:1}
+  .inp{display:flex;gap:5px;margin-top:6px;align-items:center}
+  .swwrap{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 20px}
+  .sw{width:34px;height:34px;border-radius:7px;border:1px solid #ffffff22;
+    position:relative}
+  .sw b{position:absolute;left:0;bottom:-15px;font-size:9px;color:#7c8aa3;
+    font-weight:400;white-space:nowrap}
+  h3{font-size:13px;letter-spacing:.05em;color:#cfe;margin:8px 0 4px}
+  ul{margin:4px 0;padding-left:18px;font-size:13px}li{margin:2px 0}
+  .audio{background:#11161f;border:1px solid #25304a;border-radius:10px;
+    padding:12px 14px;font-size:13px;color:#9fb0c8}
+  .btns{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 4px}
+  button{background:#1b2436;color:#e6ecf5;border:1px solid #36507a;
+    border-radius:7px;padding:6px 11px;font-size:12px;cursor:pointer}
+  button:hover{background:#243150}
+  table{border-collapse:collapse;width:100%;font-size:13px;margin-top:8px}
+  th,td{border:1px solid #25304a;padding:7px 9px;text-align:left}
+  th{background:#11161f;color:#cfe}
+  .rec{background:#13251c;border:1px solid #2f6f4a;border-radius:8px;
+    padding:10px 14px;margin:14px 0;font-size:13px}
+  code{background:#161b26;padding:1px 5px;border-radius:4px}
+  a{color:#35e0f0}
+</style>
+</head>
+<body>
+<header>
+  <h1>Meshmore SNS — UX Design Brief · 6 concepts</h1>
+  <p class="sub">Within the stated intent (Wipeout 2097 × Neon Genesis
+  Evangelion; dashboard-home; hyperlocal off-grid mesh; R1–R13). Each
+  ships a matching <strong>audible theme pack</strong> with mandatory
+  visual + haptic parity (hearing-impaired-first). This page is
+  <strong>fully static HTML</strong> — it renders with zero JavaScript;
+  the optional audio-preview buttons are progressive enhancement only.</p>
+  <div class="note">Indicative mockups (system fonts). Real OSS,
+  license-clean type plan: <strong>Saira / Saira Condensed</strong>
+  (Eurostile-class display), <strong>Departure Mono</strong> (bitmap
+  console telemetry), <strong>M PLUS 1 Code</strong> (mono + full
+  Japanese). Eurostile / Matisse / Helvetica = inspiration, never
+  bundled. Sourced research + licensing table:
+  <code>meshmore-sns-UX-brief.md</code>.</div>
+</header>
+
+<div class="grid">
+
+  <!-- ================= CONCEPT A ================= -->
+  <section class="concept">
+    <h2>A · NERV Terminal
+      <span class="tag">Evangelion ops console — information-maximal,
+      authoritative</span></h2>
+    <div class="cbody">
+      <div class="phones">
+        <div class="phone"><div class="scr" style="background:#0A0E1A;color:#cfe">
+          <div class="bar" style="color:#FF7A00"><span>MESHMORE//NERV</span>
+            <span><span class="pill">BLE●</span> <span class="pill">CH0</span>
+            <span class="pill">TTS○</span></span></div>
+          <div class="lbl">▟ DASHBOARD</div>
+          <div class="row">
+            <div class="card" style="background:#121826;border:1px solid #FF7A0055">
+              LINK ● LINKED<br>T1000-E</div>
+            <div class="card" style="background:#121826;border:1px solid #00E5FF55">
+              915.0MHz<br>SF7 CR5 22dBm</div></div>
+          <div class="card mono" style="background:#121826;
+            border:1px solid #E6005C55;color:#9CFF00">MESH ◣◢◣◢◣◢◣◢<br>
+            PEERS 7 · MSG/min 4<br>RSSI ▁▃▅▇▅▃ SNR ▂▄▆█▆</div>
+          <div class="card" style="background:#121826">EVENTS<br>
+            12:04 advert Kanako.1<br>12:03 ch0 "weather 28°"</div>
+          <div class="chat"><div class="lbl" style="padding:0">▾ CHAT [CH0]</div>
+            <div>Davi1&gt; on my way</div>
+            <div class="inp"><span class="box">type…</span></div></div></div></div>
+        <div class="phone"><div class="scr" style="background:#0A0E1A;color:#cfe">
+          <div class="bar" style="color:#FF7A00"><span>‹ CHAT</span>
+            <span class="pill">CH0 PUBLIC</span></div>
+          <div class="mono" style="padding:6px 9px">
+            <div>Kanako.1&gt; weather fukuoka 28°</div>
+            <div>Davi1&gt; roger</div>
+            <div class="me">you&gt; on my way ▮</div>
+            <div>— RSSI −87 SNR 7.2 —</div></div>
+          <div class="chat"><div class="inp"><span class="box">message…</span>
+            <button type="button">SEND</button></div></div></div></div>
+      </div>
+      <div><h3>Palette</h3><div class="swwrap">
+        <span class="sw" style="background:#0A0E1A"><b>base</b></span>
+        <span class="sw" style="background:#FF7A00"><b>eva</b></span>
+        <span class="sw" style="background:#00E5FF"><b>hud</b></span>
+        <span class="sw" style="background:#E6005C"><b>alert</b></span>
+        <span class="sw" style="background:#9CFF00"><b>term</b></span></div></div>
+      <div><h3>Visual language</h3><ul>
+        <li>Telemetry-grid dashboard — everything visible at once</li>
+        <li>Chamfered panels, diagonal warning-stripe headers, CRT scanline;
+          emergency = colour-invert to red + faster scanline</li>
+        <li>Departure Mono telemetry; Saira ALL-CAPS headers; slashed-zero
+          numerals (the Eva "SOUND ONLY" motif)</li></ul></div>
+      <div class="audio"><h3 style="margin-top:0">Audible pack — "Mission
+        Control"</h3>Austere/synthetic: square-wave blips, terse 2-tone
+        message, Geiger-ish node ticks, descending sawtooth klaxon for
+        critical. TTS voice: flat, clipped, "operator".
+        <div class="btns">
+          <button type="button" data-k="A" data-kind="msg">▶ Message</button>
+          <button type="button" data-k="A" data-kind="node">▶ Node found</button>
+          <button type="button" data-k="A" data-kind="crit">▶ Critical</button>
+        </div>
+        <div>Parity: every cue → warning-stripe flash + a distinct haptic
+        pattern (single / double / long-long-long).</div></div>
+    </div>
+  </section>
+
+  <!-- ================= CONCEPT B ================= -->
+  <section class="concept">
+    <h2>B · AG Systems HUD
+      <span class="tag">Wipeout racing HUD — bold, glanceable,
+      energetic</span></h2>
+    <div class="cbody">
+      <div class="phones">
+        <div class="phone"><div class="scr" style="background:#05060B;color:#dff">
+          <div class="bar"><span>MESHMORE</span><span>☰</span></div>
+          <div style="text-align:center;margin:14px 0">
+            <div style="width:92px;height:92px;border-radius:50%;margin:0 auto;
+              border:3px solid #22D3EE;display:flex;align-items:center;
+              justify-content:center;font-size:19px;color:#22D3EE">87%</div>
+            <div class="lbl">SIGNAL · STRONG · 915.0</div></div>
+          <div class="row">
+            <div class="card" style="background:#10131F;text-align:center">PEERS
+              <br><b style="font-size:17px;color:#FF2D78">7</b></div>
+            <div class="card" style="background:#10131F;text-align:center">CH0
+              <br><b style="color:#22D3EE">▮▮▮▯▯</b></div></div>
+          <div class="lbl" style="text-align:center">◀ ( • ) ▶ Dashboard</div>
+          <div class="chat" style="background:#10131F">
+            <div class="lbl" style="padding:0">⌃ CHAT [CH0▾]</div>
+            <div>Kanako.1 weather 28°</div>
+            <div class="inp"><span class="box">message…</span>
+            <button type="button" style="border-color:#FF2D78">▶</button></div></div></div></div>
+        <div class="phone"><div class="scr" style="background:#05060B;color:#dff">
+          <div class="bar" style="color:#22D3EE"><span>‹ Public</span>
+            <span>CH0▾</span></div>
+          <div style="padding:9px">
+            <div style="background:#FF2D7822;border-radius:8px;padding:5px 8px;
+              display:inline-block">Kanako.1 · weather fukuoka 28°</div>
+            <div class="me" style="background:#22D3EE25;border-radius:8px;
+              padding:5px 8px;display:inline-block;margin-top:8px">on my way</div></div>
+          <div class="chat" style="background:#10131F"><div class="inp">
+            <span class="box">message…</span>
+            <button type="button" style="border-color:#22D3EE">▶</button></div></div></div></div>
+      </div>
+      <div><h3>Palette</h3><div class="swwrap">
+        <span class="sw" style="background:#05060B"><b>base</b></span>
+        <span class="sw" style="background:#22D3EE"><b>cyan</b></span>
+        <span class="sw" style="background:#FF2D78"><b>magenta</b></span>
+        <span class="sw" style="background:#FFB020"><b>warn</b></span>
+        <span class="sw" style="background:#10131F"><b>surf</b></span></div></div>
+      <div><h3>Visual language</h3><ul>
+        <li>2–3 hero gauges with sweep animation; detail on tap</li>
+        <li>Livery accents alternate per active channel (team colours)</li>
+        <li>Motion-forward: coloured sweep on R11 swipe</li></ul></div>
+      <div class="audio"><h3 style="margin-top:0">Audible pack —
+        "Velocity"</h3>Arcade/electronic: triangle arpeggios, rising whoosh
+        on navigation, major-third confirm, energised alert sweep. TTS
+        voice: upbeat, mid-tempo.
+        <div class="btns">
+          <button type="button" data-k="B" data-kind="msg">▶ Message</button>
+          <button type="button" data-k="B" data-kind="node">▶ Node found</button>
+          <button type="button" data-k="B" data-kind="crit">▶ Critical</button>
+        </div>
+        <div>Parity: swipe-sweep is also the visual transition; alerts =
+        amber band + haptic burst.</div></div>
+    </div>
+  </section>
+
+  <!-- ================= CONCEPT C ================= -->
+  <section class="concept">
+    <h2>C · Hyperlocal Field
+      <span class="tag">Discovery-first off-grid — radar dashboard, calm,
+      accessible (recommended base)</span></h2>
+    <div class="cbody">
+      <div class="phones">
+        <div class="phone"><div class="scr" style="background:#0B0F17;color:#dfe">
+          <div class="bar" style="color:#35E0F0"><span>MESHMORE ◦Public</span>
+            <span><span class="pill">BLE●</span> <span class="pill">TTS○</span></span></div>
+          <div style="position:relative;height:150px;margin:8px">
+            <div style="position:absolute;inset:0;border-radius:50%;
+              border:1px solid #35E0F033"></div>
+            <div style="position:absolute;inset:26px;border-radius:50%;
+              border:1px solid #35E0F033"></div>
+            <div style="position:absolute;inset:52px;border-radius:50%;
+              border:1px solid #35E0F055"></div>
+            <span style="position:absolute;left:46%;top:46%;color:#FF7A00">((•))</span>
+            <span style="position:absolute;left:20%;top:26%;color:#7CFF6B">●Kanako.1</span>
+            <span style="position:absolute;left:60%;top:62%;color:#35E0F0">●Davi1</span></div>
+          <div class="card" style="background:#161B26;text-align:center">
+            PEERS 7 · CH0 ▮▮▮▯▯ · BATT 4.10V</div>
+          <div class="chat" style="border-color:#35E0F033">
+            <div class="lbl" style="padding:0">⌃⌃ Chat · Public [CH▾]</div>
+            <div>Kanako.1 weather 28° · 12:03</div>
+            <div class="inp"><span class="box">message…</span>
+            <button type="button" style="border-color:#35E0F0">▶</button></div></div></div></div>
+        <div class="phone"><div class="scr" style="background:#0B0F17;color:#dfe">
+          <div class="bar" style="color:#35E0F0"><span>‹ Public</span>
+            <span class="pill">TTS○</span></div>
+          <div style="padding:9px">
+            <div>Kanako.1 · weather fukuoka 28°
+              <span style="color:#7c8aa3">12:03</span></div>
+            <div class="me" style="margin-top:6px">on my way
+              <span style="color:#7c8aa3">12:04 ✓</span></div></div>
+          <div style="height:4px;width:40px;border-radius:2px;
+            background:#35E0F055;margin:auto auto 4px"></div>
+          <div class="chat" style="border-color:#35E0F033"><div class="inp">
+            <span class="box">message…</span>
+            <button type="button" style="border-color:#35E0F0">▶</button></div></div></div></div>
+      </div>
+      <div><h3>Palette</h3><div class="swwrap">
+        <span class="sw" style="background:#0B0F17"><b>base</b></span>
+        <span class="sw" style="background:#FF7A00"><b>eva</b></span>
+        <span class="sw" style="background:#35E0F0"><b>live</b></span>
+        <span class="sw" style="background:#7CFF6B"><b>ok</b></span>
+        <span class="sw" style="background:#FF3B6B"><b>alert</b></span></div></div>
+      <div><h3>Visual language</h3><ul>
+        <li>Node radar is the hero (→ F1 live-map future)</li>
+        <li>Chat as a draggable Material sheet (peek/half/full = R6)</li>
+        <li>Lower noise, AA+ contrast, large targets, reduce-motion aware</li></ul></div>
+      <div class="audio"><h3 style="margin-top:0">Audible pack — "Sonar"</h3>
+        Calm/organic: soft sonar ping for node discovery (mirrors the
+        radar), gentle two-note message, low calm link tones, sparse —
+        field-friendly under noise. TTS voice: calm, natural.
+        <div class="btns">
+          <button type="button" data-k="C" data-kind="msg">▶ Message</button>
+          <button type="button" data-k="C" data-kind="node">▶ Node found</button>
+          <button type="button" data-k="C" data-kind="crit">▶ Critical</button>
+        </div>
+        <div>Parity: ping = radar-blip pulse; link tones = status-rail
+        colour + soft haptic.</div></div>
+    </div>
+  </section>
+
+  <!-- ================= CONCEPT D ================= -->
+  <section class="concept">
+    <h2>D · SEELE Monolith
+      <span class="tag">Evangelion "SOUND ONLY" — brutalist, monumental,
+      maximum-legibility minimalism</span></h2>
+    <div class="cbody">
+      <div class="phones">
+        <div class="phone"><div class="scr" style="background:#000;color:#EDE6D6">
+          <div class="bar" style="color:#EDE6D6;border-bottom:1px solid #2A2A26">
+            <span>MESHMORE</span><span>SOUND ONLY</span></div>
+          <div style="padding:14px 12px">
+            <div style="font-size:9px;letter-spacing:.3em;color:#9A958A">PEERS</div>
+            <div class="mono" style="font-size:54px;line-height:1;color:#EDE6D6">07</div>
+            <div style="font-size:9px;letter-spacing:.2em;color:#9A958A;
+              margin-top:10px">CH0 · PUBLIC · LINKED</div>
+            <div class="mono" style="font-size:22px;color:#EDE6D6">915.0 SF7</div></div>
+          <div style="margin:auto 0 0;background:#C8102E;color:#000;
+            padding:8px 12px;font-size:11px;letter-spacing:.18em">
+            ▌ NORMAL · NO ALERTS</div>
+          <div class="chat" style="border-color:#2A2A26">
+            <div class="mono">davi1: on my way</div>
+            <div class="inp"><span class="box"
+              style="background:#15140f">type…</span></div></div></div></div>
+        <div class="phone"><div class="scr" style="background:#000;color:#EDE6D6">
+          <div class="bar" style="color:#C8102E"><span>‹ CH0</span>
+            <span>SOUND ONLY</span></div>
+          <div class="mono" style="padding:12px;font-size:13px;line-height:1.8">
+            <div>KANAKO.1</div><div style="color:#9A958A">weather 28°</div>
+            <div style="margin-top:10px">DAVI1</div>
+            <div style="color:#9A958A">on my way</div></div>
+          <div class="chat" style="border-color:#2A2A26"><div class="inp">
+            <span class="box" style="background:#15140f">message…</span>
+            <button type="button" style="border-color:#C8102E">▸</button></div></div></div></div>
+      </div>
+      <div><h3>Palette</h3><div class="swwrap">
+        <span class="sw" style="background:#000"><b>ink</b></span>
+        <span class="sw" style="background:#EDE6D6"><b>cream</b></span>
+        <span class="sw" style="background:#C8102E"><b>SEELE red</b></span>
+        <span class="sw" style="background:#9A958A"><b>bone</b></span>
+        <span class="sw" style="background:#2A2A26"><b>line</b></span></div></div>
+      <div><h3>Visual language</h3><ul>
+        <li>One huge numeral per screen; ruthless hierarchy, near-zero chrome</li>
+        <li>Monolith bars (SEELE "SOUND ONLY"); status = full-width slab,
+          colour-inverts to red on alert</li>
+        <li>Highest legibility/accessibility of all six; trivial under sun
+          and at large text scale</li></ul></div>
+      <div class="audio"><h3 style="margin-top:0">Audible pack —
+        "Tribunal"</h3>Severe and sparse: deep resonant sub-bass strikes,
+        single low choral swell for critical, almost silent otherwise. TTS
+        voice: slow, grave, committee.
+        <div class="btns">
+          <button type="button" data-k="D" data-kind="msg">▶ Message</button>
+          <button type="button" data-k="D" data-kind="node">▶ Node found</button>
+          <button type="button" data-k="D" data-kind="crit">▶ Critical</button>
+        </div>
+        <div>Parity: the status slab is the visual cue (slab → red) +
+        a single firm haptic; never relies on the tone.</div></div>
+    </div>
+  </section>
+
+  <!-- ================= CONCEPT E ================= -->
+  <section class="concept">
+    <h2>E · DR Pop
+      <span class="tag">The Designers Republic maximalism — Y2K rave,
+      flat colour blocks, fake sub-brands</span></h2>
+    <div class="cbody">
+      <div class="phones">
+        <div class="phone"><div class="scr" style="background:#101014;color:#F2F0E6">
+          <div class="bar" style="background:#FF2E88;color:#101014">
+            <span>MESHMORE™</span><span>PHASE_02</span></div>
+          <div style="display:flex;gap:0">
+            <div style="background:#D7FF00;color:#101014;padding:8px 9px;
+              flex:1;font-size:10px">PEERS<br><b style="font-size:20px">07</b></div>
+            <div style="background:#00C2FF;color:#101014;padding:8px 9px;
+              flex:1;font-size:10px">CH0<br><b style="font-size:20px">▮▮▮▯</b></div></div>
+          <div style="padding:8px 9px;font-size:9px;letter-spacing:.1em">
+            <span style="background:#FF2E88;padding:1px 5px">AURICOM·NET</span>
+            <span style="color:#7c8aa3"> 通信 915.0</span></div>
+          <div class="card" style="background:#1c1c24;font-size:9.5px">
+            ▣ Kanako.1 weather 28°<br>▣ advert · davi1</div>
+          <div class="chat" style="border-color:#FF2E8855">
+            <div style="color:#D7FF00">CH0 ▾ PUBLIC</div>
+            <div class="inp"><span class="box">message…</span>
+            <button type="button" style="border-color:#D7FF00">▶</button></div></div></div></div>
+        <div class="phone"><div class="scr" style="background:#101014;color:#F2F0E6">
+          <div class="bar" style="background:#00C2FF;color:#101014">
+            <span>‹ PUBLIC</span><span>カナコ</span></div>
+          <div style="padding:9px">
+            <div style="background:#D7FF00;color:#101014;padding:5px 8px;
+              display:inline-block;font-size:10px">Kanako.1 · weather 28°</div>
+            <div class="me" style="background:#FF2E88;color:#101014;
+              padding:5px 8px;display:inline-block;margin-top:8px;
+              font-size:10px">on my way</div></div>
+          <div class="chat" style="border-color:#00C2FF55"><div class="inp">
+            <span class="box">message…</span>
+            <button type="button" style="border-color:#FF2E88">▶</button></div></div></div></div>
+      </div>
+      <div><h3>Palette</h3><div class="swwrap">
+        <span class="sw" style="background:#101014"><b>ink</b></span>
+        <span class="sw" style="background:#FF2E88"><b>magenta</b></span>
+        <span class="sw" style="background:#D7FF00"><b>acid</b></span>
+        <span class="sw" style="background:#00C2FF"><b>cyan</b></span>
+        <span class="sw" style="background:#F2F0E6"><b>paper</b></span></div></div>
+      <div><h3>Visual language</h3><ul>
+        <li>Flat colour-block layout; each channel gets a fake corporate
+          "sub-brand" (the Wipeout team-livery system, applied to channels)</li>
+        <li>Kanji/katakana as graphic elements; coded labels (PHASE_02);
+          loud, playful, rave-era TDR</li>
+        <li>Highest visual energy; needs care on contrast (handled via the
+          parity rules — colour never sole carrier)</li></ul></div>
+      <div class="audio"><h3 style="margin-top:0">Audible pack —
+        "Pure Phase"</h3>Bright syncopated arcade blips, funky confirms,
+        Wipeout-soundtrack energy. TTS voice: punchy, stylised.
+        <div class="btns">
+          <button type="button" data-k="E" data-kind="msg">▶ Message</button>
+          <button type="button" data-k="E" data-kind="node">▶ Node found</button>
+          <button type="button" data-k="E" data-kind="crit">▶ Critical</button>
+        </div>
+        <div>Parity: each event also flips its sub-brand block + a rhythmic
+        haptic; loudness never required.</div></div>
+    </div>
+  </section>
+
+  <!-- ================= CONCEPT F ================= -->
+  <section class="concept">
+    <h2>F · Tactical Recon
+      <span class="tag">Night-ops / codec field mode — OLED-black, amber
+      phosphor, map-first, power-frugal</span></h2>
+    <div class="cbody">
+      <div class="phones">
+        <div class="phone"><div class="scr" style="background:#000;color:#FFB000">
+          <div class="bar" style="color:#FFB000"><span>MESHMORE · RECON</span>
+            <span><span class="pill">BLE</span> <span class="pill">TTS○</span></span></div>
+          <div style="position:relative;height:150px;margin:8px;
+            border:1px solid #6E4E00">
+            <div style="position:absolute;left:50%;top:50%;width:1px;
+              height:60px;background:#FFB000;transform-origin:top;
+              transform:rotate(35deg)"></div>
+            <span style="position:absolute;left:48%;top:46%">◬</span>
+            <span style="position:absolute;left:22%;top:30%;font-size:9px">
+              ▲ Kanako.1 2.1km 041°</span>
+            <span style="position:absolute;left:54%;top:66%;font-size:9px">
+              ▲ Davi1 0.8km 190°</span></div>
+          <div class="mono" style="padding:4px 9px;font-size:9px;color:#FFB000">
+            PEERS 7 · CH0 · BATT 4.10V · DARK-ADAPT</div>
+          <div class="chat" style="border-color:#6E4E00">
+            <div class="mono">[KANAKO.1] weather 28°</div>
+            <div class="inp"><span class="box"
+              style="background:#141414">msg…</span></div></div></div></div>
+        <div class="phone"><div class="scr" style="background:#000;color:#FFB000">
+          <div class="bar" style="color:#FFB000"><span>‹ CH0 RECON</span>
+            <span>SQUELCH</span></div>
+          <div class="mono" style="padding:10px;font-size:11px;line-height:1.9">
+            <div>&gt; KANAKO.1: weather fukuoka 28°</div>
+            <div>&gt; DAVI1: on my way</div>
+            <div style="color:#6E4E00">&gt; link −87dBm · ok</div></div>
+          <div class="chat" style="border-color:#6E4E00"><div class="inp">
+            <span class="box" style="background:#141414">message…</span>
+            <button type="button" style="border-color:#FFB000;color:#FFB000">TX</button></div></div></div></div>
+      </div>
+      <div><h3>Palette</h3><div class="swwrap">
+        <span class="sw" style="background:#000"><b>oled</b></span>
+        <span class="sw" style="background:#FFB000"><b>amber</b></span>
+        <span class="sw" style="background:#6E4E00"><b>dim</b></span>
+        <span class="sw" style="background:#B3231F"><b>alert</b></span>
+        <span class="sw" style="background:#141414"><b>panel</b></span></div></div>
+      <div><h3>Visual language</h3><ul>
+        <li>Map/bearing-first; waypoints with range + heading; sweep line</li>
+        <li>Single-hue amber phosphor on true black — OLED power-frugal,
+          dark-adapted (night-vision friendly), high glare resistance</li>
+        <li>Codec/recon comms styling; gloves-grade targets; alt
+          phosphor-green theme variant</li></ul></div>
+      <div class="audio"><h3 style="margin-top:0">Audible pack — "Codec"</h3>
+        Comms-radio: terse UHF beeps, brief squelch on link change, the
+        codec-call ring for critical. Low volume, cuts through ambient
+        noise. TTS voice: clipped radio-operator.
+        <div class="btns">
+          <button type="button" data-k="F" data-kind="msg">▶ Message</button>
+          <button type="button" data-k="F" data-kind="node">▶ Node found</button>
+          <button type="button" data-k="F" data-kind="crit">▶ Critical</button>
+        </div>
+        <div>Parity: amber blink on the map/log + terse haptic; designed to
+        also work fully silent (field stealth).</div></div>
+    </div>
+  </section>
+
+</div>
+
+<section style="padding:8px clamp(16px,4vw,48px) 0">
+  <div class="concept" style="border-color:#2f4a6f">
+    <h2>Shared screens · Device Config · App Settings · Profile &amp;
+      Personalization
+      <span class="tag">Concept-agnostic utility screens — they
+      re-skin to whatever concept/theme is chosen. Shown here in the
+      C "Hyperlocal" theme for reference. The Personalization screen
+      is where concepts A–F (and D high-contrast / F night) become
+      user-selectable themes.</span></h2>
+    <div class="cbody">
+      <div class="phones">
+        <!-- DEVICE CONFIG -->
+        <div class="phone"><div class="scr" style="background:#0B0F17;color:#dfe">
+          <div class="bar" style="color:#35E0F0"><span>‹ Device config</span>
+            <span class="pill">BLE●</span></div>
+          <div class="lbl">RADIO</div>
+          <div class="card" style="background:#161B26">Frequency 915.0 MHz<br>
+            Bandwidth 250 kHz · SF 7 · CR 5<br>TX power 22 dBm</div>
+          <div class="lbl">IDENTITY / ADVERT</div>
+          <div class="card" style="background:#161B26">Node name: T1000-E<br>
+            Advert loc: 33.59,130.4 · [Send advert ▸]</div>
+          <div class="lbl">CHANNELS</div>
+          <div class="card" style="background:#161B26">◦ Public (default)<br>
+            + Add / scan QR (meshcore://channel/add)</div>
+          <div class="lbl">DEVICE</div>
+          <div class="card" style="background:#161B26">fw companion-v1.15.0<br>
+            Batt 4.10V · 256/4096 KB · time ✓ synced</div>
+          <div class="chat" style="border-color:#35E0F033">
+            <div class="inp"><span class="box">Other params · Tuning ▾</span></div></div></div></div>
+        <!-- APP SETTINGS -->
+        <div class="phone"><div class="scr" style="background:#0B0F17;color:#dfe">
+          <div class="bar" style="color:#35E0F0"><span>‹ App settings</span>
+            <span>⚙</span></div>
+          <div class="lbl">CONNECTION</div>
+          <div class="card" style="background:#161B26">Auto-reconnect ▣ on<br>
+            Backoff: exp + jitter · Forget device</div>
+          <div class="lbl">LANGUAGE (R4)</div>
+          <div class="card" style="background:#161B26">System · English · 日本語</div>
+          <div class="lbl">SPEECH (R5)</div>
+          <div class="card" style="background:#161B26">TTS ▢ off (default)<br>
+            Voice · Rate — augmentation only</div>
+          <div class="lbl">NOTIFICATIONS</div>
+          <div class="card" style="background:#161B26">Critical alert →
+            system notification + vibrate</div>
+          <div class="lbl">DATA / ABOUT</div>
+          <div class="card" style="background:#161B26">Export diagnostics
+            fixture · Logs · About · Terms</div>
+          <div class="chat" style="border-color:#35E0F033"><div class="inp">
+            <span class="box">v1.0 · IoTone Japan</span></div></div></div></div>
+        <!-- PROFILE & PERSONALIZATION -->
+        <div class="phone"><div class="scr" style="background:#0B0F17;color:#dfe">
+          <div class="bar" style="color:#FF7A00"><span>‹ Profile</span>
+            <span>★</span></div>
+          <div class="lbl">THEME PRESET</div>
+          <div class="card" style="background:#161B26">
+            ◉ Hyperlocal  ○ NERV  ○ AG-HUD<br>
+            ○ SEELE HC  ○ DR Pop  ○ Recon Night  ○ Custom…</div>
+          <div class="row">
+            <span class="sw" style="background:#0B0F17"><b>base</b></span>
+            <span class="sw" style="background:#FF7A00"><b>accent</b></span>
+            <span class="sw" style="background:#35E0F0"><b>live</b></span>
+            <span class="sw" style="background:#FF3B6B"><b>alert</b></span></div>
+          <div class="lbl">TYPE &amp; DENSITY</div>
+          <div class="card" style="background:#161B26">Font: Saira · size
+            ▁▂▃▅▇ (S–XL) · Comfortable / Compact</div>
+          <div class="lbl">AUDIO ALERTS (R12)</div>
+          <div class="card" style="background:#161B26">Master ▣ · pack: Sonar<br>
+            message ▣ node ▣ link ▣ critical ▣ · vol ▅</div>
+          <div class="lbl">ACCESSIBILITY (R13)</div>
+          <div class="card" style="background:#161B26">High-contrast ▢ ·
+            Reduce-motion ▢<br>Haptics ▣ + “learn patterns ▸”<br>
+            ▣ Visual + haptic only · Captions ▣</div>
+          <div class="chat" style="border-color:#FF7A0033"><div class="inp">
+            <span class="box">Identity: ed25519 9f3a… · name T1000-E</span></div></div></div></div>
+      </div>
+      <div><h3>Notes</h3><ul>
+        <li><strong>Device config</strong> drives the real M4/R7
+          protocol surface already built in <code>packages/meshcore</code>
+          (set radio params / TX power / advert name+latlon / channels +
+          PSK / other params / tuning; reads DEVICE_INFO, battery, time).</li>
+        <li><strong>App settings</strong>: BLE auto-reconnect (the M7
+          backoff policy), language (R4), TTS off-by-default (R5),
+          critical→system-notification parity, the M6 diagnostics
+          export, About/Terms (R9/R10).</li>
+        <li><strong>Profile &amp; Personalization (R14)</strong>: theme
+          presets = the six concepts (+ D high-contrast, F night) as
+          selectable themes, a custom palette editor, font family +
+          size scale, density, per-event audio toggles + pack, and the
+          accessibility switches incl. the one-tap “visual + haptic
+          only” mode. Persisted via <code>shared_preferences</code>.</li>
+        <li>These three sit under the <em>Settings</em> primary view
+          (pushed via go_router), not as new swipe pages — they inherit
+          the chosen concept's skin.</li>
+      </ul></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <h3>Comparison</h3>
+  <table>
+    <tr><th>Concept</th><th>Hero metaphor</th><th>Density</th>
+        <th>Audio pack</th><th>Field legibility</th>
+        <th>Accessibility</th><th>Build effort</th></tr>
+    <tr><td><strong>A</strong> NERV Terminal</td><td>Telemetry grid</td>
+        <td>Very high</td><td>Mission Control</td><td>Medium</td>
+        <td>Lower</td><td>Med-High</td></tr>
+    <tr><td><strong>B</strong> AG HUD</td><td>Big gauges</td><td>Low</td>
+        <td>Velocity</td><td>High</td><td>Medium</td><td>Medium</td></tr>
+    <tr><td><strong>C</strong> Hyperlocal Field</td><td>Node radar</td>
+        <td>Medium</td><td>Sonar</td><td>High</td>
+        <td><strong>Best</strong></td><td><strong>Lowest</strong></td></tr>
+    <tr><td><strong>D</strong> SEELE Monolith</td><td>Giant numeral</td>
+        <td>Minimal</td><td>Tribunal</td><td><strong>Highest</strong></td>
+        <td><strong>Highest</strong></td><td>Low</td></tr>
+    <tr><td><strong>E</strong> DR Pop</td><td>Colour-block brands</td>
+        <td>High</td><td>Pure Phase</td><td>Medium</td>
+        <td>Needs care</td><td>Medium</td></tr>
+    <tr><td><strong>F</strong> Tactical Recon</td><td>Map / bearings</td>
+        <td>Low</td><td>Codec</td><td><strong>Highest (sun/dark)</strong></td>
+        <td>High</td><td>Med (map paint)</td></tr>
+  </table>
+  <div class="rec"><strong>Recommendation:</strong> still <strong>C</strong>
+  as the build base (best hyperlocal fit, lowest effort, strong
+  accessibility). Of the new three: <strong>D</strong> is the
+  accessibility/sunlight benchmark (great as the high-contrast
+  alternate theme), <strong>F</strong> is the true field/low-power mode
+  (great as a "Recon" theme variant), <strong>E</strong> is the
+  brand-forward show-piece. Visual, audio, and theme variants are all
+  separable — e.g. "C base + D high-contrast theme + F night mode + A's
+  telemetry on Nodes". Canonical text + sourced research:
+  <code>meshmore-sns-UX-brief.md</code>.</div>
+  <p style="font-size:12px;color:#7c8aa3">Audio buttons are an optional
+  extra (Web Audio). If your viewer has no audio or no JS, the brief is
+  still complete — sound identities are described above and the .md
+  carries full specs.</p>
+</footer>
+
+<script>
+/* Progressive enhancement ONLY: page is fully usable without this. */
+(function(){
+  try{
+    var AC=null;
+    function ac(){return AC||(AC=new (window.AudioContext||window.webkitAudioContext)());}
+    function t(f,type,dur,vol,slide){
+      var c=ac(),s=c.currentTime,o=c.createOscillator(),g=c.createGain();
+      o.type=type;o.frequency.setValueAtTime(f,s);
+      if(slide)o.frequency.exponentialRampToValueAtTime(slide,s+dur);
+      g.gain.setValueAtTime(0,s);g.gain.linearRampToValueAtTime(vol,s+.006);
+      g.gain.exponentialRampToValueAtTime(.0001,s+dur);
+      o.connect(g).connect(c.destination);o.start(s);o.stop(s+dur+.02);
+    }
+    var P={
+      A:{msg:function(){t(660,'square',.1,.12);setTimeout(function(){t(990,'square',.1,.12);},70);},
+         node:function(){t(1500,'square',.05,.08);setTimeout(function(){t(1500,'square',.05,.08);},60);},
+         crit:function(){t(440,'sawtooth',.34,.2,180);setTimeout(function(){t(440,'sawtooth',.34,.2,180);},360);}},
+      B:{msg:function(){t(523,'triangle',.12,.16);setTimeout(function(){t(784,'triangle',.16,.16);},90);},
+         node:function(){[659,880,1175].forEach(function(f,i){setTimeout(function(){t(f,'sine',.1,.14);},i*60);});},
+         crit:function(){t(1200,'sawtooth',.5,.2,300);}},
+      C:{msg:function(){t(587,'sine',.22,.15);setTimeout(function(){t(880,'sine',.26,.13);},130);},
+         node:function(){t(740,'sine',.5,.16,1480);},
+         crit:function(){t(330,'sine',.4,.2);setTimeout(function(){t(247,'sine',.5,.2);},300);}},
+      D:{msg:function(){t(147,'sine',.5,.18);setTimeout(function(){t(110,'sine',.6,.16);},180);},
+         node:function(){t(98,'sine',.35,.16);},
+         crit:function(){t(65,'sine',1.0,.22);setTimeout(function(){t(55,'sine',1.2,.22);},420);}},
+      E:{msg:function(){t(880,'square',.07,.12);setTimeout(function(){t(1320,'square',.09,.12);},80);},
+         node:function(){[988,1319,1760].forEach(function(f,i){setTimeout(function(){t(f,'triangle',.07,.12);},i*55);});},
+         crit:function(){[1568,784,1568,784].forEach(function(f,i){setTimeout(function(){t(f,'square',.09,.16);},i*110);});}},
+      F:{msg:function(){t(1046,'square',.05,.1);setTimeout(function(){t(1046,'square',.05,.1);},90);},
+         node:function(){t(660,'sawtooth',.06,.1);},
+         crit:function(){t(1760,'sawtooth',.08,.14,400);setTimeout(function(){t(220,'sawtooth',.3,.16);},120);}}
+    };
+    document.querySelectorAll('button[data-kind]').forEach(function(b){
+      b.addEventListener('click',function(){
+        try{P[b.dataset.k][b.dataset.kind]();}catch(e){}
+        if(navigator.vibrate)navigator.vibrate(
+          b.dataset.kind==='crit'?[80,60,80,60,80]:b.dataset.kind==='node'?[20,40,20]:[35]);
+      });
+    });
+  }catch(e){/* audio optional */}
+})();
+</script>
+</body>
+</html>
