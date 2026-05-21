@@ -9,8 +9,7 @@ Offline-first, theme-driven, with a hyperlocal radar grid, per-channel chat,
 > **Status — in development.** Source is here for review and contribution;
 > there's no public release channel yet. 125 widget/unit tests passing,
 > `flutter analyze` clean on Android + iOS Dart paths. Android FGS path
-> for R17 is implemented but **unverified on-device** in our sandbox —
-> see `/Users/dkords/.claude/...` memory or open issues.
+> for R17 is implemented but **unverified on-device** in our sandbox
 
 ---
 
