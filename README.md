@@ -1,6 +1,6 @@
 # Overview
 
-OfflineSNS is the local Meshtastic Community in Fukuoka Japan.
+OfflineSNS is the local Meshtastic+Meshcore Community in Fukuoka Japan.
 
 ## Mission Statement
 
