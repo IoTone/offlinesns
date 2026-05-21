@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="2280" viewBox="0 0 1080 2280">
+<defs><linearGradient id="sseele" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#0E0E0C"/>
+<stop offset="1" stop-color="#000000"/></linearGradient></defs>
+<rect width="1080" height="2280" fill="url(#sseele)"/>
+<g transform="translate(284 760) scale(1.0)">
+<rect x="243" y="60" width="26" height="392" fill="#EDE6D6" fill-opacity=".10"/><rect x="40" y="40" width="432" height="432" fill="none" stroke="#EDE6D6" stroke-opacity=".35" stroke-width="3"/>
+<circle cx="256" cy="256" r="168" fill="none" stroke="#EDE6D6" stroke-opacity="0.22" stroke-width="3"/>
+<circle cx="256" cy="256" r="124" fill="none" stroke="#EDE6D6" stroke-opacity="0.35" stroke-width="3"/>
+<line x1="256" y1="256" x2="256" y2="96" stroke="#EDE6D6" stroke-opacity=".55" stroke-width="6"/>
+<line x1="256" y1="256" x2="114" y2="338" stroke="#EDE6D6" stroke-opacity=".55" stroke-width="6"/>
+<line x1="256" y1="256" x2="398" y2="338" stroke="#EDE6D6" stroke-opacity=".55" stroke-width="6"/>
+<circle cx="256" cy="96" r="22" fill="#000000" stroke="#EDE6D6" stroke-width="6"/>
+<circle cx="114" cy="338" r="22" fill="#000000" stroke="#EDE6D6" stroke-width="6"/>
+<circle cx="398" cy="338" r="22" fill="#000000" stroke="#EDE6D6" stroke-width="6"/>
+<polygon points="256,178 334,256 256,334 178,256" fill="#EDE6D6"/>
+<polygon points="256,216 296,256 256,296 216,256" fill="#000000"/>
+<circle cx="256" cy="256" r="15" fill="#C8102E"/>
+</g>
+<text x="540" y="1500" text-anchor="middle" fill="#EDE6D6" font-family="Menlo,Consolas,monospace" font-size="78" letter-spacing="14">MESHMORE</text>
+<text x="540" y="1576" text-anchor="middle" fill="#EDE6D6" font-family="Menlo,Consolas,monospace" font-size="40" letter-spacing="26">S N S</text>
+<text x="540" y="2160" text-anchor="middle" fill="#EDE6D6" fill-opacity="0.5" font-family="Menlo,Consolas,monospace" font-size="30" letter-spacing="8">SEELE MONOLITH</text>
+</svg>

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="2280" viewBox="0 0 1080 2280">
+<defs><linearGradient id="shyperlocal" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#161B26"/>
+<stop offset="1" stop-color="#0B0F17"/></linearGradient></defs>
+<rect width="1080" height="2280" fill="url(#shyperlocal)"/>
+<g transform="translate(284 760) scale(1.0)">
+<line x1="96" y1="40" x2="96" y2="472" stroke="#263041" stroke-width="2"/><line x1="40" y1="96" x2="472" y2="96" stroke="#263041" stroke-width="2"/><line x1="176" y1="40" x2="176" y2="472" stroke="#263041" stroke-width="2"/><line x1="40" y1="176" x2="472" y2="176" stroke="#263041" stroke-width="2"/><line x1="336" y1="40" x2="336" y2="472" stroke="#263041" stroke-width="2"/><line x1="40" y1="336" x2="472" y2="336" stroke="#263041" stroke-width="2"/><line x1="416" y1="40" x2="416" y2="472" stroke="#263041" stroke-width="2"/><line x1="40" y1="416" x2="472" y2="416" stroke="#263041" stroke-width="2"/><circle cx="256" cy="256" r="210" fill="none" stroke="#7CFF6B" stroke-opacity=".5" stroke-width="3" stroke-dasharray="10 12"/>
+<circle cx="256" cy="256" r="168" fill="none" stroke="#35E0F0" stroke-opacity="0.22" stroke-width="3"/>
+<circle cx="256" cy="256" r="124" fill="none" stroke="#35E0F0" stroke-opacity="0.35" stroke-width="3"/>
+<line x1="256" y1="256" x2="256" y2="96" stroke="#35E0F0" stroke-opacity=".55" stroke-width="6"/>
+<line x1="256" y1="256" x2="114" y2="338" stroke="#35E0F0" stroke-opacity=".55" stroke-width="6"/>
+<line x1="256" y1="256" x2="398" y2="338" stroke="#35E0F0" stroke-opacity=".55" stroke-width="6"/>
+<circle cx="256" cy="96" r="22" fill="#0B0F17" stroke="#35E0F0" stroke-width="6"/>
+<circle cx="114" cy="338" r="22" fill="#0B0F17" stroke="#35E0F0" stroke-width="6"/>
+<circle cx="398" cy="338" r="22" fill="#0B0F17" stroke="#35E0F0" stroke-width="6"/>
+<polygon points="256,178 334,256 256,334 178,256" fill="#35E0F0"/>
+<polygon points="256,216 296,256 256,296 216,256" fill="#0B0F17"/>
+<circle cx="256" cy="256" r="15" fill="#7CFF6B"/>
+</g>
+<text x="540" y="1500" text-anchor="middle" fill="#DDE7EF" font-family="Menlo,Consolas,monospace" font-size="78" letter-spacing="14">MESHMORE</text>
+<text x="540" y="1576" text-anchor="middle" fill="#35E0F0" font-family="Menlo,Consolas,monospace" font-size="40" letter-spacing="26">S N S</text>
+<text x="540" y="2160" text-anchor="middle" fill="#DDE7EF" fill-opacity="0.5" font-family="Menlo,Consolas,monospace" font-size="30" letter-spacing="8">HYPERLOCAL FIELD</text>
+</svg>

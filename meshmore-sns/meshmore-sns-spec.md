@@ -47,6 +47,309 @@ While Meshcore protocol is open source, the client is not open source.  We want 
   scale, audio-alert and accessibility preferences; settings persist
   per user/profile. Reached from Settings (Device configuration,
   App settings, Profile & personalization sub-screens).
+- R15: app lets the user **set the LoRa region** for their country
+  from a list of community/regulatory presets (each carrying
+  frequency, bandwidth, spreading factor, coding rate and a TX-power
+  hint), with a **Custom** option for full manual entry (subsumes
+  the radio side of R7). Presets only ship values that can be cited;
+  the UI states that the user is responsible for legality in their
+  jurisdiction and that **every node on a mesh must use identical
+  radio params**. Regions supported at minimum:
+  - **US** 902–928 MHz (915.0 MHz; ≤30 dBm, 100% duty)
+  - **EU 868** 869.4–869.65 MHz (869.525 MHz; ≤27 dBm, 10% duty)
+  - **Japan / ARIB STD-T108** — 920.8 MHz · BW 125 kHz · SF 12 ·
+    CR 4/8 · TX ≤ 13 dBm. Band 920.5–923.5 MHz; 920.8 MHz sits in
+    the 920.6–922.2 MHz zone (carrier-sense/LBT ≥ 5 ms, 4 s max
+    single TX, no hourly duty cap, 50 ms post-TX pause). SF12/BW125
+    is the field-validated setting for urban JP RF noise (SF7/SF9
+    failed in Akihabara testing). Source: MeshCore issue
+    [#460](https://github.com/meshcore-dev/MeshCore/issues/460#issuecomment-4080531481)
+    (@jirogit, 2026-03-18). **Note:** ARIB mandates LBT; MeshCore's
+    `int.thresh` defaults to 0 (disabled) — full JP compliance also
+    needs a non-zero carrier-sense threshold in firmware
+    (upstream-tracked, JP_STRICT mode #2079); the app preset alone
+    is not sufficient for regulatory compliance and the UI must say
+    so.
+- R16: app **displays the connected device's battery level** (from
+  `CMD_GET_BATTERY` 0x14 → `RESP_CODE_BATT_AND_STORAGE` 0x0C,
+  `batt_mv`), shown on the Dashboard and the radio-link/Diagnostics
+  area, polled periodically while connected and refreshed on
+  reconnect. Show a **charging** indicator when charging.
+  *Protocol caveat:* the pinned companion firmware
+  (`companion-v1.15.0`) `BATT_AND_STORAGE` frame carries only
+  battery millivolts (no explicit charge-state bit). So: always
+  show level (mV → approx %/voltage); show "charging" only when it
+  can be determined (a future firmware charge flag, or a
+  conservative rising-voltage heuristic) — never display a false
+  charging state. Absent/again unknown ⇒ show level only.
+- R17: app **does not lose messages while backgrounded or
+  screen-locked** (the normal state for these apps). Baseline =
+  **eventual-delivery guarantee**, not live background reception:
+  the MeshCore radio buffers inbound messages while the companion
+  app is suspended/disconnected; on next foreground/startup the app
+  **auto-reconnects, drains the device queue (`SYNC_NEXT_MESSAGE`
+  until `NO_MORE`), and the chat is locally persisted** — so
+  messages received while backgrounded appear on reconnect and
+  survive restarts. Already substantially satisfied (auto-reconnect,
+  SYNC drain on ready, `ChatStore`) + an **app-lifecycle observer**
+  that ensures-connected + drains on resume/foreground.
+  **Android needs a special solution** (decided): under Doze /
+  background limits the link is killed and the device buffer can
+  overflow over a long lock, so Android requires a **foreground
+  service** (or equivalent periodic background work) that keeps /
+  periodically re-establishes the link and drains the queue so the
+  eventual-delivery guarantee actually holds. This **requires a
+  persistent notification** (accepted as the cost). iOS: relies on
+  reconnect-on-foreground (OS-driven); `bluetooth-central` is a
+  later optional add. **Still a non-goal:** real-time per-message
+  push/UI while locked — the Android service does *periodic
+  background drain*, not live delivery. Net contract remains
+  *eventual delivery*, just made reliable on Android.
+- R18: app provides a **hyperlocal grid visual-notification
+  system** — a grid representing the area within MeshCore's
+  theoretical practical range, our node as the reference. Nodes /
+  message events register at a position **relative to us** using
+  **hybrid positioning**: advert GPS lat/lon → true bearing +
+  distance when available; else signal strength (RSSI/SNR) →
+  distance ring with a stable arbitrary bearing; else an abstract
+  slot. **Recency → brightness:** 100% = just registered, decaying
+  to 0% at >24 h, after which it is removed (no longer visible).
+  **Colour is not semantic** — taken from the active theme palette
+  (R14); per R13 all information is carried by brightness /
+  animation / position, never colour alone. **Audible** cue is the
+  theme's pack (R12) with visual+haptic parity (R13), honouring
+  reduce-motion (a non-animated fallback). **Animation semantics:**
+  a *known* node → **pulses**; a node favourited as a contact →
+  **blinks rapidly**. **"Known" = a node that has communicated
+  directly/attributably to us** (e.g. a received DM, or one we've
+  directly exchanged with) — strictly node/comms-level, **not**
+  knowledge of the human(s), and **not** conferred by anonymous
+  channel/Public traffic (clarified by user 2026-05-19). *Resolved
+  sub-decisions:* geometry = **radial range-rings** (rings =
+  distance, angle = bearing or stable per-pubkey hash); outer-range
+  scale **derived from live radio params (SF/BW/freq), nominal
+  fallback**; **anonymous channel/Public messages → a generic
+  non-attributed ripple** (centre/ring), never mark a node known or
+  place it. *Dependency:* a persisted **favourite-contact** flag
+  (new, small). This is the concrete realisation of F2 (reframes
+  F1). Depends on the R12 CueService (U6).
+- R19: app uses a **standard back-button pattern**: Back always
+  navigates **up the navigation stack to where it came from**, never
+  pops the root unexpectedly nor destroys context the user expects
+  to return to. Specifically: a pushed sub-screen (Settings sub-
+  pages, dialogs, sheets) returns to its parent; from a non-
+  Dashboard tab in the HomeShell Back returns to the Dashboard
+  first; from the Dashboard Back lets the OS background the app
+  gracefully (no in-app root pop). Dialogs and bottom sheets
+  dismiss on back / tap-outside. Already substantially in place
+  (PopScope on HomeShell `e83f0ba`; go_router push for sub-routes;
+  Material AppBar back buttons auto-supplied) — R19 codifies and
+  *guards* the pattern.
+- R20: chat messages (channel and DM) support per-message **Reply**,
+  **Copy** and **Delete** via long-press (and accessible
+  equivalent — e.g. context menu key / a trailing overflow). Reply
+  inserts a quoted prefix in the composer that references the
+  source line (MeshCore has no thread semantics — quote is the
+  carrier, optionally prefixed by the sender's `shortId`). Copy
+  puts the message text on the clipboard. Delete removes the
+  message **from the local history only** — the MeshCore companion
+  protocol has no recall/unsend (over-the-air messages cannot be
+  retracted); the UI must say so on the destructive action.
+  Applies in Chat (channel) and DM screens; ChatStore prunes the
+  deleted line and re-persists. Reduce-motion / a11y: the long-
+  press menu is also reachable via a per-row trailing affordance
+  for users who can't long-press reliably.
+- R21: the app **handles permissions appropriately at install /
+  first use**, never blocks **offline** use (viewing history,
+  settings, the grid replaying local fabric, etc.), and degrades
+  gracefully when a permission is denied. Specifically:
+  - **Declared in platform manifests** at install (Android
+    `BLUETOOTH_SCAN` / `BLUETOOTH_CONNECT` / `POST_NOTIFICATIONS`
+    + `FOREGROUND_SERVICE`(`_CONNECTED_DEVICE`) / pre-12
+    `BLUETOOTH`/`ACCESS_FINE_LOCATION`; iOS
+    `NSBluetoothAlwaysUsageDescription`).
+  - **First-run intro** explains the small set required (BLE +
+    notifications) and **proactively requests** them via
+    `permission_handler` — the user may **decline / skip** and
+    still use the app for offline browsing.
+  - **Per-action just-in-time prompts** re-request a denied
+    permission only when the action that needs it is invoked
+    (Connect, Scan, Advertise, Stay-connected toggle); a denial
+    surfaces a clear "open settings to enable" path.
+  - **Offline mode is first-class**: connection-state =
+    disconnected is a normal state, every screen renders, history
+    is from `ChatStore` + `KnownStore` + `FavoriteStore`. Refuses
+    only the *connection-requiring* commands until granted.
+  - Notification permission (Android 13+) is requested **only when
+    the user toggles "Stay connected in background" on** (or the
+    app first elects to show a system notification), not at
+    install — keeps the first-run experience clean for users who
+    decline background mode.
+- R22: app can **set the connected device's advertised location**
+  from either of two explicit sources, and never silently:
+  - (a) the **phone's current GPS**, as a **one-shot fix** — no
+    continuous tracking, no background usage; the fix is captured
+    only when the user invokes it from Device config →
+    Identity/Advert → **"Use phone location"** and is then offered
+    for review before transmission.
+  - (b) the **connected MeshCore device's own reported location**
+    (`SelfInfo.latitude` / `longitude`), via an explicit **"Read
+    device location"** affordance (and the existing pre-fill on
+    Identity/Advert load).
+  Setting the lat/lon field does **NOT** auto-broadcast; the user
+  still has to tap **"Set advert location"** (`SET_ADVERT_LATLON`)
+  to push it on the next advert. Adds platform permissions
+  (Android `ACCESS_FINE_LOCATION`, iOS
+  `NSLocationWhenInUseUsageDescription`); requested **just-in-time**
+  on first "Use phone location" tap, never at install (per R21).
+  Improves R18's hybrid positioning — once our own lat/lon is
+  known, the grid switches from RSSI-rings to GPS bearing+distance
+  for peers that also advertise a location.
+- R23: the **RAW FRAME LOG** on the Diagnostics screen lives in
+  its **own bounded scroll view** (not the page's main scroll),
+  so the user can scroll the frame log without losing the State /
+  Sends / Channel-tail oracle / capture-export context above it.
+  Currently the whole Diagnostics screen is one `ListView`; the
+  frame log section should become a fixed-height inner pane with
+  its own scrollbar. Keeps the **Copy log** action's value too —
+  long captures stay browsable in place.
+- R24: **per-channel notification settings** — per-device global
+  toggles are not granular enough. Each channel slot gets its own
+  set of notification overrides for the cues that apply to its
+  traffic, layered on top of the global R12/R13 settings:
+  - audio cue on/off (overrides `audioMaster` for this channel only)
+  - haptic cue on/off
+  - TTS speak inbound on/off (this exists for channels already via
+    `TtsController.toggleChannelMute` — fold it into the per-channel
+    bundle)
+  - OS system notification on/off (future, when per-channel notifs
+    are wired)
+  Defaults inherit from the global setting; an explicit channel
+  override is persisted. Reached from **Channel management → per-
+  slot Notifications** (and a quick toggle in the Chat header). DMs
+  may later get the same treatment per-peer; out of R24 scope.
+- R25 (future): **reverse-geocoded equal-grid map** — a second map
+  option in the **Hyperlocal grid** picker (the existing radial
+  range-ring view becomes "Hyperlocal grid · radial" / default).
+  This second view is a **true equal-sized-box grid** (think
+  electoral district map) covering the area around our own
+  location. Behaviour:
+  - **Grid cells** are equal-sized rectangles in screen space; the
+    map projection is stretched to fit a rectangular canvas (not a
+    spherical/Mercator render — the goal is comparability between
+    cells, not cartographic accuracy).
+  - **Labelling**: each cell shows the town name when one falls
+    within it; major **POI** are labelled inside cells when they
+    exist. At minimum we mark the town(s) covering the user.
+  - **Node markers** inside each cell roughly preserve the node's
+    geographic position relative to our own device — i.e. cells
+    are aggregator buckets, not bins that randomise position
+    within them.
+  - **Type glyph**: companion-app nodes render as a **dot**;
+    repeater nodes render as a **triangle**.
+  - **Density collapse**: when a cell contains more than ~8 nodes,
+    collapse to a single badge **"• × N"** (or "▲ × N" if all
+    repeaters; mixed cells fall back to "• × N") so the view
+    doesn't choke. Tapping the badge expands an inline list.
+  - **Selectable nodes** (same model as the radial grid, R18) —
+    tap to open the NodeDetailSheet with the per-node actions.
+  - **Offline-first**: map tiles load **opportunistically in the
+    background and are cached on disk**. Two candidate sources —
+    (a) OpenStreetMap raster tiles (well-known licence; needs
+    attribution), or (b) a custom minimal tile DB built from
+    public data sources (Natural Earth, GeoNames) for towns/POI
+    + coastline/admin boundaries. (a) is cheapest to ship; (b)
+    is the most ideologically aligned and avoids the live OSM
+    dependency. Decision deferred.
+  - **Online detection** drives prefetch — when connected to
+    Wi-Fi/cellular we pre-pull tiles for the area surrounding
+    our last-known own location and a ring of N km out. Offline
+    use degrades gracefully: cells without tiles show plain
+    background + labels; node markers + selection still work.
+  Listed here as a **forward-looking requirement**; not yet
+  built. The current /grid stays as our default until this lands.
+
+- R26 (future): **XR data streaming via private temp URL**. The
+  app generates a one-off, **not-publicly-listed** share URL via a
+  short-lived reverse-proxy in the cloud. An XR headset opens that
+  URL and renders MeshCore **symbology** overlaid in world space,
+  using the connected device's GPS (or the phone's GPS) for our
+  own pose and the live fabric data for surrounding nodes. URL is
+  per-session, capability-token gated, expires fast (minutes), and
+  carries only what's needed for the render (positions, types,
+  status, callsigns), never PII or unrelated app state. The XR
+  surface is the natural place to *use* topological info
+  (latitude / longitude / **altitude** if the protocol publishes
+  it later) — adverts already carry lat/lon; altitude is a
+  forward-looking extension.
+- R27 (future): **Macro-globe view via Globe.GL**. A third map
+  view (after the radial /grid and R25 equal-grid map) that
+  pins our position and the fabric on a **3-D globe**, using
+  [Globe.GL](https://globe.gl/) (Three.js wrapper) inside a
+  **WebView** component. The earth tile-set is pre-cached at a
+  **very macro scale** so the globe spins offline with a useful
+  basemap. Triangulation is **purely client-side math** — we know
+  our lat/lon and the node's lat/lon, no server needed; the globe
+  is just the projection surface. Pin styling matches our R18
+  symbology (companion = dot, repeater = triangle, contact/known
+  badges). Use case: confirm a node's geographic position at a
+  glance without needing the OSM tile pipeline that R25 demands.
+
+### Terminology — Fabric vs Contact
+
+- **Fabric** = the set of nodes we have *seen* on the mesh (any
+  advert, RF-log or device-side contact entry). General discovery
+  surface; what the **Nodes** view shows.
+- **Contact (UX sense)** = a fabric node the **user has explicitly
+  favourited** — a relationship the user keeps. (The protocol-level
+  `Contact` decode is unchanged; this is purely a UX concept layered
+  on top.) The favourite flag drives R18's *rapid-blink* semantics.
+- "Known" (R18) = a node we have had **direct/attributable
+  communication with** (DM/direct exchange) — orthogonal to fabric
+  vs contact, drives R18's *steady pulse*.
+
+### Design rationale — our reasoning, not derivation
+
+The Fabric / Contact / Known split, the bounded-active-set
+discipline, and the "**projection, not bigger caps**" stance for
+dense areas are **our reasoning from first principles**. They are
+not chosen because MeshCore or Meshtastic chose similar numbers —
+we converge on similar magnitudes for similar physics (human
+attention, flood resilience, sync sanity, notification hygiene),
+but the *model* is ours.
+
+Anchor (field observation, user, 2026-05-19): one day of normal use
+of the original MeshCore iOS / Android app **filled its ~350
+"contacts" cap from passive advert reception**, with the app
+**over-notifying about the cap being full**. That makes "contact"
+in that app effectively *"anything we've heard"* — a misnomer
+masquerading as a relationship.
+
+Our response is **not** "match the cap" or "raise the cap" — it's
+**rename what the bucket means**:
+
+- **Fabric** = anything seen — bounded loosely, cheap, **no
+  notification cost just for existing**.
+- **Contact** = something the user *explicitly intended* (a
+  favourite — an act of attention) — protected from eviction,
+  surfaced prominently, drives R18's rapid-blink.
+- **Known** = something with direct/attributable comms (a DM) — a
+  separate, evidence-based axis, drives R18's pulse.
+
+The numeric ceilings the build lands at (active ≈ device's
+`maxContacts`; history ≈ 2 000 LRU, see task #36) are pragmatic
+projections derived **for our scenarios** (single-radio, mostly
+moderate density, occasional dense event), independently of what
+other apps do — they may have chosen similar bounds, but our
+*reasons* are the failure modes listed under task #36
+(notification spam, sync semantics, flood-displacement of
+favourites, write churn, UI saturation), not "compatibility."
+
+The interesting *difference* from the official apps is the split
+itself: they conflate "anything heard" with "contact"; we don't.
+This means the user's first time-cost — paying attention to who
+they actually care about — never gets washed out by passive
+advert traffic.
 
 ## Meshcore Protocol Implementation Plan
 
@@ -345,6 +648,130 @@ on-device behaviour and the offline conformance vectors stay aligned.
   a public-PSK cross-source KAT; reworked `resolveChannelTail`
   (`channelHashOk` tail-independent, MAC disambiguates). meshcore
   113 + 1 skipped; app 30. analyze clean.
+- **Discovery fix** (submodule commit `006fb9f`): on-hardware report
+  "can't discover the other node" — frames arrive but Nodes stays
+  empty, radios on identical params. Root cause: the companion
+  firmware queues heard contacts/adverts **and received messages**
+  and signals via `PUSH_CODE_MSGS_WAITING` (0x83); the app must
+  drain with `CMD_SYNC_NEXT_MESSAGE` (0x0A) until
+  `NO_MORE_MESSAGES`. The app did neither (0x83 → UnsupportedFrame,
+  no SYNC). Added `MessagesWaitingFrame` decode + a controller SYNC
+  drain loop (on 0x83, on ready, after `scan()`; 512-step guard).
+  This also unblocks U3 inbound chat on real hardware. meshcore 118
+  + 1 skipped; app 56. analyze clean. **TC1/TC3/TC4 on-device
+  retest recommended now that the queue is drained.**
+- **Discovery is advert-driven** (submodule commit `bb2d3cf`):
+  follow-up — on hardware, Public chat worked (send+receive) but
+  Nodes stayed empty. Not a bug: MeshCore only creates a
+  node/contact from a heard **advert**; channel/Public traffic
+  never does, and the other node had never advertised. Discovery is
+  bilateral. Nodes screen reworded (advert-driven empty state) and a
+  distinct **Advertise** button (`SEND_SELF_ADVERT`) added next to
+  Scan. 57 app tests; analyze clean. No protocol change.
+- **"In range" clock fixes** (submodule commits `58f505c`,
+  `37be563`): adjacent devices showed "1 known, 0 in range".
+  Two causes, both clock-skew: (a) live adverts (0x80/0x88) used
+  the sender's embedded timestamp — fixed to local receive time;
+  (b) the dominant `GET_CONTACTS` path uses the device-clock
+  `lastAdvertTimestamp` and the app never set the device clock
+  (no RTC). Fix: `SET_DEVICE_TIME` = phone now on ready (also
+  corrects message ordering). Caveat: pre-existing on-device
+  contacts stay stale until the neighbour is re-heard post-sync.
+  Also added **R16** (display connected-device battery + charging,
+  with the mV-only protocol caveat). 59 app tests; analyze clean.
+- **Clock/ERR hardening** (`a599d0c`): firmware rejects
+  `SET_DEVICE_TIME` (`ErrorFrame 0106`); now also `GET_DEVICE_TIME`
+  → device-clock offset translates contact `lastAdvertTimestamp`
+  (in-range correct even when SET is refused; race-safe re-derive);
+  ERR frames surface in recent activity. On-device frame log
+  confirmed the peer (`C8DDE2F9AB60`) decodes & ingests. Added a
+  Diagnostics **Copy log** button (`098d017`). 64 tests.
+- **Feature batch** (`3a53e01` advert routing, `c8fcce9` R16
+  battery, `54f5253` channels): Advertise flood/zero-hop chooser;
+  R16 battery wired (GET_BATTERY poll + Dashboard/Diagnostics +
+  conservative charging heuristic); **Channel management**
+  (/settings/channels: slots, set-active, name+PSK via
+  Public/#hashtag/hex → SET_CHANNEL/GET_CHANNEL). Logo set to
+  concept E · DR Pop (`465de74`); back-button crash fixed
+  (`e83f0ba`). 71 app tests; analyze clean. Future **F2** (map
+  alternatives) / **F3** (AI integrations) flagged to revisit.
+- **Device-config build-out** (submodule commit `1a92509`):
+  IDENTITY/ADVERT (SET_ADVERT_NAME 0x08, SET_ADVERT_LATLON 0x0E
+  prefilled from SelfInfo), DEVICE info (DEVICE_QUERY 0x16 →
+  DeviceInfo read-only) + read-only OTHER PARAMS view, Channels row
+  links to /settings/channels. Identity/advert helpers on
+  controller. 74 app tests.
+- **U8 pt1 — lifecycle resume (R17)** (submodule `8f32eb0`):
+  `MeshcoreController.onAppResumed()` (ready→drain; paired+dropped
+  →reconnect; respects manual/connecting) + HomeShell
+  `WidgetsBindingObserver`. Cross-platform half of R17's
+  eventual-delivery guarantee. 84 app tests.
+- **U8 pt2 — Android foreground service (R17)** (submodule
+  `a7b552f`): `BackgroundKeepalive` abstraction (Noop default +
+  Android `ForegroundServiceKeepalive` via `flutter_foreground_task`
+  9.2.2, FGS type `connectedDevice` — avoids the Android-15
+  dataSync timeout) so the link survives Doze; opt-in default-on
+  via `BackgroundKeepalivePrefs` + App-settings switch; manifest
+  permissions + service decl; isolated so a native misconfig can't
+  regress other platforms. 87 app tests. **Native UNVERIFIED in
+  sandbox** (Android can't build here) — needs clean rebuild +
+  on-device screen-locked test.
+- **Favourite-contact flag + terminology + R19 + F8** (`8bf10cc`):
+  `FavoriteStore` (shared_preferences pubkey-hex set), controller
+  toggle/load/persist, Nodes-screen star (outlined→filled),
+  favourites sort to top, status copy "X in fabric · Z contact(s)".
+  Unblocks R18 rapid-blink. **Added R19** (back-button pattern —
+  existing PopScope + go_router push already conform; codified to
+  guard the pattern). **Terminology** (Fabric = seen; Contact UX =
+  favourited; Known R18 = direct/attributable comms). **F8**
+  (fabric survey grid for planning) flagged. 92 app tests.
+- **U9 — hyperlocal grid (R18), visual first cut** (`1070de5`):
+  radial range-rings + hybrid GPS→RSSI→stable-hash positioning,
+  24h recency brightness, pulse=known, rapid-blink=favourite,
+  reduce-motion fallback, theme-driven colour, `/grid` route +
+  Nodes-screen entry. New `KnownStore` (persisted) + DM-prefix
+  marks known. 98 app tests. Deferred: live-radio-params outer
+  scale; channel ripple (added next via U6).
+- **U6 — CueService (R12/R13) + grid channel ripple**
+  (`cc8e851`): `CueService` + pluggable `AudioPack` /
+  `HapticBackend` (defaults `SystemSound` + `HapticFeedback`,
+  asset-free); `CueBridge` wires `MeshcoreController` → cues
+  (state transitions + incomingChannelMessages); grid renders R18's
+  **anonymous-channel ripple** (transient centre-out wave). Gates:
+  audio = `audioMaster && !visualHapticOnly`; haptic always (OS
+  honours silent). 103 app tests. Per-theme audio assets
+  (Mission Control / Velocity / Sonar / Tribunal / Pure Phase /
+  Codec) deferred — abstraction is plug-in-ready.
+- **P2P direct messages + chat→channels shortcut** (`34fc0c4`):
+  `ChatMessage.peerPubKeyHex`; controller `sendDirectText`
+  (CMD_SEND_TXT_MSG 0x02, 6-byte prefix), `_ingestDm` (prefix→
+  pubkey resolution, broadcast stream), `dmHistoryFor`; new
+  `DmScreen` at `/dm/:pubkey` reached by tapping a node row;
+  `CueBridge` fires `dmIn`. Chat header gains a "Manage channels"
+  icon for discoverability (channel mgmt was wired but invisible
+  from chat context). 107 app tests; analyze clean.
+- **Brief refresh** (parent docs, separate from submodule): the
+  UX brief now embeds a **per-theme rendering plan** (R18 grid +
+  U6 cues + R13 haptic parity) for all 6 concepts, generated
+  idempotently from `brand/_render_plan.py`.
+- **Test gotcha discovered & recorded**: `Future.delayed` inside
+  `testWidgets` hangs (binding's fake clock advances only via
+  `pump()`); pattern = pumpWidget → connect/emit → `pump()`.
+  Memorialised in `flutter-build-test-gotchas`.
+- **Design rationale captured — Fabric / Contact / Known split**:
+  spec gains a *Design rationale* sub-block under Terminology
+  asserting the split is **our reasoning from first principles**
+  (notification spam, sync semantics, flood-displacement of
+  favourites, write churn, UI saturation), **not derived** from
+  the official MeshCore / Meshtastic apps. Anchor: one day of
+  ambient use of the official MeshCore app filled its ~350-contact
+  cap from passive adverts and over-notified about being full —
+  the "contact" bucket there means *"anything heard"*, not
+  *"a relationship"*. Our response is to **rename the bucket**
+  (Fabric for seen, Contact only for favourited, Known for direct
+  comms) rather than match or raise their cap. Detailed dense-area
+  polish design captured in task #36 (R18 density filters,
+  clustering, ripple cap, FabricStore LRU → F8 fabric survey).
 
 ### Open crypto items
 
@@ -393,7 +820,52 @@ Commit hashes refer to the `meshmore-sns` branch of the
 
 ## Future
 
-- F1: Live map
+- F1: Live map — likely reframed/superseded by R18's hyperlocal grid.
+- F2: **Alternatives to maps for hyperlocal discovery** — now
+  **concretely specified as R18** (hyperlocal grid, hybrid
+  positioning). F2 is satisfied by R18; this entry stays as the
+  umbrella for any *further* non-map discovery ideas.
+- F3: **AI features for integrations** — the user has ideas for AI
+  integrations (revisit; details TBD from user). Scope, on/offline
+  boundary, and privacy posture to be defined before any design.
+- F4: **Battery analysis graph** — a one-line current-usage trace
+  plus an estimated remaining-life projection from the observed
+  usage pattern. Backed by an internal **known-LoRa-device
+  database** encoded in IoTone *Universal Device Metadata*
+  (https://github.com/IoTone/IoToneSpec_UniversalDeviceMetadata/blob/master/IOTONE_SPEC_1.md);
+  hosted in-app for now, semicomplete specs generated from
+  datasheets, external generation tooling formalised later by the
+  user. **Reference device available: Seeed SenseCAP T1000-E.**
+  (Builds on R16 battery polling.)
+- F5: **"Partyline"** — the app exposes a BLE characteristic that
+  external devices can read/write to queue send/receive on the
+  currently selected channel, bridging through the phone's
+  connected MeshCore radio. Explore later.
+- F6: **TCP/WiFi companion transport** — connect to a WiFi-capable
+  MeshCore node over the binary companion protocol on TCP
+  (default port 4403), as an alternative to BLE. The companion
+  protocol is transport-agnostic and `MeshcoreTransport` already
+  isolates the carrier, so this is a `TcpMeshcoreTransport`
+  alongside `BleMeshcoreTransport` — no codec/controller changes.
+  **TCP is not required by the protocol; BLE-only is fully
+  conformant.** Official-app parity for WiFi nodes.
+- F7: **MQTT bridge interop** — optional **online** capability:
+  consume/publish mesh traffic via an MQTT broker (the ecosystem's
+  live-map / Home-Assistant / dashboard pattern; done by
+  gateways/bridges, not the companion app itself). Explicitly at
+  odds with the offline-first core — keep clearly separated and
+  opt-in. Explore later.
+- F8: **Fabric survey grid** — a planning view that renders the
+  mesh **fabric** (nodes seen + observed connectivity) as either a
+  *solid grid* (good coverage) or *patchwork with holes* (gaps);
+  surfaces true network viability/connectivity, which the official
+  app's map view does not. Distinct from R18's notification grid
+  (event-driven, recency-decayed): F8 is *coverage-survey* —
+  aggregates observed adverts/SNR/RSSI/hops over time. Builds on
+  R18's positioning primitives + the F4 device DB. Explore later.
+
+> F2–F8 are **flagged to revisit**, not specified yet — capture
+> intent now, design later once the user details them.
  
 ## Test
 
@@ -411,4 +883,9 @@ configuration* (Flutter Android + Seeed T1000-E nodes on MeshCore).
   acknowledged against a real device. (M2/M3/M6)
 - TC4: Can handle encrypted and unencrypted data — public/unencrypted and
   channel/DM-encrypted payloads round-trip correctly. (M2/M3/M4/M6)
-- TBD
+- TC5: (Manual test) Verify app detects disconnect when device is offline
+  — ✅ **PASSED on hardware 2026-05-17** (user-verified; reconnect
+  latency very low, worked well)
+- TC6: (Manual test) Verify app detects reconnect when device is back online
+  — ✅ **PASSED on hardware 2026-05-17** (user-verified; very low
+  latency)

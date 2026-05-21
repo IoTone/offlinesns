@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="2280" viewBox="0 0 1080 2280">
+<defs><linearGradient id="saghud" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#10131F"/>
+<stop offset="1" stop-color="#05060B"/></linearGradient></defs>
+<rect width="1080" height="2280" fill="url(#saghud)"/>
+<g transform="translate(284 760) scale(1.0)">
+<path d="M120,150 L256,80 L392,150" fill="none" stroke="#22D3EE" stroke-opacity="0.55" stroke-width="10" stroke-linecap="round"/><path d="M120,362 L256,432 L392,362" fill="none" stroke="#22D3EE" stroke-opacity="0.55" stroke-width="10" stroke-linecap="round"/><path d="M154,150 L256,80 L358,150" fill="none" stroke="#22D3EE" stroke-opacity="0.35" stroke-width="10" stroke-linecap="round"/><path d="M154,362 L256,432 L358,362" fill="none" stroke="#22D3EE" stroke-opacity="0.35" stroke-width="10" stroke-linecap="round"/><path d="M188,150 L256,80 L324,150" fill="none" stroke="#22D3EE" stroke-opacity="0.18" stroke-width="10" stroke-linecap="round"/><path d="M188,362 L256,432 L324,362" fill="none" stroke="#22D3EE" stroke-opacity="0.18" stroke-width="10" stroke-linecap="round"/>
+<circle cx="256" cy="256" r="168" fill="none" stroke="#22D3EE" stroke-opacity="0.22" stroke-width="3"/>
+<circle cx="256" cy="256" r="124" fill="none" stroke="#22D3EE" stroke-opacity="0.35" stroke-width="3"/>
+<line x1="256" y1="256" x2="256" y2="96" stroke="#22D3EE" stroke-opacity=".55" stroke-width="6"/>
+<line x1="256" y1="256" x2="114" y2="338" stroke="#22D3EE" stroke-opacity=".55" stroke-width="6"/>
+<line x1="256" y1="256" x2="398" y2="338" stroke="#22D3EE" stroke-opacity=".55" stroke-width="6"/>
+<circle cx="256" cy="96" r="22" fill="#05060B" stroke="#22D3EE" stroke-width="6"/>
+<circle cx="114" cy="338" r="22" fill="#05060B" stroke="#22D3EE" stroke-width="6"/>
+<circle cx="398" cy="338" r="22" fill="#05060B" stroke="#22D3EE" stroke-width="6"/>
+<polygon points="256,178 334,256 256,334 178,256" fill="#22D3EE"/>
+<polygon points="256,216 296,256 256,296 216,256" fill="#05060B"/>
+<circle cx="256" cy="256" r="15" fill="#FF2D78"/>
+</g>
+<text x="540" y="1500" text-anchor="middle" fill="#DDF6FF" font-family="Menlo,Consolas,monospace" font-size="78" letter-spacing="14">MESHMORE</text>
+<text x="540" y="1576" text-anchor="middle" fill="#22D3EE" font-family="Menlo,Consolas,monospace" font-size="40" letter-spacing="26">S N S</text>
+<text x="540" y="2160" text-anchor="middle" fill="#DDF6FF" fill-opacity="0.5" font-family="Menlo,Consolas,monospace" font-size="30" letter-spacing="8">AG-HUD</text>
+</svg>

@@ -371,6 +371,107 @@ phosphor, map-first, power-frugal, dark-adapted.
 
 ---
 
+## Per-theme rendering plan (R18 grid · U6 cues · R13 haptic parity)
+
+How the in-app hyperlocal grid (R18 / U9) and the CueService event
+cues (R12 / U6) render per theme. Same code paths; theme drives
+visuals, palette, and audio pack. Defaults ship now (built-in
+`SystemSound` + `HapticFeedback`); per-theme audio assets are a
+later authoring step.
+
+> Discipline: **colour is never the sole channel of information**
+> (R13). Brightness encodes recency (R18); position encodes who;
+> animation distinguishes "known" (pulse) from "contact" (rapid
+> blink); a haptic always accompanies an audible cue. Reduce-motion
+> replaces flashes with static badges/ring overlays.
+
+### A · NERV Terminal
+
+- **Audible pack:** **Mission Control**
+- **Grid (R18):** Orange phosphor markers on deep blue; rings drawn as thin orange brackets with NERV-style corner ticks; range labels in mono. Self = orange diamond. Pulse = mechanical "BIP" ring overlay at ~0.7 Hz. Rapid-blink = scan-bar sweeps across the marker. Anonymous-channel ripple = one hard orange sweep.
+- **Audible cues:**
+- `messageIn` (channel message): short intercom click
+- `dmIn` (DM): double pip (priority)
+- `discovery` (new node): harmonic intercom ping
+- `send` (sent): soft confirm tick
+- `linkUp` (link up): ascending two-tone
+- `linkDown` (link down): descending two-tone
+- `alert` (alert): klaxon stab
+- **Haptic parity (R13):** light on messageIn; medium on linkUp/down; heavy on alert; selection-click on send.
+
+### B · AG-HUD
+
+- **Audible pack:** **Velocity**
+- **Grid (R18):** Cyan markers with neon glow on near-black; rings carry chevron tick marks (Wipeout HUD). Self = cyan chevron. Pulse = halo grow/shrink ~0.7 Hz. Rapid-blink = chevron strobe ~5 Hz. Ripple = velocity-streak from centre, pink-magenta `alt` tail.
+- **Audible cues:**
+- `messageIn` (channel message): bright bleep
+- `dmIn` (DM): lock-on twin tone
+- `discovery` (new node): ping-up arpeggio
+- `send` (sent): arcade confirm
+- `linkUp` (link up): rising whoosh
+- `linkDown` (link down): pitch drop
+- `alert` (alert): filter-sweep alarm
+- **Haptic parity (R13):** light on messageIn; medium on send/discovery; selection-click on linkUp; heavy on alert.
+
+### C · Hyperlocal Field
+
+- **Audible pack:** **Sonar**
+- **Grid (R18):** Teal markers over a faint sub-grid lattice (map vibe); rings styled as range bands. Self = teal crosshair. Pulse = soft glow breathe. Rapid-blink = a small green satellite orbiting the marker (R13 alternative to flash). Ripple = sonar-style two-band wave with green accent.
+- **Audible cues:**
+- `messageIn` (channel message): sonar ping
+- `dmIn` (DM): double ping (closer pitch)
+- `discovery` (new node): sonar sweep
+- `send` (sent): soft chirp
+- `linkUp` (link up): filter-open swell
+- `linkDown` (link down): filter-close fall
+- `alert` (alert): low sonar warble
+- **Haptic parity (R13):** light on most events; selection-click on linkUp/down; medium on alert.
+
+### D · SEELE Monolith
+
+- **Audible pack:** **Tribunal**
+- **Grid (R18):** Austere — cream markers on pure black; thin cream ring strokes, no glow. Self = small cream square. Pulse = severe slow breath ~0.4 Hz. Rapid-blink = a vertical bar slide across the marker (not a flash — R13 high-contrast safer). Ripple = one sharp cream ring with a blood-red accent core. Default theme; sets the discipline.
+- **Audible cues:**
+- `messageIn` (channel message): soft mallet tone
+- `dmIn` (DM): ceremonial double-strike
+- `discovery` (new node): distant chime cluster
+- `send` (sent): high bell
+- `linkUp` (link up): low gong
+- `linkDown` (link down): damped gong
+- `alert` (alert): sub-bass strike
+- **Haptic parity (R13):** light on messageIn; medium on linkUp/down (gavel feel); selection on send; heavy on alert.
+
+### E · DR Pop
+
+- **Audible pack:** **Pure Phase**
+- **Grid (R18):** Magenta markers with lime accents; rings drawn as bold pop bands. Self = magenta blob. Pulse = bouncy halo ~1 Hz. Rapid-blink = halftone strobe (kept gentle for R13). Ripple = alternating magenta + lime band (concept E is the shipped logo).
+- **Audible cues:**
+- `messageIn` (channel message): pop bleep
+- `dmIn` (DM): funky double-blip
+- `discovery` (new node): bouncy ping
+- `send` (sent): snap
+- `linkUp` (link up): ascending arpeggio
+- `linkDown` (link down): descending arpeggio
+- `alert` (alert): punky riser
+- **Haptic parity (R13):** light/selection on most; medium on send; heavy on alert.
+
+### F · Tactical Recon
+
+- **Audible pack:** **Codec**
+- **Grid (R18):** Amber markers on pure black; rings styled as range gates with tick marks. Self = amber reticle. Pulse = slow breathing reticle. Rapid-blink = corner target-lock brackets snapping in. Ripple = radar sweep wedge fading.
+- **Audible cues:**
+- `messageIn` (channel message): comm click
+- `dmIn` (DM): double click (priority traffic)
+- `discovery` (new node): sweep ping
+- `send` (sent): key-up click
+- `linkUp` (link up): squelch-up
+- `linkDown` (link down): squelch-down
+- `alert` (alert): comm-channel alarm
+- **Haptic parity (R13):** selection-click predominant (comm feel); medium on linkUp/down; heavy on alert.
+
+
+> **Grid mockup:** per-theme SVG snapshots of the R18 / U9 hyperlocal grid are embedded in the **HTML** brief (`id="grid-mockup"`); the Markdown is kept text-only for diffing.
+
 ## Configuration & profile screens (shared across all concepts)
 
 These three are **concept-agnostic utility screens** — form/list

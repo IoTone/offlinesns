@@ -250,18 +250,75 @@ committed to the `meshmore-sns` submodule branch).
 | U0 | Theme foundation: `MmTokens` + all 6 presets (D default), `ThemeController` (Provider, persisted via `shared_preferences`), wired into `MaterialApp`; a Personalization screen with the live preset/font/accessibility picker | ✅ done (submodule `cbb80b9`; 24 app tests) |
 | U1 | Nav shell: 5-view `PageView` swipe + long-press quick-nav (R11); Settings hub → 3 sub-screen routes (go_router) | ✅ done (submodule `1ef39df`; 27 app tests) |
 | UD | **Diagnostics & connect** screen (parallel, unblocks hardware): real Connect/disconnect, live state, raw frame log, test sends, in-app M6 channel-tail oracle + fixture export | ✅ done (submodule `pending`; 30 app tests) |
-| U2 | Dashboard (D "monolith" layout) wired to `MeshcoreController` (link/peers/channel/events) | ⏭ next |
-| U3 | Chat (collapsible, channel switch, R6) + TTS toggle wiring (R5) | ☐ |
-| U4 | Nodes screen; Device configuration screen → M4/R7 commands | ☐ |
+| U2 | Dashboard (D "monolith" layout) wired to `MeshcoreController` (link/peers/channel/events) | ✅ done — submodule `259a8cb`; 40 app tests |
+| U3 | Chat (collapsible, channel switch, R6) + TTS toggle wiring (R5) | ✅ done — ChatScreen wired to `MeshcoreController`: collapsible channel chip strip, per-channel scrollable message list, composer → `SEND_CHANNEL_TXT_MSG` (0x03) + optimistic outgoing, channels probed via `GET_CHANNEL`/named from `CHANNEL_INFO`. `TtsController` (pluggable speaker seam, OFF by default, persisted global + per-channel mute) — functional SPEECH switch in App settings + per-channel toggle in the Chat header; inbound messages spoken through the gate (`ec6e1c6`; 54 app tests) |
+| U4 | Nodes screen; Device configuration screen → M4/R7/R15 commands | ✅ done — U4(a+) mesh scan: contacts + adverts + RF-log SNR/RSSI, "Scan area", in-range (`add0649`); U4(b) LoRa region/radio config (R15) — US/EU868 (freq-only) + **Japan/ARIB STD-T108** (920.8 MHz · BW125 · SF12 · CR4/8 · ≤13 dBm, full preset, MeshCore #460) + Custom; freq/BW/SF/CR/TX pre-filled from SelfInfo, wired to `setRadioParams`/`setRadioTxPower` (`1e1e8d3`; 42 app tests). **Channels** built as a dedicated screen (`/settings/channels` `54f5253`: slots, set-active, name+PSK via Public/#hashtag/hex). Advertise flood/zero-hop chooser (`3a53e01`); R16 battery on Dashboard/Diagnostics (`c8fcce9`). Identity/Advert (SET_ADVERT_NAME/LATLON) + Device info (DEVICE_QUERY) built (`1a92509`); only OTHER PARAMS/tuning **editing** remains (currently read-only) → later U-step |
 | U5 | App settings + About/Terms (R9/R10); l10n EN/JA (R4) | ☐ |
-| U6 | `CueService` (event→sound+visual+haptic parity, R12/R13); audio packs | ☐ |
+| U6 | `CueService` (event→sound+visual+haptic parity, R12/R13); audio packs | 🔶 done first cut (`cc8e851`) — CueService + AudioPack/HapticBackend interfaces, default SystemSound + HapticFeedback backends, CueBridge wires MeshcoreController→cues, grid anonymous-channel ripple. Per-theme audio assets (Mission Control / Velocity / etc.) deferred to a later polish (asset authoring). 103 tests |
 | U7 | Polish: motion + reduce-motion, conformance/widget tests, a11y audit | ☐ |
+| U8 | **Background-safe delivery (R17)**: ✅ done — pt1 `onAppResumed()` + HomeShell `WidgetsBindingObserver` (`8f32eb0`); pt2 Android foreground service via `BackgroundKeepalive` (flutter_foreground_task `connectedDevice`, opt-in default-on, App-settings switch, manifest) (`a7b552f`; 87 tests). iOS = reconnect-on-foreground; not live push. **Native FGS UNVERIFIED in sandbox — needs on-device test + clean Android rebuild** | ✅* |
+| U9 | **Hyperlocal grid (R18)** — visual-notification grid (concrete F2). 🔶 done w/ caveats (`1070de5` + `cc8e851` + `c8e7f9a`): radial range-rings, hybrid GPS→RSSI→hash positioning, recency-brightness 24h, pulse=known, rapid-blink=favourite, reduce-motion fallback, theme-driven colour, anonymous-channel ripple, **radar icon entry from Nodes**, **toggleable legend overlay**, **tap-to-select** opening `NodeDetailSheet` (summary + Message / Favourite / stub-link to R25 geocoded map + Copy pubkey), cue parity via CueService (default sounds/haptic). Pending: live-radio-params outer-range scale; per-theme audio assets; **R25 reverse-geocoded equal-grid map** as a second view in the picker | 🔶 |
+| U10 | **P2P direct messages (R6 extension)** + chat→channels shortcut | ✅ done (`34fc0c4`; 107 tests) — `ChatMessage.peerPubKeyHex`; controller `sendDirectText` (`CMD_SEND_TXT_MSG` 0x02, 6-byte pubkey prefix) + `_ingestDm` (prefix→pubkey resolution + `incomingDirectMessages` stream) + `dmHistoryFor`; `DmScreen` at `/dm/:pubkey` reached by tapping a Nodes row; `CueBridge` fires `dmIn`. Chat header gains a "Manage channels" icon (channel mgmt was wired but not discoverable from the chat context). Inbound DMs continue to mark senders **known** (R18 pulse) |
+| U11 | **Chat message actions (R20)** — long-press a chat row → context menu with **Reply** (quoted prefix into the composer, no thread semantics in protocol), **Copy** (clipboard), **Delete** (local-only — MeshCore has no recall; the UI must say so). Also a trailing per-row affordance for accessibility (a11y-safe alternative to long-press). Applies in both ChatScreen (channel) and DmScreen. `ChatStore` prunes + re-persists on delete | ✅ done (`7d6aaeb`) — `chat_actions.dart` helper; ChatMessage gained stable id (`i` JSON key); long-press + overflow icon both open the sheet; 109 tests |
+| U12 | **Permissions UX (R21)** — first-run intro screen explains required perms (BLE; notifications when background mode is opted in); proactive request via `permission_handler`; offline mode is first-class (every screen renders disconnected; connection-requiring actions show a clear "Grant + connect" affordance with a deep-link to OS settings on permanent denial). Notification perm requested only when "Stay connected in background" is enabled | ✅ done (`8ff6e0a`) — `PermissionsService` interface + Platform/Noop impls; `FirstRunController`; intro Grant/Skip; BG-keepalive toggle asks for notifs just-in-time; App-settings Permissions tile + "show intro again" debug action; 116 tests |
+| U13 | **Location sources for advert lat/lon (R22)** — Identity/Advert section of Device config gets two explicit buttons: **"Use phone location"** (one-shot `geolocator` fix, requests `ACCESS_FINE_LOCATION` / iOS when-in-use just-in-time) and **"Read device location"** (`SelfInfo.latitude/longitude` re-loaded into the fields). Set ≠ broadcast — user still taps "Set advert location" to push (`SET_ADVERT_LATLON` 0x0E). Improves R18 grid (switches RSSI-rings → GPS bearing+distance once own lat/lon is set) | ✅ done (Phase A `28215a8` + Phase B `80adf94`) — `LocationService` interface + GeolocatorLocationService + Noop; `mc.ownLocation` resolves device-first → phone-fallback; Dashboard LOCATION tile w/ Configure CTA; per-node distance on Nodes; two Device-config buttons. 123 tests |
+| U14 | **Diagnostics: bounded RAW FRAME LOG scroll (R23)** — replace the bottom of the single page-scroll `ListView` with a fixed-height inner pane (its own `ListView.builder` + scrollbar) so the frame log scrolls independently from the State / Sends / Channel-tail / capture sections above it. Pure UX polish, no protocol/test changes | ✅ done (`1e38859`) — 360 dp bounded inner pane with Scrollbar; full 256-cap buffer browsable in place; 107 tests still green |
+| U15 | **Per-channel notification settings (R24)** — `ChannelNotificationPrefs` (per-slot persisted overrides: audio, haptic, TTS, system-notification; default inherits global). Channel-management screen grows a Notifications section per slot; chat header gets a quick toggle. `CueService` consults the override for channel-msg cues; existing `TtsController.toggleChannelMute` folds into the bundle | ☐ |
+
+### Hyperlocal grid (R18) — design
+
+A glanceable spatial notification surface; **our node is the
+reference** (centre). Realises F2 (and likely reframes F1's "live
+map"). All visual identity comes from the active theme — this spec
+fixes only the *rules*, never colours.
+
+- **Positioning (hybrid, decided):** advert GPS lat/lon → true
+  bearing + distance when both we and the peer have a fix; else
+  RSSI/SNR → distance **ring** with a *stable arbitrary* bearing
+  (hash of pubkey, so a node doesn't jump around); else an abstract
+  outer slot. ⇒ geometry is **radial range-rings** (rings =
+  distance bands scaled to the theoretical practical range; angle =
+  bearing or stable hash). Outer-ring scale derived from current
+  radio params (SF/BW/freq) where possible, else a nominal.
+- **Recency → brightness:** 100 % on register, decays to 0 % at
+  >24 h, then removed. Brightness is the primary information
+  channel (works under any palette; R13-safe — never colour-only).
+- **Animation semantics:** *known* node → steady **pulse**;
+  **favourited** contact → **rapid blink**. Reduce-motion (R13):
+  substitute a static ring/badge + brightness; no flashing.
+  **"Known" = a node that has communicated directly/attributably
+  to us** (received DM / direct exchange) — node-level, *not*
+  human identity, *not* conferred by anonymous channel/Public
+  traffic (user-clarified).
+- **Audio:** theme audible pack (R12) on register, with visual +
+  optional haptic parity (R13). Honour reduce-sound / silent.
+- **Constraint — anonymous channel traffic:** MeshCore
+  channel/Public messages carry **no sender identity**, so they
+  cannot mark a specific node *known* or be placed at its cell.
+  Represent as a generic, non-attributed pulse (e.g. a brief
+  centre/whole-ring ripple). Only DMs, our outbound DMs, adverts
+  and contacts attribute to a node.
+- **Dependencies:** a persisted **favourite-contact** flag (new,
+  small); the R12 **CueService** (U6) for the audio/haptic side;
+  optional GPS plumbing for the geographic tier.
 
 ### Open questions for design review
 
 1. Do we vendor Rajdhani/Eurostile locally or fall back to a permissive
    open-source equivalent (e.g. **Saira Condensed**)?
-2. Should the Chat overlay on the Dashboard be a collapsing bottom sheet
-   (Material) or a fixed-height bottom panel that the user resizes?
-3. Live map (F1) — out of scope for the first build, but reserve a tab slot
-   in the Nodes view header?
+1. ~~(R18) grid geometry / range scale~~ — **RESOLVED**: radial
+   range-rings; outer-range scale from live radio params (nominal
+   fallback).
+1. ~~(R18) anonymous channel/Public representation~~ — **RESOLVED**:
+   generic non-attributed centre/ring ripple; never marks "known".
+1. ~~(R17) eventual vs live-background~~ — **RESOLVED**: eventual is
+   the contract; Android gets a foreground service (persistent
+   notification accepted) to make it reliable under Doze; not live
+   push. iOS = reconnect-on-foreground.
+2. ~~Should the Chat overlay on the Dashboard be a collapsing bottom
+   sheet vs a fixed-height bottom panel?~~ — **SUPERSEDED**: Chat
+   became a dedicated PageView tab in U3 (`ec6e1c6`); the
+   Dashboard-overlay direction was dropped.
+3. ~~Live map (F1) — reserve a Nodes-header tab slot?~~ —
+   **SUPERSEDED**: F1 reframed by R18 (hyperlocal grid, U9) reached
+   from a dedicated `/grid` route + a Nodes-header grid icon.
