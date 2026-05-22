@@ -25,7 +25,30 @@ While Meshcore protocol is open source, the client is not open source.  We want 
 - R3: app uses bluetooth to communicate with a Meshcore client device. 
 - R4: app is localized to English and Japanese
 - R5: app can perform TTS using the GPU on the phone and should have a TTS mode that can be turned on, off by default
-- R6: app should support a small scrollable, collapsable chat interface that is using the active channel, and has an easy way to switch channels 
+- R6: app should support a small scrollable, collapsable chat
+  interface that is using the active channel, and has an easy way
+  to switch channels. **Channel management** (the underlying
+  surface for R6) covers the full lifecycle of a MeshCore channel
+  slot — slot listing with active marker, set-active by tap,
+  create/overwrite via an Edit dialog with three PSK sources
+  (Public well-known key, `#hashtag`-derived via SHA-256, raw 32-
+  hex), an **encryption explainer banner** (Public = world-
+  readable; private slots = AES-128 with the user-set PSK), a
+  **Random PSK** generator (Hex mode, `Random.secure` 16 bytes)
+  plus a **Copy** button when a full key is in the field, a
+  **#tag strength hint** that warns on tags shorter than 8 chars
+  or matching a common-word denylist (EN + JA), a **slot-0
+  overwrite warning** dialog when about to write a non-Public PSK
+  into slot 0, a **Show current key** reveal (per-dialog latched,
+  `SelectableText` for copy-out), a **Clear slot** affordance
+  (pragmatic implementation: overwrite back to the well-known
+  Public defaults, since the protocol has no `CLEAR_CHANNEL`
+  opcode), and **edit-dialog key-source detection** (segmented
+  button defaults to Hex with the field pre-filled when the slot
+  has a non-Public PSK). Tag-derived slots read back as Hex on
+  re-open because the bytes aren't reversible to a hashtag; the
+  user can switch modes to re-derive from a tag if they prefer.
+  See R33 for the default-channel preference.
 - R7: app should be able to configure all Meshcore settings, and input radio settings if defaults are not available
 - R8: app has a dashboard as the default home screen
 - R9: app has an about screen with the app information
