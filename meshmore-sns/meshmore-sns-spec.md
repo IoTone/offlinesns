@@ -452,6 +452,69 @@ While Meshcore protocol is open source, the client is not open source.  We want 
   - Honours per-channel notification settings (R24) for
     archived rollups (silent).
 
+- R36 (future): **auto-publish location while moving**. Today
+  location is **manual only** (one-shot phone-GPS fix +
+  manual Set advert location + manual Advertise). Moving
+  around with the device does **not** re-publish; peers see
+  stale coords until the user manually re-broadcasts. R36
+  adds two background triggers, both off by default:
+  - **Periodic** — interval picker (Off / 5 min / 15 min /
+    30 min / 1 h). On each tick: phone-GPS one-shot → SET_
+    ADVERT_LATLON → `sendSelfAdvert(flood: false)` (zero-
+    hop by default so we don't flood OTA).
+  - **Smart broadcast** — `Geolocator.getPositionStream` with
+    a distance filter (50 / 200 / 500 / 1000 m). Re-publish
+    when displacement from the last broadcast exceeds the
+    threshold. Lower-accuracy stream to keep power
+    sustainable.
+  - Combined OR semantic: "whichever fires first." Belt-
+    and-suspenders.
+  - **App settings → Location** new section: master "Auto-
+    publish location" toggle + the two pickers. Persisted
+    via `shared_preferences`. Controller-side: a
+    `LocationPublisher` that owns the timer +
+    position-stream subscription, gated on the master
+    toggle + the active-channel state. Shut down on
+    background unless the keepalive service is running
+    (R17).
+  - **Battery transparency**: a small footer in the same
+    section showing "expected hourly cost: ~X% battery" so
+    the user can pick a sustainable cadence.
+  - Respects `advertLocPolicy` — only runs in `Pinned` mode
+    (device-GPS policy already updates without our help; if
+    it's None, the user opted out).
+
+- R37 (future): **trail-capture / path-record mode**.
+  Independent of R36's OTA publishing — R37 is **local
+  recording only**, no broadcast. Use cases: hiking, driving,
+  field surveys, route sharing after the fact.
+  - **Capture toggle** on the Dashboard (small recording-dot
+    affordance near the location tile) + a longer-form
+    control in Settings → Location.
+  - While capture is on, a `TrailRecorder` writes phone-GPS
+    fixes to a local store at a configurable sample rate
+    (default 5 s / 100 m, lower bound 1 Hz). Each fix:
+    `(timestamp, lat, lon, accuracy_m, optional alt)`.
+    Storage budget: 1 Hz × 8 h ≈ 28 800 points × ~32 B JSON
+    ≈ 900 KB — acceptable.
+  - Persisted to a per-session file under app-docs
+    (`trails/<isoStart>.json`) so a crash mid-hike doesn't
+    lose the trace.
+  - **Stop** finalises the file. A **Trails** listing screen
+    shows saved sessions with metadata (start time, length
+    km, duration, point count) + actions: **Export as
+    GPX** (standard format readable by Google Maps /
+    OsmAnd / Strava etc.), **Delete**, **Share** (system
+    share sheet).
+  - GPX is plain XML, no extra dep — we just emit the
+    document directly from the JSON.
+  - Strictly **local-only** — no automatic broadcast or
+    upload. Privacy-first: the user explicitly exports or
+    shares.
+  - Coexists with R36 (you can be live-publishing your
+    current location AND capturing a trail at the same
+    time — different goals, different stores).
+
 ### Terminology — Fabric vs Contact
 
 - **Fabric** = the set of nodes we have *seen* on the mesh (any
