@@ -405,6 +405,53 @@ While Meshcore protocol is open source, the client is not open source.  We want 
   call `setActiveChannel(default)` once the device reaches
   ready. Falls back to slot 0 (Public) if unset.
 
+- R34 (future): **NFC PSK share via tag write/read**. Same
+  payload schema as the QR-share path (`meshmore://channel?
+  idx=N&name=NAME&psk=HEX`), but written to / read from an
+  NFC tag instead of displayed as a QR code. Size budget
+  fits comfortably on a **NTAG213** (144 B user memory) —
+  the URI for a typical channel runs ~60–80 B (e.g.
+  `meshmore://channel?idx=1&name=field-team-A&psk=` + 32 hex
+  chars + URL-encoded name). Two affordances: **Write to
+  tag** (from the channels Edit dialog after a key is set —
+  user taps phone to tag) and **Scan tag** (from the
+  Channels list when no slot is being edited — taps a blank
+  tag → opens the Edit dialog pre-filled with the decoded
+  payload). Uses `nfc_manager`. Platform-gated: Android
+  works out of the box; iOS requires `NFCReaderUsageDescription`
+  in Info.plist + the `NDEFReaderSession` capability. Off
+  by default; lives next to the QR affordance so the two
+  share-paths are symmetric.
+
+- R35 (future): **message-retention rollup + archive**.
+  Today the controller caps `_messages` at 250 rows total
+  (channel + DM combined) and FIFO-evicts. That's enough
+  for steady-state but loses field-event history that the
+  user may want to keep. R35 changes the model:
+  - **Live tier** = the most-recent N messages per
+    channel/peer, shown in the active feed (current 250-row
+    behaviour, but per-stream rather than global).
+  - **Archive tier** = older messages **rolled up by age
+    bucket** (week / month / year — user-selectable in App
+    settings, default month). The archive renders as a
+    **collapsed group header** at the top of the feed (e.g.
+    `▸ Archive · 2026-03 · 412 messages`) that expands on
+    tap into a scrollable older-messages list. Collapsed
+    by default so the live feed isn't crowded.
+  - **Storage**: switch `ChatStore` from a single capped
+    list to a tiered store — `live.json` (capped) +
+    `archive/<channel>-<bucket>.json` (uncapped, segmented
+    by age bucket). Rollup happens lazily: on each
+    `_addMessage` we check if the live tier is over cap and
+    spill the oldest rows into the appropriate archive
+    file.
+  - **App settings**: a "Message archive" section with the
+    rollup-cadence picker (week / month / year / never =
+    keep everything live) and a "Purge archive older than…"
+    optional cutoff.
+  - Honours per-channel notification settings (R24) for
+    archived rollups (silent).
+
 ### Terminology — Fabric vs Contact
 
 - **Fabric** = the set of nodes we have *seen* on the mesh (any
