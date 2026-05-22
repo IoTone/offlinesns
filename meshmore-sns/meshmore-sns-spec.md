@@ -338,6 +338,50 @@ While Meshcore protocol is open source, the client is not open source.  We want 
   to advance one step. Long-press resets to MED. Accessibility:
   honours `reduceMotion` (no fade between tiers).
 
+- R31 (future): **device CLI / power-user shell**. The MeshCore
+  companion protocol doesn't have typed opcodes for many useful
+  firmware-side knobs (on-device buzzer mute, LED mode, deep-
+  sleep schedule, OTA carrier-sense thresholds, etc.) — most
+  firmware variants accept ad-hoc text commands DM'd to the
+  device's own pubkey (e.g. `"buzzer off"`, `"led 1"`,
+  `"sleep 30"`). R31 adds a power-user **Device CLI** section
+  in Device config: a text input that sends commands to
+  `selfPubkey`, an output log that shows the echo, and a small
+  starter palette (per-firmware-fork) of known-good commands.
+  Behaviour is **firmware-dependent** — the UI is generic, the
+  command set is fork-specific. Off by default; gated behind
+  an "advanced" toggle so casual users don't fire random
+  strings at their radio.
+
+- R32 (future): **dice-roll PSK derivation via IMU**. A new
+  channel-key source alongside Public / #tag / Hex: **Shake**.
+  The user holds the phone and shakes it; we sample the
+  accelerometer via `sensors_plus`, mix each delta-magnitude
+  sample into a running SHA-256, and once enough entropy is
+  collected (target: 256 bits of accelerometer variance
+  surface, conservative budget: ~3–5 s of moderate motion)
+  derive a 16-byte AES-128 key from the final digest. UI: a
+  big "shake to roll" prompt, a progress ring showing entropy
+  accumulated, a hex preview that fills byte-by-byte as the
+  digest stabilises. The deliberate framing is a **16-sided
+  die** ("hexadecimal die") rolled per nibble for the visual,
+  even though the underlying derivation is whole-bytes from
+  the digest. "Reroll" restarts. Honours `reduceMotion` by
+  showing a fallback "tap to roll dice" path that uses
+  `Random.secure` instead of motion — same result, no
+  accelerometer dependency. The motion path needs the
+  motion sensor permission on iOS (Info.plist) and is opt-in.
+
+- R33: **default channel preference**. The app should remember
+  the user's preferred channel slot to land on at startup,
+  independent of whatever the device's internal active-slot
+  state happens to be (which a multi-device user may want to
+  vary). UI surface: a "Set as default" affordance per slot in
+  the Channels mgmt screen + Edit dialog. Persisted in
+  shared_preferences. On controller init, if a default is set,
+  call `setActiveChannel(default)` once the device reaches
+  ready. Falls back to slot 0 (Public) if unset.
+
 ### Terminology — Fabric vs Contact
 
 - **Fabric** = the set of nodes we have *seen* on the mesh (any
