@@ -254,6 +254,18 @@ While Meshcore protocol is open source, the client is not open source.  We want 
 - R25 (future): **reverse-geocoded equal-grid map** — a second map
   option in the **Hyperlocal grid** picker (the existing radial
   range-ring view becomes "Hyperlocal grid · radial" / default).
+  **Storage strategy: ship an offline geofence DB** (GeoNames
+  `cities15000` ≈ 25k cities worldwide; packed binary asset
+  ≈ ~700 KB after name-pool dedup + float32 lat/lon). Lookup =
+  4-char geohash bucket + 8 neighbours + Haversine = ~100 µs.
+  Within-city positioning = Haversine offset from city centroid,
+  quantised to a grid cell (e.g. 200 m × 200 m). Display:
+  `Tokyo · cell N3` or `Tokyo · 250 m E / 120 m N`. License:
+  CC-BY 4.0 (attribute GeoNames in About). Optional future
+  "Download JP detailed pack" tier (subdistrict polygons).
+  Continued from below:
+  option in the **Hyperlocal grid** picker (the existing radial
+  range-ring view becomes "Hyperlocal grid · radial" / default).
   This second view is a **true equal-sized-box grid** (think
   electoral district map) covering the area around our own
   location. Behaviour:
