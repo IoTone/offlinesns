@@ -295,6 +295,49 @@ While Meshcore protocol is open source, the client is not open source.  We want 
   badges). Use case: confirm a node's geographic position at a
   glance without needing the OSM tile pipeline that R25 demands.
 
+- R28 (future): **user-defined node tagging / custom groups**. Today
+  we have three orthogonal flags (fabric / known / contact), all
+  derived from observed traffic. R28 adds **user-authored tags** —
+  arbitrary string labels the user can apply to one or more nodes
+  ("trusted", "family", "field-team-A", "burning-man-2026", etc.).
+  Tags compose into **filters** on the Nodes list and the
+  hyperlocal grid ("show only family + field-team-A"), and can
+  drive **per-group notification settings** (extension of R24) so
+  e.g. "family" can be loud while "trusted" stays silent. Tag set
+  is **local-only** by default (lives in shared_preferences keyed
+  by pubkey hex); a future protocol extension could let users
+  share tag-sets between devices but is out of scope here. UI
+  surfaces: a Tags row in NodeDetailSheet (chip input + existing
+  tag chips), and a tag chip strip above the Nodes list that
+  composes with the R20-pattern filter bar.
+
+- R29: **jump-to-newest control in Chat and DM**. When the user
+  scrolls up to read older history, the auto-scroll-on-new-message
+  behaviour pauses (so the screen doesn't yank away under them).
+  Surface a **floating pill** anchored bottom-right above the
+  composer that fades in only when the scroll position is **not at
+  the latest message**, labelled "Jump to newest" (`↓ N new`-style
+  badge if new messages arrived while scrolled up). Tap → smooth-
+  scroll to the bottom and re-arm auto-scroll. Applies to both
+  ChatScreen (channel feed) and DmScreen (peer feed). Pill uses
+  the active theme's accent + the existing cue palette; respects
+  `reduceMotion` (instant jump, no animated scroll).
+
+- R30: **brightness cycle toggle on the Dashboard**. A single
+  affordance on the Dashboard cycles the app's display brightness
+  through a fixed ladder — `dim → med → bright → max → dim …` —
+  with a visual readout of the current step. Implements via a
+  controller that sets a global `brightnessTier` (persisted in
+  `shared_preferences`); ThemeController consumes the tier and
+  scales the active palette's surface luminance accordingly (NOT
+  the system brightness — keeping the OS brightness untouched
+  avoids surprising the user). Goal is field-readability in bright
+  sun without diving into Settings → Personalization. Possible
+  step labels: DIM / MED / BRIGHT / MAX. Control lives in the
+  Dashboard status slab area (small icon + tier label), tappable
+  to advance one step. Long-press resets to MED. Accessibility:
+  honours `reduceMotion` (no fade between tiers).
+
 ### Terminology — Fabric vs Contact
 
 - **Fabric** = the set of nodes we have *seen* on the mesh (any
