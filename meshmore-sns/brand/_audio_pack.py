@@ -147,6 +147,22 @@ CUES = {
         score=[(1.0, 0.16), (math.sqrt(2), 0.20)],
         amp=0.75,
     ),
+    "scanStart": dict(
+        # short ascending pair — "we're starting something"
+        score=[(1.0, 0.06), (1.25, 0.08)],
+        amp=0.45,
+    ),
+    "taskOk": dict(
+        # rising 5th to octave — positive resolve, subtler than linkUp
+        score=[(1.5, 0.10), (2.0, 0.13)],
+        amp=0.55,
+    ),
+    "taskError": dict(
+        # descending minor-third pair + slight detune — softer than
+        # full `alert` (which is reserved for protocol-critical fail)
+        score=[(1.0, 0.10), (5 / 6, 0.16)],
+        amp=0.60,
+    ),
 }
 
 # ---------------------------------------------------------------- synth

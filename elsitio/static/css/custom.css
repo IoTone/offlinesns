@@ -1,0 +1,56 @@
+/* Custom styles layered over the active Reveal.js theme.
+ *
+ * The site is configured via [params.reveal_hugo] custom_css =
+ * "css/custom.css" so this file ships on every deck.
+ */
+
+/* Per-slide scrollable sections.
+ *
+ * Mark a long slide with `data-state="scrollable"` (or use the
+ * `{{< slide data-state="scrollable" >}}` shortcode at the start of a
+ * section). Content that would otherwise spill off the bottom of the
+ * viewport now scrolls inside the slide instead of being clipped.
+ *
+ * Height is sized to the visible slide area (Reveal sizes slides to
+ * the viewport minus chrome) and an inset is left at the bottom so
+ * the last line of text never butts against the slide controls. */
+.reveal .slides section[data-state~="scrollable"],
+.reveal .slides section.scrollable {
+  overflow-y: auto;
+  /* Reveal's vertical centring would otherwise lock everything to the
+   * middle, defeating the scroll. Top-align so the user starts at the
+   * top of the content. */
+  display: block !important;
+  max-height: 90vh;
+  padding-bottom: 1.5rem;
+}
+
+/* Subtle scrollbar to match the dark Reveal themes — visible enough
+ * to discover, quiet enough not to compete with the slide content. */
+.reveal .slides section[data-state~="scrollable"]::-webkit-scrollbar,
+.reveal .slides section.scrollable::-webkit-scrollbar {
+  width: 8px;
+}
+.reveal .slides section[data-state~="scrollable"]::-webkit-scrollbar-thumb,
+.reveal .slides section.scrollable::-webkit-scrollbar-thumb {
+  background: rgba(127, 127, 127, 0.45);
+  border-radius: 4px;
+}
+
+/* Hub-style links on the TBOC page — bigger, easier to tap on mobile
+ * than the default body-text anchor styling. */
+.reveal .slides section .deck-link {
+  display: block;
+  font-size: 0.9em;
+  padding: 0.6em 0;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(127, 127, 127, 0.35);
+}
+.reveal .slides section .deck-link:hover {
+  background: rgba(127, 127, 127, 0.1);
+}
+.reveal .slides section .deck-link small {
+  display: block;
+  opacity: 0.7;
+  font-size: 0.7em;
+}

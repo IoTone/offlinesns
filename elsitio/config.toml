@@ -23,3 +23,9 @@ unsafe = true
 baseName = "index"
 mediaType = "text/html"
 isHTML = true
+
+# Site-wide custom CSS layered over the active Reveal.js theme.
+# Adds `data-state="scrollable"` support so long slides scroll instead
+# of clipping. See static/css/custom.css.
+[params.reveal_hugo]
+custom_css = "css/custom.css"
