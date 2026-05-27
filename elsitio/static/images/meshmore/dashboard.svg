@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 720" width="100%" style="max-width:380px;height:auto;display:block;background:#000000;border-radius:18px;box-shadow:0 0 0 1px #2a2a26 inset">
+<!-- Backdrop -->
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#0E0E0C"/>
+    <stop offset="1" stop-color="#000000"/>
+  </linearGradient>
+</defs>
+<rect width="360" height="720" fill="url(#bg)" rx="18"/>
+<!-- Status bar -->
+<text x="20" y="22" fill="#8a847a" font-size="10"
+      font-family="Menlo,monospace">9:41</text>
+<text x="340" y="22" text-anchor="end" fill="#8a847a"
+      font-size="10" font-family="Menlo,monospace">▲ ▲ ░░</text>
+<!-- AppBar -->
+<rect x="0" y="32" width="360" height="44" fill="#0E0E0C"/>
+<text x="16" y="60" fill="#EDE6D6" font-size="16"
+      font-family="Inter,Helvetica,sans-serif" font-weight="500">Meshmore SNS</text>
+<text x="20" y="110" fill="#8a847a" font-size="10" font-family="Inter,Helvetica,sans-serif" font-weight="400" letter-spacing="4">PEERS IN RANGE</text>
+<text x="20" y="180" fill="#EDE6D6" font-size="72" font-family="Inter,Helvetica,sans-serif" font-weight="300">7</text>
+<text x="20" y="202" fill="#8a847a" font-size="11" font-family="Inter,Helvetica,sans-serif" font-weight="400">24 known</text>
+<rect x="0" y="220" width="360" height="40" fill="#1a1815"/>
+<circle cx="20" cy="240" r="5" fill="#EDE6D6"/>
+<text x="36" y="244" fill="#EDE6D6" font-size="11" font-family="Inter,Helvetica,sans-serif" font-weight="600" letter-spacing="2">▌ LINKED · NO ALERTS</text>
+<text x="20" y="290" fill="#8a847a" font-size="10" font-family="Inter,Helvetica,sans-serif" font-weight="400" letter-spacing="4">RADIO</text>
+<text x="20" y="310" fill="#EDE6D6" font-size="12" font-family="Menlo,monospace" font-weight="400">T1000-E</text>
+<text x="20" y="326" fill="#EDE6D6" font-size="12" font-family="Menlo,monospace" font-weight="400">920.0 MHz  SF11  CR5  20 dBm</text>
+<text x="20" y="366" fill="#8a847a" font-size="10" font-family="Inter,Helvetica,sans-serif" font-weight="400" letter-spacing="4">LOCATION</text>
+<text x="20" y="386" fill="#EDE6D6" font-size="12" font-family="Menlo,monospace" font-weight="400">35.68130, 139.76710</text>
+<text x="20" y="402" fill="#8a847a" font-size="11" font-family="Menlo,monospace" font-weight="400">source · device</text>
+<text x="20" y="440" fill="#8a847a" font-size="10" font-family="Inter,Helvetica,sans-serif" font-weight="400" letter-spacing="4">BATTERY</text>
+<text x="20" y="460" fill="#7CFF6B" font-size="12" font-family="Menlo,monospace" font-weight="400">4.10V · ~92%  ⚡ CHARGING</text>
+<text x="20" y="500" fill="#8a847a" font-size="10" font-family="Inter,Helvetica,sans-serif" font-weight="400" letter-spacing="4">RECENT</text>
+<text x="20" y="522" fill="#8a847a" font-size="10" font-family="Menlo,monospace" font-weight="400">21:44:08</text>
+<text x="74" y="522" fill="#EDE6D6" font-size="11" font-family="Inter,Helvetica,sans-serif" font-weight="400">advert · Yaron · -71 dBm</text>
+<text x="20" y="540" fill="#8a847a" font-size="10" font-family="Menlo,monospace" font-weight="400">21:43:51</text>
+<text x="74" y="540" fill="#EDE6D6" font-size="11" font-family="Inter,Helvetica,sans-serif" font-weight="400">channel-msg · Public · ack on the way</text>
+<text x="20" y="558" fill="#8a847a" font-size="10" font-family="Menlo,monospace" font-weight="400">21:43:12</text>
+<text x="74" y="558" fill="#EDE6D6" font-size="11" font-family="Inter,Helvetica,sans-serif" font-weight="400">advert · NodeX · -85 dBm</text>
+<text x="20" y="576" fill="#8a847a" font-size="10" font-family="Menlo,monospace" font-weight="400">21:42:30</text>
+<text x="74" y="576" fill="#EDE6D6" font-size="11" font-family="Inter,Helvetica,sans-serif" font-weight="400">self-info · meshmore</text>
+<text x="20" y="594" fill="#8a847a" font-size="10" font-family="Menlo,monospace" font-weight="400">21:41:54</text>
+<text x="74" y="594" fill="#EDE6D6" font-size="11" font-family="Inter,Helvetica,sans-serif" font-weight="400">battery · 4.10V · 92 %</text>
+<rect x="0" y="664" width="360" height="56" fill="#0E0E0C" stroke="#3b3833" stroke-opacity=".6" stroke-width="1"/>
+<text x="45.0" y="692" fill="#EDE6D6" font-size="14" text-anchor="middle">⬜</text>
+<text x="45.0" y="710" fill="#EDE6D6" font-size="9" text-anchor="middle" letter-spacing="1">Dashboard</text>
+<text x="135.0" y="692" fill="#8a847a" font-size="14" text-anchor="middle">💬</text>
+<text x="135.0" y="710" fill="#8a847a" font-size="9" text-anchor="middle" letter-spacing="1">Chat</text>
+<text x="225.0" y="692" fill="#8a847a" font-size="14" text-anchor="middle">📡</text>
+<text x="225.0" y="710" fill="#8a847a" font-size="9" text-anchor="middle" letter-spacing="1">Nodes</text>
+<text x="315.0" y="692" fill="#8a847a" font-size="14" text-anchor="middle">⚙</text>
+<text x="315.0" y="710" fill="#8a847a" font-size="9" text-anchor="middle" letter-spacing="1">Settings</text>
+</svg>

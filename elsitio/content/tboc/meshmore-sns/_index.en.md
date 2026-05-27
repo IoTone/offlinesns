@@ -48,17 +48,17 @@ A Flutter client for MeshCore — opinionated, themeable, and unapologetically b
 
 ---
 
-## Screenshots
+## Screens
 
-<small>(Placeholders — drop screenshots into <code>static/images/meshmore/</code> and they'll render here.)</small>
+<small>Design mockups from the UX brief — the NERV aesthetic that drives the actual UI.</small>
 
-<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1em; margin-top: 1em;">
-  <div><img src="/images/meshmore/dashboard.png" alt="Dashboard" onerror="this.style.opacity=0.2"/><small>Dashboard</small></div>
-  <div><img src="/images/meshmore/globe.png" alt="Globe view" onerror="this.style.opacity=0.2"/><small>Globe view</small></div>
-  <div><img src="/images/meshmore/grid.png" alt="Equal grid" onerror="this.style.opacity=0.2"/><small>Equal grid</small></div>
-  <div><img src="/images/meshmore/fabric.png" alt="Fabric survey" onerror="this.style.opacity=0.2"/><small>Fabric survey</small></div>
-  <div><img src="/images/meshmore/elevation.png" alt="Elevation profile" onerror="this.style.opacity=0.2"/><small>Elevation profile</small></div>
-  <div><img src="/images/meshmore/dm.png" alt="DM" onerror="this.style.opacity=0.2"/><small>Direct message</small></div>
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1em; margin-top: 1em; align-items: end;">
+  <div><img src="/images/meshmore/dashboard.svg" alt="Dashboard" style="max-height: 360px; width: auto;"/><small>Dashboard</small></div>
+  <div><img src="/images/meshmore/nodes.svg" alt="Nodes" style="max-height: 360px; width: auto;"/><small>Nodes</small></div>
+  <div><img src="/images/meshmore/grid.svg" alt="Equal grid" style="max-height: 360px; width: auto;"/><small>Equal grid</small></div>
+  <div><img src="/images/meshmore/chat.svg" alt="Chat / DM" style="max-height: 360px; width: auto;"/><small>Chat / DM</small></div>
+  <div><img src="/images/meshmore/device-config.svg" alt="Device config" style="max-height: 360px; width: auto;"/><small>Device config</small></div>
+  <div><img src="/images/meshmore/first-run.svg" alt="First run" style="max-height: 360px; width: auto;"/><small>First run</small></div>
 </div>
 
 ---

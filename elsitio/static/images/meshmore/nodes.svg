@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 720" width="100%" style="max-width:380px;height:auto;display:block;background:#000000;border-radius:18px;box-shadow:0 0 0 1px #2a2a26 inset">
+<!-- Backdrop -->
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#0E0E0C"/>
+    <stop offset="1" stop-color="#000000"/>
+  </linearGradient>
+</defs>
+<rect width="360" height="720" fill="url(#bg)" rx="18"/>
+<!-- Status bar -->
+<text x="20" y="22" fill="#8a847a" font-size="10"
+      font-family="Menlo,monospace">9:41</text>
+<text x="340" y="22" text-anchor="end" fill="#8a847a"
+      font-size="10" font-family="Menlo,monospace">▲ ▲ ░░</text>
+<!-- AppBar -->
+<rect x="0" y="32" width="360" height="44" fill="#0E0E0C"/>
+<text x="16" y="60" fill="#EDE6D6" font-size="16"
+      font-family="Inter,Helvetica,sans-serif" font-weight="500">Nodes  ⊕  ⏵  ▦</text>
+<g transform="translate(250,40)">
+<text x="0" y="22" fill="#8a847a" font-size="11">scan</text>
+<text x="40" y="22" fill="#8a847a" font-size="11">advert</text>
+<text x="90" y="22" fill="#EDE6D6" font-size="14">⌖</text>
+</g>
+<text x="20" y="100" fill="#8a847a" font-size="10" font-family="Inter,Helvetica,sans-serif" font-weight="400" letter-spacing="4">DISCOVERED NODES</text>
+<text x="20" y="120" fill="#8a847a" font-size="11" font-family="Inter,Helvetica,sans-serif" font-weight="400">8 in fabric · 4 known · 2 contacts</text>
+<rect x="0" y="136" width="360" height="48" fill="#1a1815" fill-opacity=".4"/>
+<text x="20" y="156" fill="#EDE6D6" font-size="14" font-family="Inter,Helvetica,sans-serif" font-weight="400">📡</text>
+<text x="44" y="156" fill="#EDE6D6" font-size="13" font-family="Inter,Helvetica,sans-serif" font-weight="500">Yaron</text>
+<g><rect x="110" y="144" width="64" height="20" rx="10" fill="none" stroke="#EDE6D6" stroke-opacity=".45"/><text x="142.0" y="158" fill="#EDE6D6" font-size="10" font-family="Menlo,monospace" text-anchor="middle" letter-spacing="1">IN RANGE</text></g>
+<text x="44" y="174" fill="#8a847a" font-size="10" font-family="Menlo,monospace" font-weight="400">advert · -65 dBm SNR 8 · ≈ 420 m · 35.6818,139.7672 · be4f…</text>
+<text x="300" y="156" fill="#8a847a" font-size="11" font-family="Menlo,monospace" font-weight="400">1m</text>
+<text x="336" y="156" fill="#FFD56B" font-size="14" font-family="Inter,Helvetica,sans-serif" font-weight="400">★</text>
+<line x1="0" y1="184" x2="360" y2="184" stroke="#3b3833" stroke-opacity=".5"/>
+<rect x="0" y="192" width="360" height="48" fill="#1a1815" fill-opacity=".4"/>
+<text x="20" y="212" fill="#EDE6D6" font-size="14" font-family="Inter,Helvetica,sans-serif" font-weight="400">📡</text>
+<text x="44" y="212" fill="#EDE6D6" font-size="13" font-family="Inter,Helvetica,sans-serif" font-weight="500">Hub-NW</text>
+<text x="44" y="230" fill="#8a847a" font-size="10" font-family="Menlo,monospace" font-weight="400">advert · -71 dBm SNR 6 · ≈ 1.2 km · 35.6905,139.7654 · 92a3…</text>
+<text x="300" y="212" fill="#8a847a" font-size="11" font-family="Menlo,monospace" font-weight="400">3m</text>
+<text x="336" y="212" fill="#FFD56B" font-size="14" font-family="Inter,Helvetica,sans-serif" font-weight="400">★</text>
+<line x1="0" y1="240" x2="360" y2="240" stroke="#3b3833" stroke-opacity=".5"/>
+<text x="20" y="268" fill="#EDE6D6" font-size="14" font-family="Inter,Helvetica,sans-serif" font-weight="400">📻</text>
+<text x="44" y="268" fill="#EDE6D6" font-size="13" font-family="Inter,Helvetica,sans-serif" font-weight="500">NodeX</text>
+<text x="44" y="286" fill="#8a847a" font-size="10" font-family="Menlo,monospace" font-weight="400">advert · -85 dBm · ≈ 3.4 km · 5e90…</text>
+<text x="300" y="268" fill="#8a847a" font-size="11" font-family="Menlo,monospace" font-weight="400">12m</text>
+<text x="336" y="268" fill="#8a847a" font-size="14" font-family="Inter,Helvetica,sans-serif" font-weight="400">☆</text>
+<line x1="0" y1="296" x2="360" y2="296" stroke="#3b3833" stroke-opacity=".5"/>
+<text x="20" y="324" fill="#EDE6D6" font-size="14" font-family="Inter,Helvetica,sans-serif" font-weight="400">📻</text>
+<text x="44" y="324" fill="#EDE6D6" font-size="13" font-family="Inter,Helvetica,sans-serif" font-weight="500">Roam-3</text>
+<text x="44" y="342" fill="#8a847a" font-size="10" font-family="Menlo,monospace" font-weight="400">advert · -88 dBm · 7c11…</text>
+<text x="300" y="324" fill="#8a847a" font-size="11" font-family="Menlo,monospace" font-weight="400">26m</text>
+<text x="336" y="324" fill="#8a847a" font-size="14" font-family="Inter,Helvetica,sans-serif" font-weight="400">☆</text>
+<line x1="0" y1="352" x2="360" y2="352" stroke="#3b3833" stroke-opacity=".5"/>
+<text x="20" y="380" fill="#EDE6D6" font-size="14" font-family="Inter,Helvetica,sans-serif" font-weight="400">👤</text>
+<text x="44" y="380" fill="#EDE6D6" font-size="13" font-family="Inter,Helvetica,sans-serif" font-weight="500">Mira</text>
+<text x="44" y="398" fill="#8a847a" font-size="10" font-family="Menlo,monospace" font-weight="400">companion · ≈ 180 m · 8801…</text>
+<text x="300" y="380" fill="#8a847a" font-size="11" font-family="Menlo,monospace" font-weight="400">1h</text>
+<text x="336" y="380" fill="#8a847a" font-size="14" font-family="Inter,Helvetica,sans-serif" font-weight="400">☆</text>
+<line x1="0" y1="408" x2="360" y2="408" stroke="#3b3833" stroke-opacity=".5"/>
+<text x="20" y="436" fill="#EDE6D6" font-size="14" font-family="Inter,Helvetica,sans-serif" font-weight="400">📻</text>
+<text x="44" y="436" fill="#EDE6D6" font-size="13" font-family="Inter,Helvetica,sans-serif" font-weight="500">Repeat-1</text>
+<text x="44" y="454" fill="#8a847a" font-size="10" font-family="Menlo,monospace" font-weight="400">advert · -92 dBm SNR -2 · a02f…</text>
+<text x="300" y="436" fill="#8a847a" font-size="11" font-family="Menlo,monospace" font-weight="400">2h</text>
+<text x="336" y="436" fill="#8a847a" font-size="14" font-family="Inter,Helvetica,sans-serif" font-weight="400">☆</text>
+<line x1="0" y1="464" x2="360" y2="464" stroke="#3b3833" stroke-opacity=".5"/>
+<text x="20" y="492" fill="#EDE6D6" font-size="14" font-family="Inter,Helvetica,sans-serif" font-weight="400">📻</text>
+<text x="44" y="492" fill="#EDE6D6" font-size="13" font-family="Inter,Helvetica,sans-serif" font-weight="500">Edge</text>
+<text x="44" y="510" fill="#8a847a" font-size="10" font-family="Menlo,monospace" font-weight="400">advert · -95 dBm · cc8b…</text>
+<text x="300" y="492" fill="#8a847a" font-size="11" font-family="Menlo,monospace" font-weight="400">5h</text>
+<text x="336" y="492" fill="#8a847a" font-size="14" font-family="Inter,Helvetica,sans-serif" font-weight="400">☆</text>
+<line x1="0" y1="520" x2="360" y2="520" stroke="#3b3833" stroke-opacity=".5"/>
+<text x="20" y="548" fill="#EDE6D6" font-size="14" font-family="Inter,Helvetica,sans-serif" font-weight="400">👤</text>
+<text x="44" y="548" fill="#EDE6D6" font-size="13" font-family="Inter,Helvetica,sans-serif" font-weight="500">Drone-R</text>
+<text x="44" y="566" fill="#8a847a" font-size="10" font-family="Menlo,monospace" font-weight="400">companion · paired earlier · ec00…</text>
+<text x="300" y="548" fill="#8a847a" font-size="11" font-family="Menlo,monospace" font-weight="400">1d</text>
+<text x="336" y="548" fill="#8a847a" font-size="14" font-family="Inter,Helvetica,sans-serif" font-weight="400">☆</text>
+<line x1="0" y1="576" x2="360" y2="576" stroke="#3b3833" stroke-opacity=".5"/>
+<rect x="0" y="664" width="360" height="56" fill="#0E0E0C" stroke="#3b3833" stroke-opacity=".6" stroke-width="1"/>
+<text x="45.0" y="692" fill="#8a847a" font-size="14" text-anchor="middle">⬜</text>
+<text x="45.0" y="710" fill="#8a847a" font-size="9" text-anchor="middle" letter-spacing="1">Dashboard</text>
+<text x="135.0" y="692" fill="#8a847a" font-size="14" text-anchor="middle">💬</text>
+<text x="135.0" y="710" fill="#8a847a" font-size="9" text-anchor="middle" letter-spacing="1">Chat</text>
+<text x="225.0" y="692" fill="#EDE6D6" font-size="14" text-anchor="middle">📡</text>
+<text x="225.0" y="710" fill="#EDE6D6" font-size="9" text-anchor="middle" letter-spacing="1">Nodes</text>
+<text x="315.0" y="692" fill="#8a847a" font-size="14" text-anchor="middle">⚙</text>
+<text x="315.0" y="710" fill="#8a847a" font-size="9" text-anchor="middle" letter-spacing="1">Settings</text>
+</svg>

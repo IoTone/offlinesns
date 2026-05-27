@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 720" width="100%" style="max-width:380px;height:auto;display:block;background:#000000;border-radius:18px;box-shadow:0 0 0 1px #2a2a26 inset">
+<!-- Backdrop -->
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#0E0E0C"/>
+    <stop offset="1" stop-color="#000000"/>
+  </linearGradient>
+</defs>
+<rect width="360" height="720" fill="url(#bg)" rx="18"/>
+<!-- Status bar -->
+<text x="20" y="22" fill="#8a847a" font-size="10"
+      font-family="Menlo,monospace">9:41</text>
+<text x="340" y="22" text-anchor="end" fill="#8a847a"
+      font-size="10" font-family="Menlo,monospace">▲ ▲ ░░</text>
+<!-- AppBar -->
+<rect x="0" y="32" width="360" height="44" fill="#0E0E0C"/>
+<text x="16" y="60" fill="#EDE6D6" font-size="16"
+      font-family="Inter,Helvetica,sans-serif" font-weight="500">Chat</text>
+<text x="16" y="92" fill="#8a847a" font-size="11" font-family="Inter,Helvetica,sans-serif" font-weight="400" letter-spacing="3">CHANNEL · PUBLIC</text>
+<text x="300" y="60" fill="#EDE6D6" font-size="14" font-family="Inter,Helvetica,sans-serif" font-weight="400">#  ◐  ⧊</text>
+<rect x="16" y="108" width="80" height="24" rx="12" fill="#EDE6D6"/>
+<text x="56" y="124" fill="#0E0E0C" font-size="11" font-family="Inter,Helvetica,sans-serif" font-weight="400" text-anchor="middle">Public</text>
+<rect x="104" y="108" width="68" height="24" rx="12" fill="none" stroke="#8a847a"/>
+<text x="138" y="124" fill="#8a847a" font-size="11" font-family="Inter,Helvetica,sans-serif" font-weight="400" text-anchor="middle">Ops</text>
+<rect x="180" y="108" width="76" height="24" rx="12" fill="none" stroke="#8a847a"/>
+<text x="218" y="124" fill="#8a847a" font-size="11" font-family="Inter,Helvetica,sans-serif" font-weight="400" text-anchor="middle">Field</text>
+<rect x="264" y="108" width="84" height="24" rx="12" fill="none" stroke="#8a847a"/>
+<text x="306" y="124" fill="#8a847a" font-size="11" font-family="Inter,Helvetica,sans-serif" font-weight="400" text-anchor="middle">XR Test</text>
+<line x1="0" y1="142" x2="360" y2="142" stroke="#3b3833" stroke-opacity=".6"/>
+<text x="16" y="168" fill="#8a847a" font-size="10" font-family="Menlo,monospace" font-weight="400">21:40 «</text>
+<text x="72" y="168" fill="#EDE6D6" font-size="12" font-family="Inter,Helvetica,sans-serif" font-weight="400">anyone copy on Ops?</text>
+<text x="16" y="198" fill="#8a847a" font-size="10" font-family="Menlo,monospace" font-weight="400">21:41 «</text>
+<text x="72" y="198" fill="#EDE6D6" font-size="12" font-family="Inter,Helvetica,sans-serif" font-weight="400">5x5 from the hill</text>
+<text x="16" y="228" fill="#9CFF00" font-size="10" font-family="Menlo,monospace" font-weight="400">21:42 »</text>
+<text x="72" y="228" fill="#EDE6D6" font-size="12" font-family="Inter,Helvetica,sans-serif" font-weight="400">rolling out to the site, ETA 12 min</text>
+<text x="16" y="258" fill="#8a847a" font-size="10" font-family="Menlo,monospace" font-weight="400">21:43 «</text>
+<text x="72" y="258" fill="#EDE6D6" font-size="12" font-family="Inter,Helvetica,sans-serif" font-weight="400">ack — meet at the gate</text>
+<text x="16" y="288" fill="#8a847a" font-size="10" font-family="Menlo,monospace" font-weight="400">21:44 «</text>
+<text x="72" y="288" fill="#EDE6D6" font-size="12" font-family="Inter,Helvetica,sans-serif" font-weight="400">weather looks fine; light wind</text>
+<rect x="12" y="604" width="296" height="40" rx="6" fill="none" stroke="#8a847a"/>
+<text x="24" y="628" fill="#8a847a" font-size="12" font-family="Inter,Helvetica,sans-serif" font-weight="400">Message Public</text>
+<text x="328" y="630" fill="#EDE6D6" font-size="18" font-family="Inter,Helvetica,sans-serif" font-weight="400">↗</text>
+<rect x="0" y="664" width="360" height="56" fill="#0E0E0C" stroke="#3b3833" stroke-opacity=".6" stroke-width="1"/>
+<text x="45.0" y="692" fill="#8a847a" font-size="14" text-anchor="middle">⬜</text>
+<text x="45.0" y="710" fill="#8a847a" font-size="9" text-anchor="middle" letter-spacing="1">Dashboard</text>
+<text x="135.0" y="692" fill="#EDE6D6" font-size="14" text-anchor="middle">💬</text>
+<text x="135.0" y="710" fill="#EDE6D6" font-size="9" text-anchor="middle" letter-spacing="1">Chat</text>
+<text x="225.0" y="692" fill="#8a847a" font-size="14" text-anchor="middle">📡</text>
+<text x="225.0" y="710" fill="#8a847a" font-size="9" text-anchor="middle" letter-spacing="1">Nodes</text>
+<text x="315.0" y="692" fill="#8a847a" font-size="14" text-anchor="middle">⚙</text>
+<text x="315.0" y="710" fill="#8a847a" font-size="9" text-anchor="middle" letter-spacing="1">Settings</text>
+</svg>
