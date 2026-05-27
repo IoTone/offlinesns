@@ -197,5 +197,5 @@ Both are healthy for the ecosystem. Neither replaces the other.
 
 # End
 
-<a class="deck-link" href="/tboc/">← Back to TBOC</a>
-<a class="deck-link" href="/tboc/meshmore-sns/">Next: Meshmore SNS →</a>
+<a class="deck-link" href="/en/tboc/">← Back to TBOC</a>
+<a class="deck-link" href="/en/tboc/meshmore-sns/">Next: Meshmore SNS →</a>

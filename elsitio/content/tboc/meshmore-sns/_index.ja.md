@@ -50,17 +50,16 @@ MeshCore 向けの Flutter クライアント — 主張があり、テーマ可
 
 ## スクリーンショット
 
-<section data-noprocess>
-  <small>（プレースホルダ — <code>static/images/meshmore/</code> にスクリーンショットを置けばここに表示されます。）</small>
-  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1em; margin-top: 1em;">
-    <div><img src="/images/meshmore/dashboard.png" alt="Dashboard" onerror="this.style.opacity=0.2"/><small>ダッシュボード</small></div>
-    <div><img src="/images/meshmore/globe.png" alt="Globe view" onerror="this.style.opacity=0.2"/><small>地球儀</small></div>
-    <div><img src="/images/meshmore/grid.png" alt="Equal grid" onerror="this.style.opacity=0.2"/><small>等間隔グリッド</small></div>
-    <div><img src="/images/meshmore/fabric.png" alt="Fabric survey" onerror="this.style.opacity=0.2"/><small>面調査</small></div>
-    <div><img src="/images/meshmore/elevation.png" alt="Elevation profile" onerror="this.style.opacity=0.2"/><small>標高プロファイル</small></div>
-    <div><img src="/images/meshmore/dm.png" alt="DM" onerror="this.style.opacity=0.2"/><small>ダイレクトメッセージ</small></div>
-  </div>
-</section>
+<small>（プレースホルダ — <code>static/images/meshmore/</code> にスクリーンショットを置けばここに表示されます。）</small>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1em; margin-top: 1em;">
+  <div><img src="/images/meshmore/dashboard.png" alt="Dashboard" onerror="this.style.opacity=0.2"/><small>ダッシュボード</small></div>
+  <div><img src="/images/meshmore/globe.png" alt="Globe view" onerror="this.style.opacity=0.2"/><small>地球儀</small></div>
+  <div><img src="/images/meshmore/grid.png" alt="Equal grid" onerror="this.style.opacity=0.2"/><small>等間隔グリッド</small></div>
+  <div><img src="/images/meshmore/fabric.png" alt="Fabric survey" onerror="this.style.opacity=0.2"/><small>面調査</small></div>
+  <div><img src="/images/meshmore/elevation.png" alt="Elevation profile" onerror="this.style.opacity=0.2"/><small>標高プロファイル</small></div>
+  <div><img src="/images/meshmore/dm.png" alt="DM" onerror="this.style.opacity=0.2"/><small>ダイレクトメッセージ</small></div>
+</div>
 
 ---
 

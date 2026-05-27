@@ -50,17 +50,16 @@ A Flutter client for MeshCore — opinionated, themeable, and unapologetically b
 
 ## Screenshots
 
-<section data-noprocess>
-  <small>(Placeholders — drop screenshots into <code>static/images/meshmore/</code> and they'll render here.)</small>
-  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1em; margin-top: 1em;">
-    <div><img src="/images/meshmore/dashboard.png" alt="Dashboard" onerror="this.style.opacity=0.2"/><small>Dashboard</small></div>
-    <div><img src="/images/meshmore/globe.png" alt="Globe view" onerror="this.style.opacity=0.2"/><small>Globe view</small></div>
-    <div><img src="/images/meshmore/grid.png" alt="Equal grid" onerror="this.style.opacity=0.2"/><small>Equal grid</small></div>
-    <div><img src="/images/meshmore/fabric.png" alt="Fabric survey" onerror="this.style.opacity=0.2"/><small>Fabric survey</small></div>
-    <div><img src="/images/meshmore/elevation.png" alt="Elevation profile" onerror="this.style.opacity=0.2"/><small>Elevation profile</small></div>
-    <div><img src="/images/meshmore/dm.png" alt="DM" onerror="this.style.opacity=0.2"/><small>Direct message</small></div>
-  </div>
-</section>
+<small>(Placeholders — drop screenshots into <code>static/images/meshmore/</code> and they'll render here.)</small>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1em; margin-top: 1em;">
+  <div><img src="/images/meshmore/dashboard.png" alt="Dashboard" onerror="this.style.opacity=0.2"/><small>Dashboard</small></div>
+  <div><img src="/images/meshmore/globe.png" alt="Globe view" onerror="this.style.opacity=0.2"/><small>Globe view</small></div>
+  <div><img src="/images/meshmore/grid.png" alt="Equal grid" onerror="this.style.opacity=0.2"/><small>Equal grid</small></div>
+  <div><img src="/images/meshmore/fabric.png" alt="Fabric survey" onerror="this.style.opacity=0.2"/><small>Fabric survey</small></div>
+  <div><img src="/images/meshmore/elevation.png" alt="Elevation profile" onerror="this.style.opacity=0.2"/><small>Elevation profile</small></div>
+  <div><img src="/images/meshmore/dm.png" alt="DM" onerror="this.style.opacity=0.2"/><small>Direct message</small></div>
+</div>
 
 ---
 
@@ -127,7 +126,7 @@ A short, honest section.
 - Test coverage is the safety net: 200+ tests, including conformance vectors against hex captures from a real device. If the codec drifts, the suite catches it.
 - We disclose this **on the about screen** and **here**. Anyone considering using or extending the app can make an informed decision.
 
-This is the position the [MeshCore "split"](/tboc/meshcore-intro/#/9) put a spotlight on — and we're choosing the opposite end of the disclosure axis from what triggered it. You can disagree with the choice; you can't say it's hidden.
+This is the position the [MeshCore "split"](/en/tboc/meshcore-intro/#/9) put a spotlight on — and we're choosing the opposite end of the disclosure axis from what triggered it. You can disagree with the choice; you can't say it's hidden.
 
 </section>
 
@@ -148,5 +147,5 @@ This is the position the [MeshCore "split"](/tboc/meshcore-intro/#/9) put a spot
 
 # End
 
-<a class="deck-link" href="/tboc/">← Back to TBOC</a>
-<a class="deck-link" href="/tboc/intro/">Restart with Intro →</a>
+<a class="deck-link" href="/en/tboc/">← Back to TBOC</a>
+<a class="deck-link" href="/en/tboc/intro/">Restart with Intro →</a>

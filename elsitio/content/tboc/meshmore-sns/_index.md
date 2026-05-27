@@ -50,17 +50,16 @@ A Flutter client for MeshCore — opinionated, themeable, and unapologetically b
 
 ## Screenshots
 
-<section data-noprocess>
-  <small>(Placeholders — drop screenshots into <code>static/images/meshmore/</code> and they'll render here.)</small>
-  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1em; margin-top: 1em;">
-    <div><img src="/images/meshmore/dashboard.png" alt="Dashboard" onerror="this.style.opacity=0.2"/><small>Dashboard</small></div>
-    <div><img src="/images/meshmore/globe.png" alt="Globe view" onerror="this.style.opacity=0.2"/><small>Globe view</small></div>
-    <div><img src="/images/meshmore/grid.png" alt="Equal grid" onerror="this.style.opacity=0.2"/><small>Equal grid</small></div>
-    <div><img src="/images/meshmore/fabric.png" alt="Fabric survey" onerror="this.style.opacity=0.2"/><small>Fabric survey</small></div>
-    <div><img src="/images/meshmore/elevation.png" alt="Elevation profile" onerror="this.style.opacity=0.2"/><small>Elevation profile</small></div>
-    <div><img src="/images/meshmore/dm.png" alt="DM" onerror="this.style.opacity=0.2"/><small>Direct message</small></div>
-  </div>
-</section>
+<small>(Placeholders — drop screenshots into <code>static/images/meshmore/</code> and they'll render here.)</small>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1em; margin-top: 1em;">
+  <div><img src="/images/meshmore/dashboard.png" alt="Dashboard" onerror="this.style.opacity=0.2"/><small>Dashboard</small></div>
+  <div><img src="/images/meshmore/globe.png" alt="Globe view" onerror="this.style.opacity=0.2"/><small>Globe view</small></div>
+  <div><img src="/images/meshmore/grid.png" alt="Equal grid" onerror="this.style.opacity=0.2"/><small>Equal grid</small></div>
+  <div><img src="/images/meshmore/fabric.png" alt="Fabric survey" onerror="this.style.opacity=0.2"/><small>Fabric survey</small></div>
+  <div><img src="/images/meshmore/elevation.png" alt="Elevation profile" onerror="this.style.opacity=0.2"/><small>Elevation profile</small></div>
+  <div><img src="/images/meshmore/dm.png" alt="DM" onerror="this.style.opacity=0.2"/><small>Direct message</small></div>
+</div>
 
 ---
 
