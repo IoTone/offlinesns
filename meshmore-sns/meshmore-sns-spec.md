@@ -664,6 +664,43 @@ While Meshcore protocol is open source, the client is not open source.  We want 
   - **i18n.** First pass targets EN cue patterns + the region's place
     names; JA banter patterns follow. Cue lists are localisable.
 
+- R55: **skin system** (design-system foundation for re-imagining every
+  screen per the UX brief). Reskinning must be *cheap*: defining a new
+  concept should be authoring a **bundle**, not editing every screen.
+  - **A skin is a bundle, not a palette.** Promote the per-preset
+    appearance from 9 colours (`MmTokens`) to `MmSkin` = colour +
+    **typography** (`MmType`) + **shape** (`MmShape`: sharp / rounded /
+    chamfer + corner size + border) + **ornament** (`MmOrnament`:
+    scanline opacity, corner brackets, hazard-stripe headers). Resolved
+    per preset by `mmSkinFor`, read everywhere via **`context.skin`**
+    (high-contrast forces the SEELE skin, the a11y benchmark).
+  - **Branded component library** (`lib/ui/`): screens compose
+    skin-aware widgets — `MmPanel` (chamfer/rounded/sharp per skin),
+    `MmSectionHeader` (hazard-stripe vs plain), `MmReadout`,
+    `MmStatusPill`, `MmScaffold` + `SkinChromePainter` (CRT scanlines +
+    corner brackets, **suppressed under reduce-motion** per R13). A
+    screen built from these reskins *by changing the bundle*, with zero
+    screen edits.
+  - **Per-screen layout re-imagination**, two mechanisms: (a) **slot
+    data** — a screen gathers its content as a skin-agnostic model
+    (`DashboardModel`) and each skin renders it; (b) a **per-skin layout
+    override** — a host (`DashboardHost`) dispatches a distinct layout
+    for a concept and inherits the default elsewhere (additive, never
+    all-or-nothing). Proven by the **Dashboard**: NERV Terminal (chamfered
+    telemetry-grid, hazard headers, scanline) vs SEELE Monolith, switched
+    live in Personalization from one model.
+  - **Migration path (keeps effort bounded).** Foundation is built once;
+    each concept after is a `skins/<concept>` bundle (+ optional layout
+    overrides). Screens move onto `MmScaffold`/`MmPanel` opportunistically
+    (highest-identity first); until migrated, a screen looks as it does
+    today. Painters take a palette param so visualisations follow the
+    skin. The existing `brand/` Python pipeline (audio packs, grid
+    mockups) can generate the Dart bundles from one per-concept spec.
+  - **Status:** first vertical slice shipped (tokens + components + chrome
+    + Dashboard in two divergent skins). Remaining: migrate the other
+    screens + concepts (B/C/E/F), bundle the brief's OSS display/mono
+    faces, palette-ize the 9 visualisation painters.
+
 ### Terminology — Fabric vs Contact
 
 - **Fabric** = the set of nodes we have *seen* on the mesh (any
