@@ -527,6 +527,143 @@ While Meshcore protocol is open source, the client is not open source.  We want 
     current location AND capturing a trail at the same
     time — different goals, different stores).
 
+- R52: **prominent device-name editing**. Setting the node's
+  advertised name (R7's `CMD_SET_ADVERT_NAME`, ≤31 bytes) must be a
+  first-class, discoverable action — not buried in Device config.
+  - The device name on the **Dashboard** radio readout is tappable
+    (with an edit affordance) and opens an inline rename dialog;
+    Device config keeps its existing name field too.
+  - Renaming is handled end-to-end: after the write the app fires a
+    `refreshSelfInfo` (zero-hop self-advert + appStart) so the new
+    name (a) propagates to neighbours immediately rather than waiting
+    for the next scheduled advert, and (b) is re-read into SelfInfo so
+    every app surface reflects it without a reconnect.
+  - Empty names are rejected with feedback; an unset name renders as
+    a neutral "(unnamed)" placeholder.
+
+- R53: **offline docs reader**. A dedicated **Docs** primary view
+  (placed **after** Settings in the swipe shell) that lets the user read
+  reference documentation entirely offline, rendered in the app's
+  futuristic monospace style (tracked uppercase headings + accent rules;
+  platform monospace family, no bundled font).
+  - Three sections: **Protocol** (MeshCore companion radio protocol),
+    **Firmware** (the MeshCore firmware README, matched to the
+    connected device's firmware version), and **App** (self-authored
+    documentation of this app).
+  - **TODO (app docs):** the App section currently ships a single
+    **summary** doc (`assets/docs/app.md`). Replace it with real
+    **per-feature** documentation — a new `online-help-md` doc set
+    **with screenshots**, one section per feature — rather than one
+    overview page. `app.md` stays as a placeholder until then.
+  - **Offline-first with opportunistic refresh.** Each section ships a
+    baked-in snapshot asset so it is always readable with no
+    connectivity. When online, the reader fetches the upstream copy
+    (firmware README at the device's fw-version tag, then `main`;
+    protocol from the companion-protocol wiki) and, if it differs,
+    caches it (SharedPreferences) so the next open serves the newer
+    text. A failed/absent fetch is a silent no-op. The App section has
+    no remote and never hits the network.
+  - The reader shows provenance (bundled snapshot vs "updated <when>",
+    plus the matched device firmware version) and a manual refresh
+    action. Upstream: `meshcore-dev/MeshCore`. The doc-fetch network
+    seam is injectable for tests; markdown is parsed with the pure-Dart
+    `markdown` package and rendered to widgets in-app (images degrade
+    to alt text — no remote image loads).
+
+- R54: **message-derived place inference ("place echoes")**. Scan
+  incoming channel banter for references to real places and plot
+  low-confidence **inferred-place markers** on the hyperlocal grid
+  **SNS** view, scoped to the user's locked region. ~30% of casual
+  mesh chatter names a location ("Hello from Burnside", "10 hops to
+  West Seattle", "QTH Ballard"); this turns that latent signal into a
+  glanceable social-geography layer — *without* any node having to
+  share GPS.
+  - **Offline + region-scoped, no LLM.** Extraction and matching run
+    fully on-device against the bundled gazetteer (R25 GeoNames +
+    whatever finer place data we add — see *data gap* below),
+    constrained to the active region's bounding box / a max radius of
+    the **known location** (R22/R39). Region-scoping is also the
+    disambiguator: "Burnside" resolves to the *local* Burnside, not a
+    global namesake, by proximity to where the user actually is.
+  - **Extraction pipeline** (per inbound message on an enabled
+    channel), a pure-Dart, unit-testable engine:
+    1. Detect candidate spans: capitalized proper-noun runs
+       ("West Seattle"); strong context cues ("from X", "hello from
+       X", "near X", "QTH X", "<n> hops to X", "X → Y", "heading to
+       X"); **directional / relative modifiers** bound to an anchor
+       place ("west of Seattle", "north end", "outskirts of X",
+       "downtown X", "X side"); and explicit geocoords (decimal
+       lat/lon, DMS, and **Maidenhead grid locators** — common in
+       ham/LoRa banter).
+    2. Normalise + look up each candidate against the region-scoped
+       gazetteer (case-insensitive, alias-aware, bounded fuzzy match).
+    3. **Confidence score (0–1)** from: exact vs fuzzy match quality,
+       in-region prominence (population/rank), context-cue strength,
+       candidate uniqueness, and distance plausibility (in-bbox; if a
+       hop count is present, within a plausible range). Coordinates
+       parse at high confidence directly.
+    4. **Place only at ≥ 0.80 confidence.** Below threshold → ignored
+       (logged to a tuning diagnostic, not shown).
+  - **"From X to Y" ambiguity.** When the text frames a *pair*
+    ("Burnside to West Seattle", "X → Y") the sender's own position is
+    unknowable, so plot an inferred marker at **both** endpoints, each
+    independently scored, drawn as a linked/ambiguous pair (a faint
+    connector) rather than asserting a single location. ("Trigger a
+    message in X and Y" is **confirmed** to mean *place a marker at
+    both endpoints.*) Hop-count cues are treated as a directional /
+    range hint only — they never pinpoint.
+  - **Rendering on the SNS grid.** Inferred places are a **distinct,
+    clearly-non-node marker class** — ghost/dashed styling, an
+    "inferred" glyph, muted — never confused with real nodes and never
+    affecting routing, telemetry, battery, or the radar's real-node
+    placement. Tapping shows the source snippet, channel, sender (name
+    prefix), matched place + confidence, and a **"not a place /
+    dismiss"** action (user feedback for tuning). Markers are
+    **ephemeral** (decay after a TTL, e.g. 30–60 min) and
+    **reinforced by repetition** — repeated independent mentions raise
+    confidence/heat and feed the existing sns-cells heat map.
+  - **Per-channel configuration.** A new per-channel option,
+    *"Infer places from messages,"* lives in the channel settings
+    (R6/R32 channel edit). **Default OFF** for channels generally,
+    **default ON for the public channel (#1 / the default `Public`
+    channel)** where banter is densest. Disabled channels are never
+    scanned. Persisted per channel index.
+  - **Privacy / safety.** Inputs are public banter the user already
+    receives; all processing is on-device, display-only. Inferred
+    places are explicitly *claims* — low-trust, labelled with
+    confidence, ephemeral, dismissible — so a spoofed "Hello from
+    <place>" can never be mistaken for ground truth or trigger any
+    action. Inferred locations are **never echoed back onto the mesh**
+    and never persisted as a node's location.
+  - **Ballpark placement model (informational, not geographic).** This
+    is the heart of the design and the answer to the city-vs-
+    neighbourhood data gap. The SNS grid is an *informational* data
+    representation, **not** a survey map, so we do not need precise
+    coordinates for sub-city places. Resolution is:
+    1. **Anchor** the reference to the nearest known place in the
+       gazetteer — almost always a **city centre** from cities15000
+       ("West Seattle", "Ballard" → *Seattle*; "Burnside" → *Portland*).
+    2. Apply any **directional / relative modifier** as an **offset
+       vector** from that centre — "west of" → push west, "north end"
+       → push north, "downtown/centre" → no offset, "outskirts" →
+       larger offset — scaled to a fraction of the anchor's footprint
+       (or the current grid range). Cardinal words map to bearings;
+       multiple words compose ("NW").
+    3. Place the marker at that **approximate** point, with **sector /
+       deterministic jitter** so distinct references don't stack.
+    Confidence reflects the ballpark nature (anchor match high; the
+    offset is a hint, not a measurement). **This needs no new dataset
+    — cities15000 + directional offsets is enough to ship**, and it
+    directly fixes today's misleading behaviour where ~95% of banter
+    (senders share no GPS) piles onto the user's own **home turf**.
+    A finer region-scoped place layer (GeoNames `PPLX`/admin +
+    alt-names, an OSM/WOF neighbourhood extract, or a curated local
+    alias list, packed offline like R25) is an **optional later
+    refinement** that sharpens offsets — explicitly *not* a
+    prerequisite.
+  - **i18n.** First pass targets EN cue patterns + the region's place
+    names; JA banter patterns follow. Cue lists are localisable.
+
 ### Terminology — Fabric vs Contact
 
 - **Fabric** = the set of nodes we have *seen* on the mesh (any
