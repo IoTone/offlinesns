@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""Synthesize the per-theme audio assets for R12 CueService — 6 themes
-× 7 CueKinds = 42 WAV files. Pure stdlib (wave + struct + math), so
+"""Synthesize the per-theme audio assets for R12 CueService — one WAV
+per (theme × CueKind). Pure stdlib (wave + struct + math), so
 re-runnable from any Python 3.
 
 Each theme has a **sonic signature** (base note + waveshape + envelope
@@ -69,14 +69,33 @@ THEMES = {
         # ticks, and a descending **sawtooth klaxon** for critical /
         # link-lost. The rest fall through to square-wave blips.
         cues={
-            "messageIn": dict(score=[(1.0, 0.05), (1.335, 0.06)], amp=0.50),
+            # Crisp upper-register double-tick — a "telemetry packet
+            # arrived" blip, clearly synthetic and distinct from a chime.
+            "messageIn": dict(score=[(2.0, 0.035), (1.5, 0.05)], amp=0.52),
             # DM is a distinct 3-blip burst so it doesn't read as channel.
             "dmIn": dict(
-                score=[(1.335, 0.045), (1.0, 0.05), (1.335, 0.06)],
+                score=[(2.0, 0.04), (1.5, 0.045), (2.0, 0.055)],
                 amp=0.55),
-            # Geiger ticks — "a node decayed into view".
+            # New node — a soft rising two-blip "a node appeared". (Was a
+            # sharp Geiger-tick burst; the user heard it as static/insects
+            # over the air, so this is a cleaner tonal cue instead.)
             "discovery": dict(
-                kind="ticks", count=4, dur=0.30, ratio=3.0, amp=0.50),
+                score=[(1.0, 0.05), (1.5, 0.07)], amp=0.42),
+            # Re-advert — a SINGLE soft low blip (ambient "still out
+            # there"), quiet and sparse so the background re-advert traffic
+            # doesn't read as static. Distinct from discovery's rising pair.
+            "advert": dict(
+                score=[(0.75, 0.06)], amp=0.24),
+            # App power-on — an ascending square sweep (terminal warming
+            # up), distinct from the tonal triad the other themes use.
+            "boot": dict(
+                kind="sweep", start=0.5, end=1.5, dur=0.40, amp=0.55),
+            # Forward swipe — crisp ascending square pair.
+            "navNext": dict(
+                score=[(1.5, 0.03), (2.0, 0.04)], amp=0.34),
+            # Back swipe — crisp descending square pair (mirror).
+            "navPrev": dict(
+                score=[(2.0, 0.03), (1.5, 0.04)], amp=0.34),
             # Descending sawtooth klaxon, wailed twice (emergency).
             "alert": dict(
                 kind="sweep", start=2.4, end=0.7, dur=0.32, repeat=2,
@@ -157,10 +176,32 @@ CUES = {
         score=[(1.0, 0.06), (4 / 3, 0.10)],
         amp=0.50,
     ),
+    "advert": dict(
+        # a single soft mid ping — "a node is out there", gentler and
+        # sparser than discovery (a brand-new node). Rate-limited app-side.
+        score=[(1.5, 0.08)],
+        amp=0.30,
+    ),
     "send": dict(
         # very brief, just-acknowledged
         score=[(2.0, 0.06)],
         amp=0.35,
+    ),
+    "boot": dict(
+        # app power-on — a warm ascending triad, a touch longer so it
+        # reads as "coming to life" under the splash.
+        score=[(0.5, 0.10), (1.0, 0.10), (1.5, 0.16)],
+        amp=0.55,
+    ),
+    "navNext": dict(
+        # forward swipe — a short upward blip
+        score=[(1.0, 0.04), (1.5, 0.05)],
+        amp=0.32,
+    ),
+    "navPrev": dict(
+        # back swipe — a short downward blip (mirror of navNext)
+        score=[(1.5, 0.04), (1.0, 0.05)],
+        amp=0.32,
     ),
     "linkUp": dict(
         # positive ascending 2-note (root, fifth, octave-ish)
@@ -178,9 +219,13 @@ CUES = {
         amp=0.75,
     ),
     "scanStart": dict(
-        # short ascending pair — "we're starting something"
-        score=[(1.0, 0.06), (1.25, 0.08)],
-        amp=0.45,
+        # The "scanning…" drone — LOOPED by the player for the whole scan
+        # window (not a one-shot). A held low tone with slow vibrato; long
+        # dur + short fades so the loop is near-steady and click-free, and
+        # a quieter amp (the loop player also lowers gain) so it sits under
+        # everything during a multi-second scan.
+        kind="hum", ratio=0.5, dur=1.5, vib_depth=0.010, vib_rate=5.0,
+        attack=0.02, release=0.05, amp=0.26,
     ),
     "taskOk": dict(
         # rising 5th to octave — positive resolve, subtler than linkUp
@@ -246,6 +291,40 @@ def _synth_sweep(th, cue):
     return samples
 
 
+def _synth_hum(th, cue):
+    """A sustained hum — a held tone in the theme's timbre with a soft
+    linear attack/release (no exp decay, so it actually *sustains*) and a
+    slow vibrato. Used for the "scanning…" drone."""
+    base = th["base"]
+    f = base * cue.get("ratio", 0.5)
+    dur, amp = cue["dur"], cue["amp"]
+    depth, vrate = cue.get("vib_depth", 0.012), cue.get("vib_rate", 6.0)
+    # Attack/release fade the clip ends to zero so it loops click-free
+    # (the player repeats this WAV for the whole scan window). Keep them
+    # short so the looped drone reads as near-steady, not pulsing.
+    attack = cue.get("attack", 0.03)
+    release = cue.get("release", 0.10)
+    timbre = th["timbre"]
+    n = int(SR * dur)
+    phase = 0.0
+    samples = []
+    for i in range(n):
+        t = i / SR
+        # vibrato — accumulate phase so the pitch wobbles cleanly
+        fi = f * (1.0 + depth * math.sin(2 * math.pi * vrate * t))
+        phase += 2 * math.pi * fi / SR
+        # render the theme timbre at the wobbled phase (t≈phase/2πf)
+        s = timbre(fi, phase / (2 * math.pi * fi)) if fi else 0.0
+        if t < attack:
+            env = t / attack
+        elif t > dur - release:
+            env = max(0.0, (dur - t) / release)
+        else:
+            env = 1.0
+        samples.append(int(max(-1.0, min(1.0, amp * s * env)) * 32767))
+    return samples
+
+
 def _synth_ticks(th, cue):
     """Geiger-counter ticks — a run of very short, sharp high square
     clicks at irregular (deterministic) spacing. Used for NERV's node
@@ -275,6 +354,8 @@ def _synth_one(theme_key, cue_key):
         samples = _synth_sweep(th, cue)
     elif kind == "ticks":
         samples = _synth_ticks(th, cue)
+    elif kind == "hum":
+        samples = _synth_hum(th, cue)
     else:
         samples = _synth_score(th, cue)
     # Small fade-out at the very end (8 ms) to avoid clicks.
