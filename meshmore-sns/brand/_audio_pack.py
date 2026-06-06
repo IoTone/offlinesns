@@ -123,6 +123,30 @@ THEMES = {
         base=440.0,                       # A4
         timbre=lambda f, t: _sine(f, t),
         decay=2.0,                        # long ring-out
+        # C — Hyperlocal "Sonar" pack: calm, organic, field-tuned. The
+        # discovery ping sonically mirrors the radar blip; messages are a
+        # gentle two-note; link state is low calm tones. Sparse + soft so
+        # it doesn't fatigue outdoors. Pure sine + the theme's long ring.
+        cues={
+            # Node discovery — a classic sonar "ping": a sine tone that
+            # glides slightly down and rings out (mirrors the radar blip).
+            "discovery": dict(
+                kind="sweep", start=1.6, end=1.18, dur=0.5, amp=0.5),
+            # Re-advert — a soft single ping, quiet and sparse (the
+            # ambient "still out there" pulse). Rides the long ring.
+            "advert": dict(score=[(1.0, 0.12)], amp=0.26),
+            # Gentle two-note message (calm rising pair).
+            "messageIn": dict(
+                score=[(1.0, 0.10), (1.25, 0.16)], amp=0.40),
+            # DM — a more present two-note (wider interval).
+            "dmIn": dict(
+                score=[(1.0, 0.10), (1.5, 0.18)], amp=0.46),
+            # Link state — low calm tones (down an octave from base).
+            "linkUp": dict(
+                score=[(0.75, 0.12), (1.0, 0.18)], amp=0.46),
+            "linkDown": dict(
+                score=[(1.0, 0.12), (0.75, 0.18)], amp=0.46),
+        },
     ),
     "drpop": dict(  # bright pop / synth pluck
         base=783.99,                      # G5
