@@ -118,6 +118,32 @@ THEMES = {
         timbre=lambda f, t: 0.6 * _sine(f, t)
                             + 0.4 * _square(f, t, harmonics=3),
         decay=6.0,
+        # B — AG-HUD "Velocity" pack: arcade / electronic, energetic.
+        # Bright ascending arpeggios, rising/falling whooshes on swipe, a
+        # major-third confirm on send, an urgent rising alert.
+        cues={
+            "messageIn": dict(score=[(1.5, 0.05), (2.0, 0.06)], amp=0.50),
+            "dmIn": dict(
+                score=[(1.0, 0.05), (1.5, 0.05), (2.0, 0.07)], amp=0.55),
+            # Discovery — a bright "pickup" arpeggio.
+            "discovery": dict(
+                score=[(1.0, 0.05), (1.5, 0.05), (2.5, 0.08)], amp=0.50),
+            # Send — a clean major-third confirm (1 : 5/4).
+            "send": dict(score=[(1.0, 0.05), (1.25, 0.08)], amp=0.45),
+            # Navigation — rising / falling whooshes (glissando).
+            "navNext": dict(
+                kind="sweep", start=1.0, end=2.2, dur=0.18, amp=0.42),
+            "navPrev": dict(
+                kind="sweep", start=2.2, end=1.0, dur=0.18, amp=0.42),
+            # Link up — energetic ascending triad.
+            "linkUp": dict(
+                score=[(1.0, 0.06), (1.5, 0.06), (2.0, 0.09)], amp=0.60),
+            # Alert — an urgent rising sweep, wailed twice.
+            "alert": dict(
+                kind="sweep", start=1.5, end=3.0, dur=0.22, repeat=2,
+                amp=0.74),
+            "taskOk": dict(score=[(2.0, 0.07), (2.5, 0.10)], amp=0.55),
+        },
     ),
     "hyperlocal": dict(  # sonar ping, long decay
         base=440.0,                       # A4
@@ -153,6 +179,28 @@ THEMES = {
         timbre=lambda f, t: 0.55 * _saw(f, t)
                             + 0.45 * _sine(f * 2, t),
         decay=7.0,
+        # E — DR Pop "Pure Phase" pack: bright syncopated arcade blips,
+        # funky confirms, Wipeout-soundtrack energy. Short + punchy (the
+        # theme's fast decay) and pitched high for a rave-y pop.
+        cues={
+            "messageIn": dict(score=[(2.0, 0.04), (2.0, 0.05)], amp=0.50),
+            "dmIn": dict(
+                score=[(2.0, 0.04), (1.5, 0.04), (3.0, 0.06)], amp=0.55),
+            # Discovery — an arcade "coin" pickup.
+            "discovery": dict(
+                score=[(1.5, 0.04), (2.0, 0.04), (3.0, 0.07)], amp=0.50),
+            # Send — a funky two-blip confirm.
+            "send": dict(score=[(2.0, 0.04), (3.0, 0.07)], amp=0.50),
+            "navNext": dict(score=[(2.0, 0.03), (3.0, 0.05)], amp=0.40),
+            "navPrev": dict(score=[(3.0, 0.03), (2.0, 0.05)], amp=0.40),
+            "linkUp": dict(
+                score=[(1.0, 0.05), (2.0, 0.05), (3.0, 0.08)], amp=0.60),
+            # Alert — a syncopated rave alarm (triple wail).
+            "alert": dict(
+                kind="sweep", start=2.0, end=3.0, dur=0.16, repeat=3,
+                amp=0.70),
+            "taskOk": dict(score=[(2.0, 0.05), (3.0, 0.09)], amp=0.55),
+        },
     ),
     "recon": dict(  # codec chirp, stuttery
         base=587.33,                      # D5
@@ -160,6 +208,31 @@ THEMES = {
                             + 0.15 * _sine(f * 3, t),
         decay=9.0,
         stutter=True,
+        # F — Recon "Codec" pack: comms-radio. Terse UHF beeps (the
+        # theme's stutter gate makes score cues chirp like a codec),
+        # squelch sweeps on link change, and the MGS-style codec ring for
+        # critical. Quiet — designed to run *fully silent* without losing
+        # information (parity is the amber blink + haptic).
+        cues={
+            # Terse UHF beeps.
+            "messageIn": dict(score=[(2.0, 0.05)], amp=0.45),
+            "dmIn": dict(score=[(2.0, 0.04), (2.0, 0.05)], amp=0.48),
+            "discovery": dict(score=[(1.5, 0.05), (2.0, 0.06)], amp=0.45),
+            # Re-advert — a faint single beep.
+            "advert": dict(score=[(2.0, 0.04)], amp=0.28),
+            "send": dict(score=[(2.0, 0.05)], amp=0.40),
+            # Link change — short squelch sweeps (open / close).
+            "linkUp": dict(
+                kind="sweep", start=1.0, end=1.8, dur=0.14, amp=0.50),
+            "linkDown": dict(
+                kind="sweep", start=1.8, end=0.8, dur=0.16, amp=0.50),
+            # Critical — the codec-call ring: an alternating two-tone,
+            # repeated (doo-doo-doo-doo).
+            "alert": dict(
+                score=[(1.5, 0.06), (1.0, 0.06), (1.5, 0.06), (1.0, 0.07)],
+                amp=0.60),
+            "taskOk": dict(score=[(2.0, 0.05), (2.5, 0.07)], amp=0.48),
+        },
     ),
 }
 
