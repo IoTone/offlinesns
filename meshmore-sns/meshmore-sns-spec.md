@@ -1295,3 +1295,51 @@ configuration* (Flutter Android + Seeed T1000-E nodes on MeshCore).
 - TC6: (Manual test) Verify app detects reconnect when device is back online
   — ✅ **PASSED on hardware 2026-05-17** (user-verified; very low
   latency)
+
+---
+
+## Implemented since M7 — companion-app capabilities (updated 2026-06-07)
+
+This section records features shipped in the Flutter companion app
+(`meshmore_sns_app/responsive_starter_app`) beyond the core protocol/test
+criteria above. Detailed designs live alongside this spec
+(`meshmore-sns-microclimate-wx.md`, `meshmore-sns-meshbook-mbk.md`).
+
+### Reskin / theme system (R55)
+The 6 UX-brief concepts (A–F) are realised as switchable **skins** — each
+a bundle of colour + type + shape + ornament (`MmSkin`, read via
+`context.skin`), with branded components in `lib/ui` (`MmScaffold`,
+`MmPanel`, `MmSectionHeader`, `MmReadout`, `MmStatusPill`). All six have a
+**bespoke forked dashboard** (`DashboardHost` dispatches per preset):
+A NERV telemetry grid, B AG-HUD radial gauge, C Hyperlocal node-radar,
+D SEELE monolith (baseline), E DR Pop colour blocks, F Recon amber
+compass+waypoints. Each also has a per-theme **audio pack** (synth in
+`brand/_audio_pack.py`): Mission Control / Velocity / Sonar / Tribunal /
+Pure Phase / Codec. Audible cues default ON with a dashboard quick-mute.
+
+### Contact identity + the radio's contact table
+- **Returning-contact reconcile (R56):** a peer deleted+re-added returns
+  under a new pubkey (same name). Detection is data-side (which key holds
+  your favourite/known/tags/DM history), never auto-migrated on name
+  alone; user-confirmed `reconcileIdentity` / manual key-paste link.
+  Superseded keys are pruned so the dead contact can't reappear.
+- **DM routing reality:** DMs route via the **radio's contact list**
+  (channel msgs flood, no contact needed). `addNodeAsDeviceContact`
+  pushes a heard node so DMs reach it; `CMD_REMOVE_CONTACT` frees slots.
+- **Device-contacts probe + scrub (R57):** a Radio-contacts screen shows
+  the true `count/maxContacts` (350-cap) and every entry; scrubs by
+  out-of-range (location-hidden = out of range), not-heard-in-N-days, or
+  all. RESP_CODE_ERR codes are decoded to text (e.g. "contact list full").
+
+### Hyperlocal analysis grids (channel-mined, offline)
+- **Microclimate / wx:** mines the selected channel's chat for weather in
+  the current locale → an ambient strip + per-place bubbles (located via
+  place inference or sender GPS), cross-referenced against real sensor
+  telemetry ("measured").
+- **Meshbook / MBk:** the channel's day — top voices, hourly histogram,
+  reply rate, topics. Per-channel **persisted**, daily-reset, clearable.
+
+### Terminology (do not conflate)
+**Favourite** = an app star · **Known** = you've DM'd them · **Radio /
+device contact** = the firmware's routable list. "Contact" alone always
+means the firmware concept.
