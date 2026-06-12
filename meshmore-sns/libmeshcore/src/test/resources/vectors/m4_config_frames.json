@@ -1,0 +1,92 @@
+{
+  "_source": {
+    "pin_tag": "companion-v1.15.0",
+    "pin_commit": "dee3e26ac081a5c668c69b66c16a6544a44ddc5b",
+    "note": "Device/radio config layouts from examples/companion_radio/MyMesh.cpp at the pin. DEVICE_INFO (82B) is exercised programmatically in config_codec_test.dart."
+  },
+  "encode": [
+    {
+      "name": "SET_RADIO_PARAMS 915MHz/250kHz SF7 CR5",
+      "encoder": "setRadioParams",
+      "args": { "freq": 915.0, "bw": 250.0, "sf": 7, "cr": 5 },
+      "hex": "0b38f60d0090d003000705"
+    },
+    {
+      "name": "SET_RADIO_PARAMS with repeat flag",
+      "encoder": "setRadioParams",
+      "args": { "freq": 915.0, "bw": 250.0, "sf": 7, "cr": 5, "repeat": 1 },
+      "hex": "0b38f60d0090d00300070501"
+    },
+    {
+      "name": "SET_RADIO_TX_POWER 22 dBm",
+      "encoder": "setRadioTxPower",
+      "args": { "dbm": 22 },
+      "hex": "0c16"
+    },
+    {
+      "name": "SET_RADIO_TX_POWER -9 dBm (int8)",
+      "encoder": "setRadioTxPower",
+      "args": { "dbm": -9 },
+      "hex": "0cf7"
+    },
+    {
+      "name": "SET_ADVERT_LATLON 1.0,-2.0",
+      "encoder": "setAdvertLatLon",
+      "args": { "latMicros": 1000000, "lonMicros": -2000000 },
+      "hex": "0e40420f00807be1ff"
+    },
+    {
+      "name": "SET_ADVERT_LATLON with altitude 0",
+      "encoder": "setAdvertLatLon",
+      "args": { "latMicros": 1000000, "lonMicros": -2000000, "altMicros": 0 },
+      "hex": "0e40420f00807be1ff00000000"
+    },
+    {
+      "name": "SET_OTHER_PARAMS manual=1 telemetry=6",
+      "encoder": "setOtherParams",
+      "args": { "manualAddContacts": 1, "telemetryModePacked": 6 },
+      "hex": "260106"
+    },
+    {
+      "name": "SET_OTHER_PARAMS with loc policy + multi acks",
+      "encoder": "setOtherParams",
+      "args": {
+        "manualAddContacts": 1,
+        "telemetryModePacked": 6,
+        "advertLocPolicy": 2,
+        "multiAcks": 3
+      },
+      "hex": "2601060203"
+    },
+    {
+      "name": "SET_TUNING_PARAMS rx=1.5s airtime=2.0",
+      "encoder": "setTuningParams",
+      "args": { "rxDelayBaseSeconds": 1.5, "airtimeFactor": 2.0 },
+      "hex": "15dc050000d0070000"
+    },
+    {
+      "name": "DEVICE_QUERY app_target_ver=3",
+      "encoder": "deviceQuery",
+      "args": { "appTargetVer": 3 },
+      "hex": "1603"
+    },
+    {
+      "name": "GET_BATT_AND_STORAGE",
+      "encoder": "getBatteryStorage",
+      "args": {},
+      "hex": "14"
+    }
+  ],
+  "decode": [
+    {
+      "name": "BATT_AND_STORAGE 4100mV used=256 total=4096",
+      "hex": "0c04100001000000100000",
+      "expect": {
+        "type": "BatteryStorageFrame",
+        "batteryMillivolts": 4100,
+        "storageUsedKb": 256,
+        "storageTotalKb": 4096
+      }
+    }
+  ]
+}

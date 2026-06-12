@@ -1,0 +1,88 @@
+{
+  "_source": {
+    "pin_tag": "companion-v1.15.0",
+    "pin_commit": "dee3e26ac081a5c668c69b66c16a6544a44ddc5b",
+    "note": "DM/contact/advert layouts from examples/companion_radio/MyMesh.cpp + src/Mesh.cpp + src/helpers/AdvertDataHelpers.h at the pin. ADD_UPDATE_CONTACT (149B) and ADVERT (variable) are exercised programmatically in contact_advert_codec_test.dart."
+  },
+  "encode": [
+    {
+      "name": "SEND_TXT_MSG plain to prefix AABBCCDDEEFF ts=0x01020304 'hi'",
+      "encoder": "sendTextMessage",
+      "args": {
+        "pubKeyPrefix": "aabbccddeeff",
+        "timestamp": 16909060,
+        "text": "hi"
+      },
+      "hex": "02000004030201aabbccddeeff6869"
+    },
+    {
+      "name": "SEND_SELF_ADVERT flood",
+      "encoder": "sendSelfAdvert",
+      "args": { "flood": true },
+      "hex": "0701"
+    },
+    {
+      "name": "SEND_SELF_ADVERT zero-hop",
+      "encoder": "sendSelfAdvert",
+      "args": { "flood": false },
+      "hex": "0700"
+    },
+    {
+      "name": "SET_ADVERT_NAME 'Meshmore'",
+      "encoder": "setAdvertName",
+      "args": { "name": "Meshmore" },
+      "hex": "084d6573686d6f7265"
+    }
+  ],
+  "decode": [
+    {
+      "name": "CONTACT_MSG_RECV legacy plain 'yo'",
+      "hex": "07010203040506030004030201796f",
+      "expect": {
+        "type": "ContactMessageFrame",
+        "pubKeyPrefix": "010203040506",
+        "pathLen": 3,
+        "isFlood": false,
+        "txtType": 0,
+        "timestamp": 16909060,
+        "text": "yo",
+        "isV3": false,
+        "snrDb": null,
+        "isSigned": false
+      }
+    },
+    {
+      "name": "CONTACT_MSG_RECV legacy signed flood",
+      "hex": "07010203040506ff0204030201aabbccdd73",
+      "expect": {
+        "type": "ContactMessageFrame",
+        "pubKeyPrefix": "010203040506",
+        "pathLen": 255,
+        "isFlood": true,
+        "txtType": 2,
+        "timestamp": 16909060,
+        "text": "s",
+        "isV3": false,
+        "snrDb": null,
+        "isSigned": true,
+        "signaturePrefix": "aabbccdd"
+      }
+    },
+    {
+      "name": "CONTACT_MSG_RECV_V3 snr=+7.5 'hi'",
+      "hex": "101e00000102030405060200040302016869",
+      "expect": {
+        "type": "ContactMessageFrame",
+        "pubKeyPrefix": "010203040506",
+        "pathLen": 2,
+        "isFlood": false,
+        "txtType": 0,
+        "timestamp": 16909060,
+        "text": "hi",
+        "isV3": true,
+        "snrDb": 7.5,
+        "isSigned": false
+      }
+    }
+  ]
+}

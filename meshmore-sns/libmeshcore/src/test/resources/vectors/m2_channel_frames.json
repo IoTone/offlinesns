@@ -1,0 +1,105 @@
+{
+  "_source": {
+    "pin_tag": "companion-v1.15.0",
+    "pin_commit": "dee3e26ac081a5c668c69b66c16a6544a44ddc5b",
+    "note": "Channel frame layouts from examples/companion_radio/MyMesh.cpp at the pin. SET_CHANNEL / CHANNEL_INFO (50-byte fixed) are exercised programmatically in channel_codec_test.dart to avoid hand-transcription error."
+  },
+  "encode": [
+    {
+      "name": "SEND_CHANNEL_TXT_MSG ch0 ts=0x01020304 'hi' plain",
+      "encoder": "sendChannelTextMessage",
+      "args": { "channelIdx": 0, "timestamp": 16909060, "text": "hi" },
+      "hex": "030000040302016869"
+    },
+    {
+      "name": "SEND_CHANNEL_TXT_MSG ch2 ts=1700000000 'Meshmore'",
+      "encoder": "sendChannelTextMessage",
+      "args": { "channelIdx": 2, "timestamp": 1700000000, "text": "Meshmore" },
+      "hex": "03000200f153654d6573686d6f7265"
+    },
+    {
+      "name": "GET_CHANNEL idx 0",
+      "encoder": "getChannel",
+      "args": { "channelIdx": 0 },
+      "hex": "1f00"
+    },
+    {
+      "name": "GET_CHANNEL idx 3",
+      "encoder": "getChannel",
+      "args": { "channelIdx": 3 },
+      "hex": "1f03"
+    }
+  ],
+  "decode": [
+    {
+      "name": "MSG_SENT flood ack=0x12345678 timeout=1000ms",
+      "hex": "060178563412e8030000",
+      "expect": {
+        "type": "MsgSentFrame",
+        "isFlood": true,
+        "expectedAck": 305419896,
+        "estTimeoutMs": 1000
+      }
+    },
+    {
+      "name": "CHANNEL_MSG_RECV legacy ch0 path3 'hey'",
+      "hex": "0800030004030201686579",
+      "expect": {
+        "type": "ChannelMessageFrame",
+        "channelIdx": 0,
+        "pathLen": 3,
+        "isFlood": false,
+        "txtType": 0,
+        "timestamp": 16909060,
+        "text": "hey",
+        "isV3": false,
+        "snrDb": null
+      }
+    },
+    {
+      "name": "CHANNEL_MSG_RECV legacy flood (path_len 0xFF) 'yo'",
+      "hex": "0801ff0000f15365796f",
+      "expect": {
+        "type": "ChannelMessageFrame",
+        "channelIdx": 1,
+        "pathLen": 255,
+        "isFlood": true,
+        "txtType": 0,
+        "timestamp": 1700000000,
+        "text": "yo",
+        "isV3": false,
+        "snrDb": null
+      }
+    },
+    {
+      "name": "CHANNEL_MSG_RECV_V3 ch2 path5 snr=+7.5 'hi'",
+      "hex": "111e0000020500040302016869",
+      "expect": {
+        "type": "ChannelMessageFrame",
+        "channelIdx": 2,
+        "pathLen": 5,
+        "isFlood": false,
+        "txtType": 0,
+        "timestamp": 16909060,
+        "text": "hi",
+        "isV3": true,
+        "snrDb": 7.5
+      }
+    },
+    {
+      "name": "CHANNEL_MSG_RECV_V3 negative snr=-2.0",
+      "hex": "11f80000000300040302016f6b",
+      "expect": {
+        "type": "ChannelMessageFrame",
+        "channelIdx": 0,
+        "pathLen": 3,
+        "isFlood": false,
+        "txtType": 0,
+        "timestamp": 16909060,
+        "text": "ok",
+        "isV3": true,
+        "snrDb": -2.0
+      }
+    }
+  ]
+}

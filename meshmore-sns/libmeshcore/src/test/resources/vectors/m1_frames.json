@@ -1,0 +1,98 @@
+{
+  "_source": {
+    "pin_tag": "companion-v1.15.0",
+    "pin_commit": "dee3e26ac081a5c668c69b66c16a6544a44ddc5b",
+    "note": "Encode goldens are byte-exact; APP_START matches the example in docs/companion_protocol.md verbatim. Decode goldens cover the small fixed frames. SELF_INFO/CONTACT are exercised programmatically in frame_codec_test.dart to avoid hand-transcription error on 58+/148-byte frames."
+  },
+  "encode": [
+    {
+      "name": "APP_START app=mccli (doc example, verbatim)",
+      "encoder": "appStart",
+      "args": { "appName": "mccli" },
+      "hex": "01000000000000006d63636c69"
+    },
+    {
+      "name": "APP_START app=Meshmore",
+      "encoder": "appStart",
+      "args": { "appName": "Meshmore" },
+      "hex": "01000000000000004d6573686d6f7265"
+    },
+    {
+      "name": "GET_CONTACTS no filter",
+      "encoder": "getContacts",
+      "args": {},
+      "hex": "04"
+    },
+    {
+      "name": "GET_CONTACTS since=16",
+      "encoder": "getContacts",
+      "args": { "since": 16 },
+      "hex": "0410000000"
+    },
+    {
+      "name": "GET_DEVICE_TIME",
+      "encoder": "getDeviceTime",
+      "args": {},
+      "hex": "05"
+    },
+    {
+      "name": "SET_DEVICE_TIME unix=0x01020304",
+      "encoder": "setDeviceTime",
+      "args": { "unixSeconds": 16909060 },
+      "hex": "0604030201"
+    },
+    {
+      "name": "SYNC_NEXT_MESSAGE",
+      "encoder": "syncNextMessage",
+      "args": {},
+      "hex": "0a"
+    }
+  ],
+  "decode": [
+    {
+      "name": "OK with value 42",
+      "hex": "002a000000",
+      "expect": { "type": "OkFrame", "value": 42 }
+    },
+    {
+      "name": "OK without value",
+      "hex": "00",
+      "expect": { "type": "OkFrame", "value": null }
+    },
+    {
+      "name": "ERROR with code 7",
+      "hex": "0107",
+      "expect": { "type": "ErrorFrame", "code": 7 }
+    },
+    {
+      "name": "ERROR without code",
+      "hex": "01",
+      "expect": { "type": "ErrorFrame", "code": null }
+    },
+    {
+      "name": "CONTACTS_START count=3",
+      "hex": "0203000000",
+      "expect": { "type": "ContactsStartFrame", "count": 3 }
+    },
+    {
+      "name": "END_OF_CONTACTS lastMod=0x12345678",
+      "hex": "0478563412",
+      "expect": { "type": "EndOfContactsFrame", "mostRecentLastMod": 305419896 }
+    },
+    {
+      "name": "CURR_TIME unix=1700000000",
+      "hex": "0900f15365",
+      "expect": { "type": "CurrentTimeFrame", "unixSeconds": 1700000000 }
+    },
+    {
+      "name": "NO_MORE_MESSAGES",
+      "hex": "0a",
+      "expect": { "type": "NoMoreMessagesFrame" }
+    },
+    {
+      "name": "Unknown opcode 0x7e is preserved, not an error",
+      "hex": "7edeadbeef",
+      "expect": { "type": "UnsupportedFrame", "opcode": 126 }
+    }
+  ]
+}

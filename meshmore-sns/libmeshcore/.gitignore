@@ -1,0 +1,6 @@
+build/
+.gradle/
+.libs/
+*.class
+.idea/
+.DS_Store
