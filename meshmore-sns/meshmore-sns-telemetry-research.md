@@ -51,9 +51,14 @@ Altitude divisor is **100** → unit is metres × 100, signed 24-bit, big
 endian. Range: ±83 886.07 m (way more than we need).
 
 The full telemetry payload is a concatenation of channel/type/value
-triplets — one CayenneLPP "entry" per sensor. The GPS entry is the
+triplets — one CayenneLPP "entry" per sensor. ~~The GPS entry is the
 one we care about; other entries (battery via `addAnalogInput`,
-temperature, humidity, pressure, etc.) are skippable in v1.
+temperature, humidity, pressure, etc.) are skippable in v1.~~
+**CORRECTED 2026-06-10:** battery is `addVoltage` (extended type 0x74),
+it **leads** every response, and "skippable" was the bug — LPP entries
+can't be skipped without knowing their size, so an unparsed leading
+entry destroys the whole payload. See the verified-wire-format section
+at the end of this doc.
 
 ### Permissions
 
@@ -186,3 +191,110 @@ applies its own privacy policy (out of our control).
 6. (Optional, separate) per-peer telemetry on tap, batched, with TTL.
 
 Each step ships independently and bumps patch by one.
+
+---
+
+# VERIFIED wire format (hardware-confirmed 2026-06-10)
+
+Everything below was established root-causing "luminosity/temperature
+don't surface" against a **T1000-E** (firmware shows both in the
+official app's *My Telemetry*, channel 1), fixed in app **v1.0.185**
+(`db39988`), and then **confirmed working on hardware**. This section
+supersedes anything above that disagrees with it.
+
+## The telemetry response, byte-for-byte
+
+The companion firmware builds every telemetry response the same way
+(`examples/companion_radio/MyMesh.cpp:653`, both the 0x27 reply path
+and the OTA peer-response path):
+
+```cpp
+telemetry.reset();
+telemetry.addVoltage(TELEM_CHANNEL_SELF, battMilliVolts / 1000.0f);  // ALWAYS FIRST
+sensors.querySensors(permissions, telemetry);                        // then sensors
+```
+
+So the payload **always leads with battery voltage** — CayenneLPP
+extended type **0x74 (116)**, 2 bytes, ÷100 V — *before* any sensor
+entry. For the T1000-E, `T1000SensorManager::querySensors`
+(`variants/t1000-e/target.cpp:137`) then emits, all on
+`TELEM_CHANNEL_SELF = 1`:
+
+| # | Entry | LPP type | Size | Decode | Gate |
+|---|---|---|---|---|---|
+| 1 | battery voltage | `0x74` | 2 B | u16 ÷100 → V | always |
+| 2 | GPS | `0x88` | 9 B | s24 ÷10000 lat/lon, s24 ÷100 alt | `TELEM_PERM_LOCATION` |
+| 3 | luminosity | `0x65` | 2 B | u16, **0–100 scale** (see caveat) | `TELEM_PERM_ENVIRONMENT` |
+| 4 | temperature | `0x67` | 2 B | s16 ÷10 → °C | `TELEM_PERM_ENVIRONMENT` |
+
+(Self-telemetry passes the full permission mask, so all four arrive.)
+
+## The bug this surfaced (and the lesson)
+
+CayenneLPP has **no per-entry length prefix** — a decoder advances by
+looking the type byte up in a size table. An unknown type therefore
+cannot be skipped: parsing must stop, and **everything after the
+unknown entry is lost**.
+
+Our decoder only knew the base MyDevices types (GPS, temperature,
+humidity, barometer, …). `0x74` wasn't in the table, so the decoder
+stalled at **entry #1** and returned an empty list — which read
+exactly like "the device sent nothing" and was misdiagnosed
+(2026-06-03) as a firmware build with no environment sensors.
+
+> **Lesson:** in a stop-on-unknown format, one new leading field
+> reads as *total* data loss downstream. When a value seems missing,
+> first verify the decode survives every entry the sender emits.
+
+**Fix:** the decoder (`packages/meshcore/lib/src/codec/cayenne_lpp.dart`)
+now carries the **full ElectronicCats CayenneLPP 1.6.1 table** — the
+exact library the firmware vendors (`platformio.ini`:
+`electroniccats/CayenneLPP @ 1.6.1`). Sizes/divisors verified against
+its header:
+
+```
+genericSensor 0x64/4B·1     luminosity 0x65/2B·1      presence 0x66/1B
+temperature  0x67/2B÷10(s)  humidity   0x68/1B÷2      accel 0x71/6B÷1000(s)
+barometer    0x73/2B÷10     voltage    0x74/2B÷100    current 0x75/2B÷1000
+frequency    0x76/4B·1      percentage 0x78/1B        altitude 0x79/2B·1(s)
+concentration 0x7D/2B       power      0x80/2B        distance 0x82/4B÷1000
+energy       0x83/4B÷1000   direction  0x84/2B        unixtime 0x85/4B
+gyrometer    0x86/6B÷100(s) colour     0x87/3B        gps 0x88/9B
+switch       0x8E/1B                                   (s) = signed
+```
+
+Regression tests replay the exact 4-entry T1000-E wire order and the
+extended divisors (`packages/meshcore/test/cayenne_lpp_test.dart`).
+
+## App-side surfacing
+
+`NodeTelemetry` (`lib/meshcore/node_telemetry.dart`) decodes:
+
+- `temperatureC` (0x67), `humidityPct` (0x68), `pressureHpa` (0x73)
+- **`luminosity`** (0x65) — NEW; counts toward `hasEnvironment`
+- **`batteryVoltageV`** (0x74) — NEW; classified as *power*, NOT
+  environment (a node reporting only voltage is not a weather node)
+
+Shown in: node detail sheet (luminosity row, EN/JA), weather view
+reading tiles (`☀ N`), and the WX measured-temperature cross-ref
+(`_measuredTempNear`) — which existed but could never fire before.
+
+## Caveats to remember
+
+1. **Luminosity unit:** I2C light sensors report lux, but the T1000-E
+   firmware maps its photocell to a **0–100 scale** and ships it
+   through the same luminosity type (the firmware comments say so:
+   "Firmware reports light as a 0-100 % range… expose it via
+   Luminosity so app labels it 'Luminosity'"). Treat the value as
+   *brightness*, not calibrated lux. Display bare, no unit.
+2. **T1000-E temperature** is the heater/NTC near the electronics —
+   reads a few degrees warm; indicative, not meteorological.
+3. **The env-bits-clamp-to-0** observation (SET_OTHER_PARAMS env bits
+   not sticking) may still be true — but it governs the *broadcast*
+   telemetry mode, and never blocked **polled** telemetry
+   (`CMD_SEND_TELEMETRY_REQ 0x27` → `PUSH 0x8B`), which is the path
+   the app uses and the path that works.
+4. **Now unblocked:** Phase 3 (temperature trends / sparklines) and
+   the WX "✓ measured" bubbles were shelved on the false premise —
+   the chain downstream of the decoder was already built and lights
+   up with real data.

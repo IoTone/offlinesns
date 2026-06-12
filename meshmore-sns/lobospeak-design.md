@@ -599,6 +599,86 @@ eventually.
 
 ---
 
+## Map pins & waypoints
+
+**Status:** EARMARK — design only, NOT built. Captured 2026-06-08.
+**Full spec:** `lobospeak-mappins-spec.md` — GPS/tag/waypoint/trigger pins,
+the pin-keyed rule engine (Class A/B actions + arm/ownership safety), wire
+mapping, phasing, and open decisions. The section below is the summary.
+
+lobospeak's whole point is acting on the physical world, and its `GOTO`
+command (`0x09`, `[lat s32][lon s32][alt_m s16][speed u8] → [task_id u16]`)
+already speaks coordinates. What's missing on the operator side is a way to
+**pin a point on the map and act on it** — drop a destination, mark a hazard,
+lay down a route — instead of hand-typing lat/lon. Pins are also the
+placement UX for geofences (see `meshmore-sns-geofence-tracking.md`).
+
+### Pin model
+
+```
+MapPin {
+  id, lat, lon,
+  label,                         // "rally point", "sample site 3"
+  kind: waypoint | marker | hazard | zone-centre | sample,
+  source: userDropped | fromNode | fromInferredPlace | fromGoto,
+  altM?, createdAt, createdByKey?,   // who placed it (self in v1)
+  color?/icon?,
+}
+Route { id, label, ordered [pinId…] }   // a sequence of waypoints
+```
+
+Store: `map_pin_store.dart` — SharedPreferences JSON, the established
+`abstract final class` store pattern. Scope: **global** (pins outlive any one
+channel). Pins are the explicit, highest-confidence cousin of place
+inference's `InferredMarker` (lat/lon + label + metadata) — confidence is
+implicit 1.0 because the user placed it. A neat bridge: **promote an inferred
+place to a pin** (one tap on a low-confidence inferred marker fixes it).
+
+### Placement UX (hyperlocal grid / map modes)
+
+- **Long-press** anywhere on a map-like grid mode → drop a pin at that
+  lat/lon (reverse the existing projection used to plot nodes).
+- **Pin a node's position** from the node detail sheet ("mark this spot").
+- **Promote an inferred place** (R54 marker) → a fixed pin.
+- **Enter coordinates / Maidenhead grid** (reuse the place-inference
+  coordinate + grid-locator parsers).
+- Edit: drag to nudge, rename, recolour, set kind, delete. A pins layer
+  renders across the map-like `_GridViewMode`s; per-theme via `context.skin`.
+
+### lobospeak integration (the payoff)
+
+- **Send a pin as `GOTO`:** from a pin (or the robot's node sheet) → pick a
+  peer robot → encode `GOTO [lat][lon][alt][speed]`, await the `task_id`,
+  then poll `TASK_QUERY`. The pin becomes a live destination with a "robot en
+  route / arrived" state on the map.
+- **A `Route` = ordered waypoints** → a sequence of `GOTO`s (or, later, a
+  multi-waypoint app-extension command in the `0x80–0xFE` space, mindful of
+  the ~180 B payload budget — most routes of a handful of points fit).
+- **`SAMPLE` results pinned:** a `0x0A SAMPLE` response can be dropped as a
+  `sample`-kind pin at the robot's reported position (a sensor map builds up).
+- All of this stays **closed-network** — pins/waypoints ride the private
+  control channel and owners rules; **never Public** (lobospeak's hard rule).
+
+### Sharing pins with the team (later)
+
+v1 pins are **local-only**. v2: broadcast a pin/route to teammates as a
+lobospeak app-extension command on the closed channel — the same path the
+geofence "share a zone" phase wants. Until then, pins are a personal operator
+overlay. Cross-links: [[geofence-node-tracking]] (a pin + radius = a fence
+centre), place inference (the marker model + parsers to reuse).
+
+### Phasing
+
+- **P1:** MapPin model + store; drop / edit / delete pins; render the pins
+  layer on the grid; coordinate + grid-locator entry.
+- **P2:** send a pin as `GOTO` to a peer (needs the lobospeak codec +
+  controller); live destination/arrival state; pin a `SAMPLE` result.
+- **P3:** `Route` (ordered waypoints) → GOTO sequence; promote-inferred-place;
+  pin-centred geofences (converge with the tracking/geofence design).
+- **P4:** share pins/routes over the closed control channel.
+
+---
+
 ## Glossary
 
 - **lobospeak** — the human-friendly project name.

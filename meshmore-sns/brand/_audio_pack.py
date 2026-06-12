@@ -57,6 +57,46 @@ THEMES = {
         timbre=lambda f, t: 0.85 * _sine(f, t)
                             + 0.15 * _sine(f / 2, t),  # add a sub
         decay=3.5,
+        # D — SEELE "Tribunal" pack: the default, now bespoke (was the only
+        # theme falling through to the generic motifs). Grave, monolithic,
+        # sub-bass — sparse low tones riding the theme's long ring (sine +
+        # sub-octave at A3). Ritual/ceremonial, never busy; the loudest it
+        # gets is a slow mourning toll for the critical alert.
+        cues={
+            # A single low, soft tone — present but unhurried.
+            "messageIn": dict(score=[(0.75, 0.16)], amp=0.34),
+            # A grave descending summons (down to the sub).
+            "dmIn": dict(score=[(1.0, 0.14), (0.75, 0.22)], amp=0.46),
+            # A slow rising sub pair — "a presence emerged".
+            "discovery": dict(score=[(0.5, 0.16), (0.75, 0.24)], amp=0.42),
+            # A deep, near-subliminal pulse — ambient "still out there".
+            "advert": dict(score=[(0.5, 0.20)], amp=0.20),
+            # Power-on — a slow monolithic triad coming to life.
+            "boot": dict(
+                score=[(0.5, 0.20), (0.75, 0.20), (1.0, 0.32)], amp=0.52),
+            # Send — a brief low acknowledgement.
+            "send": dict(score=[(1.0, 0.07)], amp=0.30),
+            # Navigation — minimal sub-register ticks.
+            "navNext": dict(score=[(0.75, 0.07), (1.0, 0.08)], amp=0.28),
+            "navPrev": dict(score=[(1.0, 0.07), (0.75, 0.08)], amp=0.28),
+            # Link up — a grave ascending figure; link down its mirror.
+            "linkUp": dict(
+                score=[(0.5, 0.14), (0.75, 0.16), (1.0, 0.24)], amp=0.50),
+            "linkDown": dict(
+                score=[(1.0, 0.14), (0.75, 0.16), (0.5, 0.26)], amp=0.50),
+            # Critical — a slow, deep mourning toll, tolled twice. A low
+            # SINE sweep (no saw grit — this theme grieves, it doesn't blare).
+            "alert": dict(
+                kind="sweep", start=0.7, end=0.45, dur=0.5, repeat=2,
+                amp=0.70),
+            # Scanning — a sub-bass "om" drone with a very slow vibrato.
+            "scanStart": dict(
+                kind="hum", ratio=0.375, dur=2.0, vib_depth=0.006,
+                vib_rate=3.0, attack=0.04, release=0.12, amp=0.24),
+            # Task resolve — a low settled fifth→octave; error its descent.
+            "taskOk": dict(score=[(0.75, 0.14), (1.0, 0.22)], amp=0.46),
+            "taskError": dict(score=[(1.0, 0.14), (2 / 3, 0.24)], amp=0.50),
+        },
     ),
     "nerv": dict(  # mission-control telemetry blip
         base=523.25,                      # C5
@@ -111,6 +151,15 @@ THEMES = {
             "taskError": dict(
                 kind="sweep", start=1.25, end=0.85, dur=0.18, amp=0.55,
                 saw=True),
+            # Send — a single crisp upper-register tick (packet away).
+            "send": dict(score=[(2.0, 0.04)], amp=0.34),
+            # Task OK — a terse ascending square pair (telemetry confirm).
+            "taskOk": dict(score=[(1.5, 0.05), (2.0, 0.07)], amp=0.50),
+            # Scanning — a steady console telemetry hum (square edge, faint
+            # fast vibrato so it reads as "the rack is working").
+            "scanStart": dict(
+                kind="hum", ratio=0.5, dur=1.5, vib_depth=0.008,
+                vib_rate=7.0, attack=0.02, release=0.06, amp=0.22),
         },
     ),
     "aghud": dict(  # clean HUD digital
@@ -143,6 +192,20 @@ THEMES = {
                 kind="sweep", start=1.5, end=3.0, dur=0.22, repeat=2,
                 amp=0.74),
             "taskOk": dict(score=[(2.0, 0.07), (2.5, 0.10)], amp=0.55),
+            # Re-advert — a faint bright pip (ambient HUD blip).
+            "advert": dict(score=[(1.5, 0.05)], amp=0.26),
+            # Power-on — a bright ascending arcade triad.
+            "boot": dict(
+                score=[(1.0, 0.06), (1.5, 0.06), (2.0, 0.10)], amp=0.55),
+            # Link down — a falling whoosh (mirror of linkUp's energy).
+            "linkDown": dict(
+                kind="sweep", start=2.0, end=1.0, dur=0.2, amp=0.55),
+            # Task error — a quick descending blip (softer than alert).
+            "taskError": dict(score=[(1.5, 0.05), (1.0, 0.08)], amp=0.52),
+            # Scanning — a bright active shimmer (wider vibrato, higher hum).
+            "scanStart": dict(
+                kind="hum", ratio=0.75, dur=1.4, vib_depth=0.014,
+                vib_rate=6.0, attack=0.02, release=0.06, amp=0.22),
         },
     ),
     "hyperlocal": dict(  # sonar ping, long decay
@@ -172,6 +235,25 @@ THEMES = {
                 score=[(0.75, 0.12), (1.0, 0.18)], amp=0.46),
             "linkDown": dict(
                 score=[(1.0, 0.12), (0.75, 0.18)], amp=0.46),
+            # Power-on — a calm low rising triad (the field tool waking).
+            "boot": dict(
+                score=[(0.5, 0.14), (0.75, 0.16), (1.0, 0.22)], amp=0.50),
+            # Send — a single soft ping.
+            "send": dict(score=[(1.0, 0.08)], amp=0.32),
+            # Navigation — soft pings up / down.
+            "navNext": dict(score=[(1.0, 0.07), (1.25, 0.10)], amp=0.34),
+            "navPrev": dict(score=[(1.25, 0.07), (1.0, 0.10)], amp=0.34),
+            # Critical — calm but clear: a firm mid ping struck three times.
+            # Hyperlocal never klaxons; insistence comes from repetition.
+            "alert": dict(
+                score=[(1.0, 0.12), (1.0, 0.14), (1.0, 0.16)], amp=0.62),
+            # Task OK — a gentle rising pair; error a gentle descent.
+            "taskOk": dict(score=[(1.0, 0.10), (1.25, 0.16)], amp=0.46),
+            "taskError": dict(score=[(1.0, 0.10), (0.75, 0.18)], amp=0.48),
+            # Scanning — a slow sonar "wub": deep, slow vibrato on the ring.
+            "scanStart": dict(
+                kind="hum", ratio=0.5, dur=2.2, vib_depth=0.030,
+                vib_rate=0.9, attack=0.05, release=0.15, amp=0.26),
         },
     ),
     "drpop": dict(  # bright pop / synth pluck
@@ -200,6 +282,20 @@ THEMES = {
                 kind="sweep", start=2.0, end=3.0, dur=0.16, repeat=3,
                 amp=0.70),
             "taskOk": dict(score=[(2.0, 0.05), (3.0, 0.09)], amp=0.55),
+            # Re-advert — a faint high pip.
+            "advert": dict(score=[(2.0, 0.04)], amp=0.28),
+            # Power-on — a funky ascending arcade run.
+            "boot": dict(
+                score=[(1.0, 0.05), (2.0, 0.05), (3.0, 0.09)], amp=0.55),
+            # Link down — a syncopated descending blip (mirror of linkUp).
+            "linkDown": dict(
+                score=[(3.0, 0.05), (2.0, 0.05), (1.0, 0.08)], amp=0.58),
+            # Task error — a punchy descending pair (softer than the alarm).
+            "taskError": dict(score=[(2.0, 0.05), (1.5, 0.08)], amp=0.52),
+            # Scanning — a rhythmic throb (fast vibrato pulses the drone).
+            "scanStart": dict(
+                kind="hum", ratio=0.5, dur=1.2, vib_depth=0.020,
+                vib_rate=9.0, attack=0.02, release=0.05, amp=0.22),
         },
     ),
     "recon": dict(  # codec chirp, stuttery
@@ -232,6 +328,19 @@ THEMES = {
                 score=[(1.5, 0.06), (1.0, 0.06), (1.5, 0.06), (1.0, 0.07)],
                 amp=0.60),
             "taskOk": dict(score=[(2.0, 0.05), (2.5, 0.07)], amp=0.48),
+            # Power-on — a short squelch-open sweep (radio coming on net).
+            "boot": dict(
+                kind="sweep", start=0.7, end=1.6, dur=0.34, amp=0.50),
+            # Navigation — terse UHF beeps up / down (the stutter chirps them).
+            "navNext": dict(score=[(2.0, 0.03), (2.5, 0.04)], amp=0.34),
+            "navPrev": dict(score=[(2.5, 0.03), (2.0, 0.04)], amp=0.34),
+            # Task error — a short descending beep pair.
+            "taskError": dict(score=[(2.0, 0.05), (1.5, 0.07)], amp=0.45),
+            # Scanning — a quiet tense flutter (fast shallow vibrato); the
+            # quietest scan drone of the set (Recon runs near-silent).
+            "scanStart": dict(
+                kind="hum", ratio=0.5, dur=1.6, vib_depth=0.006,
+                vib_rate=11.0, attack=0.02, release=0.06, amp=0.18),
         },
     ),
 }
