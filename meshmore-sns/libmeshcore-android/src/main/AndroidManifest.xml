@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  libmeshcore-android — BLE permissions required by AndroidBleTransport.
+
+  Android 12+ (API 31+): BLUETOOTH_SCAN + BLUETOOTH_CONNECT replace the
+  legacy BLUETOOTH + BLUETOOTH_ADMIN pair. Both sets are declared here so
+  the library works on API 26–35 (and AndroidXR, which is API 35-based).
+
+  The consuming app's manifest merges these automatically; no extra
+  declaration is needed in the app's own manifest.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Legacy BLE permissions (API 26–30) -->
+    <uses-permission android:name="android.permission.BLUETOOTH"
+        android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"
+        android:maxSdkVersion="30" />
+
+    <!-- Modern BLE permissions (API 31+, including AndroidXR API 35) -->
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN"
+        android:usesPermissionFlags="neverForLocation" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+
+    <!-- BLE hardware feature (not required — devices without BLE will
+         simply not be able to connect to the radio). -->
+    <uses-feature android:name="android.hardware.bluetooth_le"
+        android:required="false" />
+
+</manifest>

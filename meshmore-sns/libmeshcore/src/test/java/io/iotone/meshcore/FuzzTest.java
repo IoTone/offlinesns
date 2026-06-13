@@ -2,15 +2,25 @@
 // SPDX-License-Identifier: MIT
 package io.iotone.meshcore;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.iotone.meshcore.codec.DecodeErrorKind;
 import io.iotone.meshcore.codec.MeshcoreFrameCodec;
+import io.iotone.meshcore.crypto.ChannelCrypto;
+import io.iotone.meshcore.crypto.IdentityCrypto;
+import io.iotone.meshcore.diagnostics.ChannelTailOracle;
+import io.iotone.meshcore.diagnostics.ChannelTailResult;
 import io.iotone.meshcore.frames.DecodeFailure;
 import io.iotone.meshcore.frames.MeshcoreInbound;
+import io.iotone.meshcore.frames.UnsupportedFrame;
+import io.iotone.meshcore.model.GrpTxtPayload;
 import io.iotone.meshcore.model.OtaPacket;
 
+import java.util.Arrays;
 import java.util.Random;
 
 import org.junit.jupiter.api.Test;
@@ -66,5 +76,65 @@ class FuzzTest {
                 assertTrue(p.hopCount() >= 0 && p.hopCount() <= 63);
             }
         }
+    }
+
+    @Test
+    void macThenDecryptNeverThrowsOnGarbage() {
+        Random r = new Random(0x5EED);
+        for (int i = 0; i < ITERATIONS; i++) {
+            byte[] secret = randomBytes(r, 32);
+            byte[] padded = Arrays.copyOf(secret, 32);
+            byte[] d = ChannelCrypto.macThenDecrypt(padded,
+                    randomBytes(r, 80));
+            if (d != null) {
+                assertEquals(0, d.length % 16);
+            }
+        }
+    }
+
+    @Test
+    void resolveChannelTailNeverThrowsOnRandomGrpTxt() {
+        Random r = new Random(0xA11CE);
+        for (int i = 0; i < 1000; i++) {
+            ChannelTailResult res = ChannelTailOracle.resolveChannelTail(
+                    randomBytes(r, 16),
+                    randomBytes(r, 24),
+                    new GrpTxtPayload(r.nextInt(256), randomBytes(r, 64)));
+            assertNotNull(res);
+        }
+    }
+
+    @Test
+    void montgomeryUMapTotalOrControlledError() {
+        Random r = new Random(0xED2519);
+        for (int i = 0; i < 1500; i++) {
+            byte[] pub = new byte[32];
+            r.nextBytes(pub);
+            try {
+                byte[] u = IdentityCrypto.edPublicKeyToMontgomeryU(pub);
+                assertEquals(32, u.length);
+            } catch (IllegalArgumentException e) {
+                // Acceptable: degenerate point — a *controlled* error.
+            }
+        }
+    }
+
+    @Test
+    void decodeErrorTaxonomyInvariants() {
+        DecodeFailure empty = assertInstanceOf(DecodeFailure.class,
+                MeshcoreFrameCodec.decode(new byte[0]));
+        assertEquals(DecodeErrorKind.EMPTY, empty.error().kind());
+
+        // CONTACTS_START needs a u32 count; give 1 byte.
+        DecodeFailure trunc = assertInstanceOf(DecodeFailure.class,
+                MeshcoreFrameCodec.decode(new byte[] {0x02, 0x01}));
+        assertEquals(DecodeErrorKind.TRUNCATED, trunc.error().kind());
+
+        // Unknown opcode → UnsupportedFrame (NOT a failure), raw kept.
+        byte[] frame = {0x7E, (byte) 0xDE, (byte) 0xAD};
+        UnsupportedFrame u = assertInstanceOf(UnsupportedFrame.class,
+                MeshcoreFrameCodec.decode(frame));
+        assertEquals(0x7E, u.opcode());
+        assertArrayEquals(frame, u.raw());
     }
 }
