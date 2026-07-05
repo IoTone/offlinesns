@@ -87,5 +87,12 @@ if [[ "${2:-}" != "" ]]; then
     DEVICE_ARG="-PdeviceName=${2}"
 fi
 
-echo "Running: ./gradlew $TASK${DEVICE_ARG:+ $DEVICE_ARG}"
-exec ./gradlew "$TASK" ${DEVICE_ARG:+"$DEVICE_ARG"}
+# connectedAndroidTest: the connected device and deviceName both vary per run,
+# so bypass the configuration cache and always re-run the task.
+EXTRA_FLAGS=""
+if [[ "$TASK" == *"connectedAndroidTest"* ]]; then
+    EXTRA_FLAGS="--no-configuration-cache --rerun-tasks"
+fi
+
+echo "Running: ./gradlew $TASK${DEVICE_ARG:+ $DEVICE_ARG}${EXTRA_FLAGS:+ $EXTRA_FLAGS}"
+exec ./gradlew "$TASK" ${DEVICE_ARG:+"$DEVICE_ARG"} $EXTRA_FLAGS

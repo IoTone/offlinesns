@@ -79,6 +79,8 @@ Plus the modern companion v3 frames carry SNR / RSSI inline, which is what makes
 
 The firmware is a single C++ codebase with per-board variants under `variants/`.
 
+**2025–2026 additions** added in MeshCore v1.15 (Apr 2026): Heltec Mesh Node T096, muzi works R1 Neo, GAT562 Mesh EVB Pro. Solar-integrated outdoor nodes from Seeed, Heltec, and RAK WisMesh are now standard infrastructure options. See the [Devices 2025–2026](/en/tboc/devices/) deck for the full hardware index.
+
 ---
 
 # Section break

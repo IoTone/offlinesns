@@ -22,6 +22,9 @@ Talks · Book of Contents
 <a class="deck-link" href="/en/tboc/meshmore-sns/">**Meshmore SNS**
 <small>Design goals, screenshots, roadmap, and the (transparent) story of an AI-co-authored alternative client.</small></a>
 
+<a class="deck-link" href="/en/tboc/devices/">**Devices 2025–2026**
+<small>Hardware for infrastructure buildout — outdoor-rated nodes, solar kits, new handhelds, and the nRF52840+SX1262 platform.</small></a>
+
 ---
 
 <section data-state="scrollable">

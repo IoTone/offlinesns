@@ -22,6 +22,9 @@ title = "TBOC"
 <a class="deck-link" href="/tboc/meshmore-sns/">**Meshmore SNS**
 <small>設計目標、スクリーンショット、ロードマップ、AI 協作による代替クライアントの透明な物語。</small></a>
 
+<a class="deck-link" href="/tboc/devices/">**デバイス 2025–2026**
+<small>インフラ構築のためのハードウェア — 屋外対応ノード、ソーラーキット、新型ハンドヘルド、nRF52840+SX1262プラットフォーム。</small></a>
+
 ---
 
 <section data-state="scrollable">

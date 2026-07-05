@@ -17,12 +17,14 @@ android {
     defaultConfig {
         minSdk = 26
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        // Device name for the live test — pass via project property so it is
-        // baked into the DSL (required for configuration cache compatibility):
+        // Device name for the live test — passed as a Gradle property so it
+        // is baked into the Android DSL (the command-line runner-arg form is
+        // not configuration-cache-safe). The Providers API is used so a
+        // change to -PdeviceName= correctly invalidates the config cache:
         //   ./run.sh connectedAndroidTest T1000-E
         //   — or directly —
         //   ./gradlew connectedAndroidTest -PdeviceName=T1000-E
-        val deviceName = project.findProperty("deviceName") as String? ?: ""
+        val deviceName = providers.gradleProperty("deviceName").orElse("").get()
         if (deviceName.isNotEmpty()) {
             testInstrumentationRunnerArguments["deviceName"] = deviceName
         }

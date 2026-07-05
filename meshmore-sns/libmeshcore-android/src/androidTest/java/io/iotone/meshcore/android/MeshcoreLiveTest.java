@@ -135,11 +135,11 @@ public class MeshcoreLiveTest {
     @BeforeClass
     public static void connectToRadio() throws Exception {
         String deviceName = InstrumentationRegistry.getArguments()
-                .getString("deviceName");
-        Assume.assumeNotNull(
-                "Skipping live tests — pass -Pandroid.testInstrumentationRunnerArguments"
-                        + ".deviceName=<advert-name> to run against a real radio",
-                deviceName);
+                .getString("deviceName", "").trim();
+        Assume.assumeTrue(
+                "Skipping live tests — pass -PdeviceName=<advert-name> "
+                        + "(e.g. ./run.sh connectedAndroidTest T1000-E)",
+                !deviceName.isEmpty());
 
         Context ctx = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext().getApplicationContext();
