@@ -426,10 +426,119 @@ Prices in USD as of mid-2026. Supply on some new SKUs is limited — check lead 
 
 ---
 
+---
+
+# Region Settings
+
+Regulatory requirements and community defaults by region.
+
+---
+
+<section data-state="scrollable">
+
+## Region regulatory requirements
+
+The regulatory layer — frequency, power, duty cycle, LBT — applies equally to Meshtastic and MeshCore. The firmware must be configured to the correct region; the radio enforces the limits.
+
+| Region | Band (MHz) | Max TX (dBm) | Duty cycle | LBT | Countries |
+|---|---|---|---|---|---|
+| **US** | 902–928 | 30 | 100% | No | USA, Canada |
+| **EU_868** | 869.4–869.65 | 27 | **10%** (rolling 1h) | No | EU, UK, CH, NO |
+| **EU_N_868** ¹ | 869.4–869.65 | 27 | **10%** | No | EU — narrow BW variant (develop, Jul 2026) |
+| **EU_866** ¹ | 865.6–867.6 | 27 | **2.5%** | No | EU — SRD G1 sub-band (develop, Jul 2026) |
+| **EU_433** | 433.0–434.0 | 12 | **10%** | No | EU (secondary) |
+| **JP** | 920.8–927.8 | **16** | 100% | **Yes** (ARIB) | Japan |
+| **ANZ** | 915–928 | 30 | 100% | No | Australia, NZ |
+| **ANZ_433** | 433.05–434.79 | 14 | 100% | No | AU/NZ 433 MHz |
+| **KR** | 920–923 | — | 100% | No | South Korea |
+| **TW** | 920–925 | 27 | 100% | No | Taiwan |
+| **RU** | 868.7–869.2 | 20 | 100% | No | Russia |
+| **IN** | 865–867 | 30 | 100% | No | India |
+| **CN** | 470–510 | 19 | 100% | No | China |
+| **MY_919** | 919–924 | 27 | 100% | No | Malaysia |
+| **SG_923** | 917–925 | 20 | 100% | No | Singapore |
+| **TH** | 920–925 | 16 | 100% | No | Thailand |
+| **UA_868** | 868.0–868.6 | 14 | **1%** | No | Ukraine |
+| **UA_433** | 433.0–434.7 | 10 | **10%** | No | Ukraine (433) |
+| **BR_902** | 902–907.5 | 30 | 100% | No | Brazil |
+| **PH_915** | 915–918 | 24 | 100% | No | Philippines |
+| **NZ_865** | 864–868 | 36 | 100% | No | New Zealand (865) |
+| **LORA_24** | 2400–2483.5 | 10 | 100% | No | Worldwide (2.4 GHz) |
+
+**JP note:** Max 16 dBm at the radio chip; Japan ARIB limits EIRP to 20 mW (~13 dBm with 0 dBi antenna). Use a low-gain antenna. LBT is mandatory and enforced by the ARIB standard — confirm your firmware revision actually implements it.
+
+**EU_868 note:** 10% duty cycle is calculated on a rolling one-hour basis. Narrower BW and lower SF reduce airtime per packet and make the limit easier to stay within. Meshtastic firmware explicitly blocks SHORT_TURBO and LONG_TURBO (500 kHz BW) for EU_868 — the 869.4–869.65 MHz slot is only 250 kHz wide.
+
+¹ EU_N_868 and EU_866 are in the Meshtastic `develop` branch as of 2026-07-03 — not yet in a stable release.
+
+</section>
+
+---
+
+<section data-state="scrollable">
+
+## MeshCore vs Meshtastic — radio defaults by region
+
+The two ecosystems configure the radio layer differently. Both transmit standard LoRa — they are **not** interoperable on-air, but the regulatory constraints above apply to both.
+
+| Region | **MeshCore** community default | **Meshtastic** default |
+|---|---|---|
+| **US / ANZ** | 910.525 MHz · SF7 · BW 62.5 kHz · CR **4/5** | Long Fast: SF11 · 250 kHz · CR **4/5** |
+| **EU_868** | 869.618 MHz · SF8 · BW 62.5 kHz · CR **4/5** · 22 dBm · 10% duty | Long Fast: SF11 · 250 kHz · CR **4/5** |
+| **EU_N_868** ¹ | 869.618 MHz · SF8 · BW 62.5 kHz · CR **4/5** | Narrow Slow: SF8 · 62.5 kHz · CR **4/6** ← ⚠️ |
+| **ANZ (AU specific)** | 915.800 MHz · SF10 · BW 250 kHz · CR 4/5 (some nodes) | As US/ANZ above |
+| **JP** | No official JP preset yet (mid-2026) — manually set 920–927 MHz range | JP region: 920.8–927.8 MHz · Long Fast |
+| **All regions** | One shared freq per community — all nodes must match | Preset-based; region sets band, preset sets SF/BW |
+
+**The key difference:**
+
+- **Meshtastic** uses named modem presets (Long Fast, Medium Fast, etc.) on top of a region band. The preset determines SF and BW. Nodes must share the same preset to communicate.
+- **MeshCore** sets a single frequency + BW + SF per community. There is no preset layer — all nodes on a network must use the same explicit values.
+
+**⚠️ EU_N_868 incompatibility trap:** Meshtastic's new EU_N_868 region uses the same centre frequency and BW as MeshCore's EU community default, but its Narrow Slow preset uses **CR 4/6** while MeshCore uses **CR 4/5**. Even if you force both to the same exact frequency, they remain on-air incompatible. This is a coding-rate mismatch, not a frequency mismatch.
+
+**Licensed operator bypass (Meshtastic only):** Setting `is_licensed = true` on a Meshtastic device bypasses regional TX power limits. No equivalent in MeshCore. Only valid if you hold a licence for the band in your jurisdiction.
+
+¹ EU_N_868 is in the Meshtastic `develop` branch (merged 2026-07-03) — not yet stable release.
+
+</section>
+
+---
+
+<section data-state="scrollable">
+
+## Meshtastic modem presets
+
+Meshtastic separates the *region* (which sets the legal frequency band and power limit) from the *modem preset* (which sets SF, BW, coding rate). Both must match between nodes.
+
+| Preset | BW | SF | CR | Data rate | Link budget | Notes |
+|---|---|---|---|---|---|---|
+| Short Turbo | 500 kHz | 7 | 4/5 | 21.9 kbps | 140 dB | Not legal in EU (500 kHz BW) |
+| Short Fast | 250 kHz | 7 | 4/5 | 10.9 kbps | 143 dB | |
+| Short Slow | 250 kHz | 8 | 4/5 | 6.3 kbps | 145.5 dB | |
+| Medium Fast | 250 kHz | 9 | 4/5 | 3.5 kbps | 148 dB | |
+| Medium Slow | 250 kHz | 10 | 4/5 | 2.0 kbps | 150.5 dB | |
+| Long Turbo | 500 kHz | 11 | 4/8 | 1.3 kbps | 150 dB | Not legal in EU |
+| **Long Fast** | **250 kHz** | **11** | **4/5** | **1.1 kbps** | **153 dB** | **Default — matches public networks** |
+| Long Moderate | 125 kHz | 11 | 4/8 | 0.34 kbps | 156 dB | |
+| Long Slow | 125 kHz | 12 | 4/8 | 0.18 kbps | 158.5 dB | Max range |
+
+**EU_868 constraint:** Short Turbo and Long Turbo use 500 kHz BW which is not permitted in the EU 868 MHz band (channel width too wide for the 869.4–869.65 MHz slot). In the EU, use Long Fast or narrower.
+
+**JP constraint:** At 20 mW EIRP limit, Long Slow or Long Moderate maximise range within the power budget. Long Fast at reduced power is the community default.
+
+**MeshCore equivalent:** BW 62.5 kHz + SF7–9 is roughly equivalent to Medium Fast in range/data rate terms, but with a narrower channel that fits better in congested ISM bands.
+
+</section>
+
+---
+
 ## Where to read next
 
 - Meshtastic hardware docs: [meshtastic.org/docs/hardware](https://meshtastic.org/docs/hardware)
+- Meshtastic region/LoRa config: [meshtastic.org/docs/configuration/radio/lora](https://meshtastic.org/docs/configuration/radio/lora/)
 - MeshCore firmware variants: [github.com/meshcore-dev/MeshCore/tree/main/variants](https://github.com/meshcore-dev/MeshCore/tree/main/variants)
+- MeshCore config tool: [config.meshcore.io](https://config.meshcore.io)
 - MeshCore blog: [blog.meshcore.io](https://blog.meshcore.io)
 - Seeed MeshCore SKUs: [seeedstudio.com](https://seeedstudio.com)
 
