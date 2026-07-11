@@ -351,7 +351,7 @@ Japan's 920 MHz band (ARIB STD-T108) has specific rules. An uncertified transmit
 |---|---|
 | **技適 required** | Every transmitter needs 技術基準適合証明 (technical conformance). No exceptions for hobbyists. |
 | **Meshtastic region** | Set to **JP** (not AS923). JP is a Japan-specific ARIB variant — different channel plan and duty cycle. |
-| **Max EIRP** | 20 mW unlicensed. LBT (Listen-Before-Talk) required. |
+| **Power** | ≤13 dBm (20 mW) **conducted**, referenced to a ≤3 dBi antenna. LBT (Listen-Before-Talk) required: carrier sense −80 dBm, ≥128 µs. |
 
 **Verify any device before purchase:** [総務省 技適データベース](https://www.tele.soumu.go.jp/giteki/)
 
@@ -447,7 +447,7 @@ The regulatory layer — frequency, power, duty cycle, LBT — applies equally t
 | **EU_N_868** ¹ | 869.4–869.65 | 27 | **10%** | No | EU — narrow BW variant (develop, Jul 2026) |
 | **EU_866** ¹ | 865.6–867.6 | 27 | **2.5%** | No | EU — SRD G1 sub-band (develop, Jul 2026) |
 | **EU_433** | 433.0–434.0 | 12 | **10%** | No | EU (secondary) |
-| **JP** | 920.8–927.8 | **16** | 100% | **Yes** (ARIB) | Japan |
+| **JP** | 920.5–928.1 ² | **13** | ≤10%/h ² | **Yes** (ARIB) | Japan |
 | **ANZ** | 915–928 | 30 | 100% | No | Australia, NZ |
 | **ANZ_433** | 433.05–434.79 | 14 | 100% | No | AU/NZ 433 MHz |
 | **KR** | 920–923 | — | 100% | No | South Korea |
@@ -465,7 +465,11 @@ The regulatory layer — frequency, power, duty cycle, LBT — applies equally t
 | **NZ_865** | 864–868 | 36 | 100% | No | New Zealand (865) |
 | **LORA_24** | 2400–2483.5 | 10 | 100% | No | Worldwide (2.4 GHz) |
 
-**JP note:** Max 16 dBm at the radio chip; Japan ARIB limits EIRP to 20 mW (~13 dBm with 0 dBi antenna). Use a low-gain antenna. LBT is mandatory and enforced by the ARIB standard — confirm your firmware revision actually implements it.
+**JP note (verified 2026-07):** License-free 特定小電力 ceiling is **13 dBm (20 mW) conducted**, referenced to a ≤3 dBi antenna (EIRP ceiling ≈16 dBm). Higher-gain antenna → you must cut conducted power. **LBT** is carrier sense at −80 dBm for **≥128 µs** (the often-quoted "5 ms" is the long-burst class boundary, not the floor) — mandatory and firmware-enforced, not app-enforced. Note current Meshtastic firmware (v2.7.26) restricts JP to **920.5–923.5 MHz / 13 dBm**; the older "920.8–927.8 / 16 dBm" figure still on the docs page is stale.
+
+² **Duty cycle:** channels **CH33–38 (922.4–923.4 MHz, incl. the 923.2 default) cap TX at ≤360 s per rolling hour (~10%)**; CH24–32 (incl. 920.8) have no explicit hourly cap in long-sense LBT mode. Band edges 920.5–928.1 MHz; channel centres 920.6–928.0 MHz at 200 kHz spacing (CHn = 915.8 + 0.2·n).
+
+**技適 is the load-bearing point:** legal *parameters* do not make operation legal — the radio **hardware must carry 技適 certification**. Most grey-import LoRa boards (T1000-E, Heltec, …) do not; operating one is an offence under the 電波法 regardless of settings.
 
 **EU_868 note:** 10% duty cycle is calculated on a rolling one-hour basis. Narrower BW and lower SF reduce airtime per packet and make the limit easier to stay within. Meshtastic firmware explicitly blocks SHORT_TURBO and LONG_TURBO (500 kHz BW) for EU_868 — the 869.4–869.65 MHz slot is only 250 kHz wide.
 
@@ -487,7 +491,7 @@ The two ecosystems configure the radio layer differently. Both transmit standard
 | **EU_868** | 869.618 MHz · SF8 · BW 62.5 kHz · CR **4/5** · 22 dBm · 10% duty | Long Fast: SF11 · 250 kHz · CR **4/5** |
 | **EU_N_868** ¹ | 869.618 MHz · SF8 · BW 62.5 kHz · CR **4/5** | Narrow Slow: SF8 · 62.5 kHz · CR **4/6** ← ⚠️ |
 | **ANZ (AU specific)** | 915.800 MHz · SF10 · BW 250 kHz · CR 4/5 (some nodes) | As US/ANZ above |
-| **JP** | No official JP preset yet (mid-2026) — manually set 920–927 MHz range | JP region: 920.8–927.8 MHz · Long Fast |
+| **JP** | No *official* preset upstream; de-facto community tuple **920.8 MHz · SF12 · BW 125 kHz · CR 4/8** (issues #2079/#2218, open) | JP region: **920.5–923.5 MHz · 13 dBm** · Long Fast (firmware v2.7.26) |
 | **All regions** | One shared freq per community — all nodes must match | Preset-based; region sets band, preset sets SF/BW |
 
 **The key difference:**
@@ -498,6 +502,8 @@ The two ecosystems configure the radio layer differently. Both transmit standard
 **⚠️ EU_N_868 incompatibility trap:** Meshtastic's new EU_N_868 region uses the same centre frequency and BW as MeshCore's EU community default, but its Narrow Slow preset uses **CR 4/6** while MeshCore uses **CR 4/5**. Even if you force both to the same exact frequency, they remain on-air incompatible. This is a coding-rate mismatch, not a frequency mismatch.
 
 **Licensed operator bypass (Meshtastic only):** Setting `is_licensed = true` on a Meshtastic device bypasses regional TX power limits. No equivalent in MeshCore. Only valid if you hold a licence for the band in your jurisdiction.
+
+**Meshmore SNS ships both JP options:** because a MeshCore client can only reach other MeshCore nodes, our app carries two Japan presets — `jp_arib_t108` (**923.2 · SF10 · CR 4/5**, ARIB CH37, geofence default) and `jp_meshcore` (**920.8 · SF12 · CR 4/8**, matches the MeshCore-JP community). Pick the latter to actually interoperate with MeshCore-JP nodes; both are legal.
 
 ¹ EU_N_868 is in the Meshtastic `develop` branch (merged 2026-07-03) — not yet stable release.
 
@@ -525,7 +531,7 @@ Meshtastic separates the *region* (which sets the legal frequency band and power
 
 **EU_868 constraint:** Short Turbo and Long Turbo use 500 kHz BW which is not permitted in the EU 868 MHz band (channel width too wide for the 869.4–869.65 MHz slot). In the EU, use Long Fast or narrower.
 
-**JP constraint:** At 20 mW EIRP limit, Long Slow or Long Moderate maximise range within the power budget. Long Fast at reduced power is the community default.
+**JP constraint:** At the 20 mW (13 dBm) conducted limit, Long Slow or Long Moderate maximise range within the power budget. Long Fast at reduced power is the community default.
 
 **MeshCore equivalent:** BW 62.5 kHz + SF7–9 is roughly equivalent to Medium Fast in range/data rate terms, but with a narrower channel that fits better in congested ISM bands.
 
