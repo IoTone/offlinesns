@@ -6,20 +6,33 @@
 
 /* Per-slide scrollable sections.
  *
- * Mark a long slide with `data-state="scrollable"` (or use the
- * `{{< slide data-state="scrollable" >}}` shortcode at the start of a
- * section). Content that would otherwise spill off the bottom of the
- * viewport now scrolls inside the slide instead of being clipped.
+ * Preferred: put `{{< slide class="scrollable" >}}` at the top of a long
+ * slide. reveal-hugo sets the class on the real slide <section>, so
+ * Reveal lays the slide out normally and the overflow scrolls inside
+ * the slide frame — no nested sections, no vertical-stack side effects.
  *
- * Height is sized to the visible slide area (Reveal sizes slides to
- * the viewport minus chrome) and an inset is left at the bottom so
- * the last line of text never butts against the slide controls. */
-.reveal .slides section[data-state~="scrollable"],
+ * The slide fills the design-height of the deck (Reveal scales that box
+ * to the viewport), is pinned to the top instead of vertically centred,
+ * and uses a denser font: these are reading/appendix pages, not
+ * presentation slides. */
 .reveal .slides section.scrollable {
+  height: 100%;
+  box-sizing: border-box;
   overflow-y: auto;
-  /* Reveal's vertical centring would otherwise lock everything to the
-   * middle, defeating the scroll. Top-align so the user starts at the
-   * top of the content. */
+  top: 0 !important; /* neutralise Reveal's vertical centring */
+  padding-bottom: 2em;
+  font-size: 0.7em;
+}
+.reveal .slides section.scrollable h2 {
+  font-size: 1.6em;
+}
+
+/* Legacy pattern: a raw nested `<section data-state="scrollable">`
+ * inside the markdown (older tboc decks). Reveal treats the nested
+ * section as a vertical sub-slide; these rules keep it readable until
+ * those decks migrate to the shortcode above. */
+.reveal .slides section[data-state~="scrollable"] {
+  overflow-y: auto;
   display: block !important;
   max-height: 90vh;
   padding-bottom: 1.5rem;
