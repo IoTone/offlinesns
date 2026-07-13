@@ -1,13 +1,15 @@
 +++
 outputs = ["Reveal"]
-title = "DaimyoMesh — A Resilient Public Mesh Network for Fukuoka"
+title = "DaimyoMesh — A Public Data Network for Fukuoka"
 +++
 
 {{< slide transition="zoom" transition-speed="fast" >}}
 
 # DaimyoMesh
 
-## A Resilient Public Mesh Network for Fukuoka
+## A Public Data Network for Fukuoka
+
+Economic infrastructure — free to use, resilient by design
 
 Proposal v3 — MeshCore edition
 
@@ -19,14 +21,14 @@ David J. Kordsmeier · IoTone Japan
 
 ## The problem, in 30 seconds
 
-**1. When disaster strikes, the phone network is the first thing to fail.**
-In the 2024 Noto Peninsula earthquake, mobile base stations went dark across wide areas for days — exactly when residents, volunteers, and city staff needed to coordinate most. Fukuoka faces typhoons, storm surge, and earthquake risk with the same dependency: one cellular system, no fallback.
+**1. Fukuoka has Japan's best startup ecosystem — and no public network to build on.**
+A National Strategic Special Zone for startups, Engineer Café, universities, maker spaces — but no shared, free, city-scale IoT layer where a student or founder can put a device on the air *today*, the way anyone can put a website on the Internet. Every IoT idea starts with a carrier contract negotiation instead of an experiment.
 
-**2. The city needs eyes, but sensors are expensive to connect.**
-River levels, drainage, heat, air quality, slopes — every cellular-connected sensor carries a SIM contract and monthly fees, forever. That cost ceiling decides how much of the city we can actually see.
+**2. The city needs eyes, but data access is priced per device.**
+River levels, drainage, heat, air quality, slopes — every cellular-connected sensor carries a SIM contract and monthly fees, forever. The recurring cost, not the sensor, decides how much of the city we can actually see. Data the city could act on is data the city never collects.
 
-**3. Fukuoka has Japan's best startup ecosystem — and no public network to build on.**
-A National Strategic Special Zone for startups, Engineer Café, universities, maker spaces — but no shared, free, city-scale IoT layer where a student or founder can put a device on the air today.
+**3. The city's communications have no free-at-the-edge fallback layer.**
+Everything rides one commercial cellular system. A public mesh adds an independent, city-owned layer — modest bandwidth, but always there, at near-zero operating cost.
 
 </section>
 
@@ -34,9 +36,31 @@ A National Strategic Special Zone for startups, Engineer Café, universities, ma
 
 ## The proposal, in one sentence
 
-> Build a **free, public, battery-and-solar mesh network** across central Fukuoka that keeps working when everything else is down — for less than the cost of installing a single traffic signal.
+> Build a **free, public, battery-and-solar data network** across central Fukuoka — open to every resident, student, and startup the way a public road is open to every vehicle — for less than the cost of installing a single traffic signal.
 
-DaimyoMesh is that network: small solar radios on rooftops relaying for each other, no SIM cards, no monthly fees, no dependence on the power grid or cell towers.
+DaimyoMesh is that network: small solar radios on rooftops relaying for each other, no SIM cards, no monthly fees, no per-use billing — and no dependence on the power grid or cell towers.
+
+---
+
+<section data-state="scrollable">
+
+## Networks are the roads of a digital economy
+
+**A city doesn't bill per trip on its roads — because the value of a road is not tolls, it's everything the road enables.** Commerce, jobs, deliveries, schools, ambulances. Roads are the canonical public good: everyone can use them, one person's use doesn't block another's, and the economic activity they unlock vastly exceeds their cost.
+
+**This is textbook economics, not metaphor.** Hotelling (1938) and Vickrey (1963) established that the welfare-optimal price for uncongested, non-rival infrastructure is **zero at the point of use**, funded from general budgets — tolls on an uncongested bridge destroy value. And the IMF finds public infrastructure investment in advanced economies raises output ~1.5% within four years — it "can pay for itself."
+
+**Open networks prove it at every scale:**
+
+- **The Internet** became the largest economic engine in history precisely because its core protocols are open and free at the point of use — McKinsey measured it at 3.4% of GDP across major economies and **21% of GDP growth** in mature economies, back in 2011. Nobody pays TCP/IP a license fee.
+- **Wi-Fi exists because regulators gave away "garbage" spectrum.** In 1985 the US FCC opened three unlicensed bands nobody wanted — including **902–928 MHz, the exact American twin of Japan's 920 MHz band**. Free access to those "worthless" bands produced Wi-Fi and Bluetooth; industry-commissioned studies now value Wi-Fi at **$3.3–4.9 trillion per year globally**. Nobel laureate Paul Milgrom's verdict: auctioning unlicensed bands would be "akin to asking users of public parks to bid against developers."
+- **The 920 MHz band DaimyoMesh uses is exactly such a road** — already free, already legal, already there. Japan opened it; almost no Japanese city has built public infrastructure on it.
+
+**The pattern is consistent: when the network layer is free, the economic value moves up the stack** — to the sensors, apps, services, and companies built on top. The city's investment is the roadbed; the economy builds the traffic.
+
+DaimyoMesh applies this pattern at city scale for the cost of a rounding error in a public-works budget.
+
+</section>
 
 ---
 
@@ -48,7 +72,7 @@ DaimyoMesh is that network: small solar radios on rooftops relaying for each oth
 - Nodes **relay messages for each other**. A message hops node-to-node until it arrives — like a bucket brigade. There is no tower and no center to fail.
 - Each hop covers **hundreds of meters to several kilometers**, even in dense city blocks; rooftop nodes can span the bay.
 - The network **gets stronger as it grows**: every added node is new coverage and a new path around damage.
-- It carries **short messages and sensor readings**, not video — which is precisely what disaster coordination and city sensing need, at a tiny fraction of the power and cost.
+- It carries **short messages and sensor readings**, not video — which is precisely what city sensing and everyday coordination need, at a tiny fraction of the power and cost.
 - **No monthly fees.** After a node is placed, it costs nearly nothing to run.
 
 </section>
@@ -69,7 +93,7 @@ Version 2 of this proposal was based on the Meshtastic protocol. We have re-base
 | **Certified hardware exists now** | As of 2026 there are 技適-certified (Japan radio-law compliant) devices sold with MeshCore firmware — including solar outdoor nodes. A public deployment can be fully legal from day one. |
 | **Our team ships MeshCore software** | IoTone builds open-source MeshCore client software (Meshmore SNS, a Flutter app) and protocol libraries (Dart and Java). We are contributors, not just consumers — local capability the city can draw on. |
 
-*A lesson from the field: after Hurricane Helene, community reports describe the ad-hoc mesh choking when newcomers flooded it with automatic position updates. Unmanaged flood-routing has real limits — which is the argument for a **managed, city-configured, routed** network. That is what MeshCore's design and this proposal provide.*
+*A lesson from the field: after Hurricane Helene, community reports describe the ad-hoc mesh choking when newcomers flooded it with automatic position updates — and every large event deployment (DEF CON, Burning Man; see the events evidence slide) has only worked by shipping centrally-managed "Event Mode" firmware. Unmanaged flood-routing has real limits — which is the argument for a **managed, city-configured, routed** network. That is what MeshCore's design and this proposal provide.*
 
 </section>
 
@@ -79,17 +103,17 @@ Version 2 of this proposal was based on the Meshtastic protocol. We have re-base
 
 ## What the city gets
 
-**1. A disaster-resilient communications layer.**
-A mesh across wards and evacuation sites that functions with the grid down and towers out. Not a replacement for professional emergency radio — a **civic layer** for shelters, volunteers, and neighborhood associations (町内会).
+**1. A catalyst for the startup and education economy.**
+A free public IoT layer that any student, lab, or startup can build on — the network *is* the sandbox, the way the open Internet was the sandbox for a generation of companies. Engineer Café and the maker community become the front door; the startup visa ecosystem gets a perk no other Japanese city offers.
 
 **2. City-wide sensing without monthly fees.**
-River and drainage levels, urban heat, air quality, slope movement — readings flow over the mesh at near-zero operating cost. Sensor coverage decisions stop being contract decisions.
+River and drainage levels, urban heat, air quality, slope movement — readings flow over the mesh at near-zero operating cost. Sensor coverage decisions stop being contract decisions. Fukuoka's own 2018 pilot showed this economics works: 1/20th the cost per river gauge.
 
-**3. A catalyst for the startup and education ecosystem.**
-A free public IoT layer that any student, lab, or startup can build on — the network *is* the sandbox. Engineer Café and the maker community become the front door.
-
-**4. Visible technical leadership.**
+**3. Visible technical leadership.**
 The first Japanese city with public MeshCore infrastructure — a concrete, photographable, internationally legible demonstration of Fukuoka's smart-city and startup credentials.
+
+**4. Resilience as a built-in co-benefit — not a promise.**
+Because the network is solar, decentralized, and independent of the grid and cell towers, it keeps functioning in conditions that degrade commercial networks. To be precise about what this is: a **best-effort civic layer** that *supplements* official emergency systems (防災行政無線, J-ALERT, 緊急速報メール) — it replaces nothing, guarantees nothing, and carries no life-safety responsibility. The city buys economic infrastructure; the resilience comes free.
 
 </section>
 
@@ -97,16 +121,15 @@ The first Japanese city with public MeshCore infrastructure — a concrete, phot
 
 <section data-state="scrollable">
 
-## Use cases — disaster & safety
+## Use cases — community & economy
 
-*The original proposal imagined chat and sensing. A city network can do much more:*
+*The original proposal imagined chat and sensing. A public network enables much more — and, like a road, the best uses will be ones nobody planned:*
 
-- **Evacuation-site status boards** — each shelter's room-server node publishes occupancy, supply needs, and medical flags to ward officials, even with cellular down.
-- **Safety check-ins (安否確認)** — residents with a ¥7,000 handheld (or a phone app over Bluetooth to a pocket node) can send "I am safe + location" messages that hop to city hall.
-- **Flood & river gauges** — solar sensor nodes on bridges and drainage canals feed early-warning dashboards; the same network carries the alert back out to neighborhood nodes.
-- **Slope & landslide monitors** — tilt/moisture sensors on at-risk slopes in the hilly districts, reporting continuously for the cost of the hardware alone.
-- **Typhoon mode** — when cellular networks saturate or fail during storms, the mesh continues carrying coordination traffic for city staff and registered volunteers.
-- **School-route safety** — beacon nodes along 通学路 let parents' associations run opt-in presence check-ins without commercial tracking services.
+- **Startup testbed** — founders prototype IoT products against real public infrastructure without negotiating carrier contracts — a concrete perk for the startup visa ecosystem, and the digital equivalent of giving every startup free road access.
+- **Hyperlocal information chat + AI agent** — a public channel per district, with an AI assistant answering "what's open, what's on, where do I go" — usable offline at street level.
+- **Festival & event coordination** — Yamakasa, Dontaku, fireworks: staff coordination on a network that doesn't melt when 100,000 phones saturate the cells.
+- **Tourism** — multilingual offline info beacons at spots like Nokonoshima and the seaside parks, where visitors' roaming data is spotty.
+- **Education** — school STEM programs build and adopt sensor nodes; the mesh is a live laboratory for radio, data, and civic tech. Every node a class builds strengthens the city's network — public infrastructure that residents can *contribute to*, not just consume.
 
 </section>
 
@@ -128,33 +151,15 @@ The first Japanese city with public MeshCore infrastructure — a concrete, phot
 
 <section data-state="scrollable">
 
-## Use cases — community & economy
+## Use cases — the resilience co-benefit
 
-- **Hyperlocal information chat + AI agent** — a public channel per district, with an AI assistant answering "what's open, what's on, where's the shelter" — usable offline at street level.
-- **Festival & event coordination** — Yamakasa, Dontaku, fireworks: staff coordination on a network that doesn't melt when 100,000 phones saturate the cells.
-- **Tourism** — multilingual offline info beacons at spots like Nokonoshima and the seaside parks, where visitors' roaming data is spotty.
-- **Education** — school STEM programs build and adopt sensor nodes; the mesh is a live laboratory for radio, data, and civic tech. Every node a class builds strengthens the city's network.
-- **Startup testbed** — founders prototype IoT products against real public infrastructure without negotiating carrier contracts — a concrete perk for the startup visa ecosystem.
+*These uses come free with the same hardware. To be clear about scope: this is a best-effort supplement to official emergency systems, never a replacement for them — the same way a road network supplements but doesn't replace ambulances.*
 
-</section>
-
----
-
-<section data-state="scrollable">
-
-## Evidence — this works in disasters
-
-**Noto Peninsula earthquake, January 2024 — the gap, measured.**
-At the peak, **839 mobile base stations were down** across all four carriers. **24 communities — 3,345 residents — were cut off from information entirely.** Roughly 700 Starlink terminals were rushed to ~350 shelters as a stopgap — but satellite restores *backhaul*, not the many-to-many neighborhood layer where residents, volunteers, and shelters coordinate. That first-72-hours layer is exactly what a pre-positioned solar mesh provides.
-
-**Hurricane Helene, North Carolina, September 2024 — mesh in action.**
-Officials called it the closest thing to a total communications blackout in recent US history: ~200,000 people without communications, 1,700+ miles of fiber destroyed, **54% of cell sites down** in impacted counties. A local firm (Appalachian Technologies) deployed ~30 Meshtastic LoRa nodes from its stockpile — placing them on high points in coordination with county emergency management — while community accounts describe residents adopting mesh alongside voice radio. Afterward the region *institutionalized* it: NC Mesh is now a statewide solar mesh network, and Asheville's MeshAVL runs both Meshtastic and MeshCore.
-
-**Governments are funding exactly this, right now (2025–26):**
-- **Jefferson County, Florida** — county CERT proposal for a countywide solar Meshtastic network at **~$100/node**, restoring a network "within hours after a storm."
-- **Kerr County, Texas** — after the July 2025 Guadalupe River flood (139+ dead), the county's new official warning stack includes mesh radio in development.
-- **Marion County, Florida** — solar mesh nodes at churches and community sites for hurricane season 2026.
-- **Los Angeles** — RegionMesh, a MeshCore network built out after the January 2025 Palisades and Eaton fires.
+- **Flood & river gauges** — solar sensor nodes on bridges and drainage canals feed city dashboards; the same network can carry advisories back out to neighborhood nodes.
+- **Slope & landslide monitors** — tilt/moisture sensors on at-risk slopes in the hilly districts, reporting continuously for the cost of the hardware alone.
+- **Community status boards** — a community center's room-server node can publish local status (open/closed, supplies, notices) to ward officials even when other channels are congested.
+- **Neighborhood check-ins** — residents with a ¥7,000 handheld (or a phone app over Bluetooth to a pocket node) can send short "all fine here" messages that hop across town — useful every day, not just in emergencies.
+- **School-route presence** — beacon nodes along 通学路 let parents' associations run opt-in presence check-ins without commercial tracking services.
 
 </section>
 
@@ -162,18 +167,59 @@ Officials called it the closest thing to a total communications blackout in rece
 
 <section data-state="scrollable">
 
-## Evidence — Fukuoka has done this before, and it worked
+## Evidence — the economics of open networks, measured
 
-**Fukuoka City launched Japan's largest municipal LoRaWAN in July 2017** (with NTT West and Fukuoka's own Braveridge) — roughly 70% of the city covered, free for company proofs-of-concept in disaster prevention, childcare, utilities, and agriculture. In the city's own 2018–19 river-gauge pilot, LoRaWAN radar gauges at Inari Bridge (Chuo-ku) and Harada Bridge (Sawara-ku) cost **about ¥1M per site versus ~¥20M for a conventional gauge — one-twentieth the cost.**
+**Network adoption drives growth — the most-replicated result in digital economics.** The causally cleanest estimate (Czernich et al., *The Economic Journal* 2011, OECD panel): a 10-point rise in broadband penetration raises annual per-capita growth by **0.9–1.5 points**. The World Bank's landmark 2009 study found +1.21 to +1.38 points; the ITU's 2020 update found 10% fixed-broadband growth lifting GDP per capita up to **+2.94%** in high-income economies. (The literature is correlation-heavy — we cite the instrumented estimate first deliberately.)
 
-**DaimyoMesh is the successor to the city's own program** — same 920 MHz economics, but decentralized and solar, so the network itself survives the disaster it is reporting on.
+**Removing the toll multiplies the value.** When the US made Landsat satellite data free in 2008 (it had been earning ~$5M/year in fees), usage grew 100-fold and measured annual economic benefit reached **$25.6B by 2023 — a return of more than 1,000×** on the abolished toll. The counter-example is instructive: Copenhagen's *paid* City Data Exchange failed and shut down, while the free Things Network grew from a 6-week crowdsourced build in Amsterdam (2015) to **21,200 gateways in 153 countries**.
+
+**Free community networks create businesses and jobs.** Chattanooga's community fiber network: **$2.69B in economic benefit and 9,516 jobs over ten years — 4.4× its cost** (EPB-commissioned university study; the 15-year update reads $5.34B). Catalonia's guifi.net commons network (peer-reviewed, *Computer Networks* 2015): 28,675 nodes with dozens of small companies earning millions of euros a year on shared infrastructure.
+
+**Japan's own numbers point the same way.** ICT is now **10.0% of Japan's GDP (¥57.4T)**, and 総務省's analysis shows ICT capital contributed **+0.51 points of Japan's total 0.27% growth** in 2015–2022 — ICT is what is holding Japanese growth up. The ministry projects IoT/AI adding **¥132T to 2030 GDP**.
+
+**And the measurement gap is an opportunity:** no study anywhere has quantified the economic value of a free community LoRa network — Japan's 920 MHz band has no economic literature at all. DaimyoMesh's Phase II report would be the **first economic measurement of public mesh infrastructure**, with Fukuoka's name on it.
+
+</section>
+
+---
+
+<section data-state="scrollable">
+
+## Evidence — Fukuoka has done this before, and measured the economics
+
+**Fukuoka is Japan's startup capital — the demand side is proven.** The city's business-opening rate (開業率) is **4.9%, first among Japan's 21 major cities for seven consecutive years**; Fukuoka Growth Next alone has incubated **653 startups that raised ¥42.2B** during tenancy. This is the population of builders a free public network serves.
+
+**And the city has already run this experiment.** Fukuoka launched Japan's largest municipal LoRaWAN in July 2017 (with NTT West and Fukuoka's own Braveridge) — roughly 70% of the city covered, **explicitly free of charge to remove communication-cost barriers**. Over 50 companies engaged within a year, and the testbed produced the world's first commercial LoRaWAN Class B service. In the city's own 2018–19 river-gauge pilot, LoRaWAN radar gauges at Inari Bridge (Chuo-ku) and Harada Bridge (Sawara-ku) cost **about ¥1M per site versus ~¥20M for a conventional gauge — one-twentieth the cost.**
+
+**What didn't sustain was the architecture, not the demand:** the program depended on a single central operator and its gateway contracts, and quietly wound down (the city's program pages survive only in web archives). **DaimyoMesh is the corrected successor** — the same 920 MHz economics, but decentralized, solar, and community-extensible: no central gateway contract to expire, and every new participant strengthens the network instead of billing it.
 
 **Japan already runs 920 MHz mesh and LPWA sensing at municipal scale:**
-- **NICT NerveNet, Shirahama (Wakayama)** — the national institute's disaster-resilient mesh entered full municipal operation in Dec 2022: 15 stations, solar with 3-day battery autonomy, funded by the Digital Garden City grant. NICT also licenses a LoRa Mesh SDK (10-hop relay, no internet required) for shelters and government offices.
-- **Otsuchi (Iwate)** — 920 MHz multi-hop wireless linking town hall and shelters, documented in the Fire and Disaster Management Agency's own guidance on diversifying disaster-information channels.
+- **NICT NerveNet, Shirahama (Wakayama)** — the national institute's mesh entered full municipal operation in Dec 2022: 15 stations, solar with 3-day battery autonomy, funded by the Digital Garden City grant. NICT also licenses a LoRa Mesh SDK (10-hop relay, no internet required) for local-government use.
+- **Otsuchi (Iwate)** — 920 MHz multi-hop wireless linking town hall and community sites, documented in the Fire and Disaster Management Agency's own guidance.
 - **Itoshima** — LoRaWAN gateways at 20 public facilities running four civic services (child watch-over, agricultural water, community-bus tracking, wildlife traps) on one network.
 - **Goto (Nagasaki)** — ICT boar traps: captures rose 47 → 134 in one year. **MLIT's crisis water-gauge program** — ≤¥1M target price, ~9,300 units deployed nationwide.
 - **Ota (Gunma)** — citywide LoRaWAN with 20 gateways **funded by MIC's regional digital infrastructure program** — the same program Fukuoka is eligible for.
+
+</section>
+
+---
+
+<section data-state="scrollable">
+
+## Evidence — stress-tested at the world's largest events
+
+Nothing tests a mesh network like tens of thousands of people in one dense place with no infrastructure. Two annual events have become the de-facto proving grounds:
+
+**DEF CON (Las Vegas).** The world's largest hacker conference has run official Meshtastic event deployments three years running: DEF CON 32 (2024) shipped the first official event firmware; **DEF CON 33 (2025) connected 2,000+ nodes — the largest known Meshtastic network ever assembled** (peak count 2,333); DEF CON 34 (Aug 2026) firmware is already announced. This is now institutional practice, not an experiment.
+
+**Burning Man (Nevada desert).** The community "Burning Mesh" project grew from ~1,000 nodes (2024) to **1,606 nodes in 2025**, with a peak day of 28,817 packets. When hurricane-force dust storms hit the 2025 opening weekend — destroying major art installations — **the mesh carried coordination traffic with people stuck in the miles-long gate queue, during and after the storms.** The author of this proposal used the 2025 Burning Man mesh first-hand in those emergency conditions: it was genuinely useful when nothing else was.
+
+**The honest part — why stock firmware fails at this scale:**
+- Meshtastic's own project documentation puts the practical limit of *default* settings at roughly **50–80 nodes**; the Burning Mesh team states flatly that on defaults, their 1,000-node mesh "would have been 100% unusable." A New Zealand community mesh at 150+ nodes saturated its channel and became unusable.
+- Every event success required special **"Event Mode" firmware** built with Meshtastic's own maintainers: a faster short-range preset instead of the default, hop limit capped at 3, telemetry throttled 4× more aggressively, router roles banned, one centrally-managed channel. **The network only worked because someone managed it.**
+- Even then, limits showed: at DEF CON 33 device node databases (hardware caps of ~100–250 entries) overflowed and phone apps buckled at peak; at Burning Man 2025 one camp lost 4 of its 5 rooftop repeaters to a single storm — no engineered redundancy.
+
+**What this means for DaimyoMesh:** every large deployment teaches the same lesson — mesh at civic scale needs *managed configuration, engineered redundant infrastructure, and routing that doesn't flood*. That is precisely this proposal: a city-configured MeshCore network (path-aware routing; handheld clients never rebroadcast) on professionally sited, redundant solar repeaters. The events prove the demand and the physics. The failures define the engineering job — and that job is what Phase II funds.
 
 </section>
 
@@ -191,6 +237,24 @@ Officials called it the closest thing to a total communications blackout in rece
 **Momentum:** the MeshCore network map grew from **1,000 nodes (May 2025) → 10,600 (Dec 2025) → 38,000+ nodes and 100,000+ app users (April 2026)**. City-scale volunteer meshes run today in the SF Bay Area, Portland, Austin, London, Berlin, and Sydney.
 
 **And the opening:** **no Japanese city has a public LoRa mesh network.** Fukuoka would be first in Japan — and because MeshCore has no academic literature yet, DaimyoMesh would produce the **first municipal-scale MeshCore dataset in the world**, a ready-made research asset for Kyushu University and the Smart EAST program.
+
+</section>
+
+---
+
+<section data-state="scrollable">
+
+## Evidence — the resilience co-benefit, demonstrated elsewhere
+
+*None of the following is why the city should build DaimyoMesh — the economics above are. But it shows what the same infrastructure quietly provides on the worst day, at no extra cost. DaimyoMesh makes no life-safety claims: it is a best-effort layer that supplements official systems.*
+
+**Noto Peninsula earthquake, January 2024.** At the peak, **839 mobile base stations were down** across all four carriers; **24 communities — 3,345 residents — were cut off from information entirely.** ~700 Starlink terminals rushed to ~350 shelters restored *backhaul* — not the neighborhood many-to-many layer where residents and community sites coordinate. A pre-positioned solar mesh is that layer, already in place because the city built it for its everyday economic uses.
+
+**Hurricane Helene, North Carolina, September 2024.** ~200,000 people without communications, **54% of cell sites down** in impacted counties. A local firm deployed ~30 Meshtastic nodes in coordination with county emergency management; the region then institutionalized the approach (NC Mesh statewide, MeshAVL in Asheville).
+
+**Other governments are treating mesh as preparedness infrastructure (2025–26):** Jefferson County FL (~$100/node countywide proposal), Kerr County TX (post-flood warning stack), Marion County FL (solar nodes at community sites), and Los Angeles's RegionMesh (MeshCore, built out after the January 2025 fires).
+
+The pattern to note: in every case, the network was worth the most where it **already existed before the event** — which is an argument for building it for everyday reasons, now.
 
 </section>
 
@@ -225,7 +289,7 @@ Officials called it the closest thing to a total communications blackout in rece
 
 ## How the city can fund this — concrete vehicles
 
-This proposal is designed to fit funding programs that already exist:
+This proposal is designed to fit funding programs that already exist. Note the useful asymmetry: the *pitch* is economic infrastructure, but the *resilience co-benefit* is what makes the project eligible for Japan's best-funded program streams — the city can fund a startup-economy asset with disaster-preparedness money:
 
 **Step 1 — no money required: 福岡市実証実験フルサポート事業 (mirai@).**
 Fukuoka's own demonstration-experiment support program accepts applications on a rolling basis and provides test fields, city coordination, and joint PR. This is the administrative front door for Phase I/II — and **Fukuoka Growth Next sits in the middle of the Daimyo district** (the former Daimyo Elementary School), a natural anchor and room-server site for the network that shares its name.
@@ -294,7 +358,7 @@ Plus: site survey and installation labor, insurance, and a research/reporting bu
 3. **Access to city facility rooftops and poles** for ~15 repeater sites (ward offices, community centers, schools).
 4. **A named city contact** for the pilot — one person, one meeting a month.
 
-In return: an open network, open data, open software, a public report the city can cite, and a working disaster-resilience layer that costs almost nothing to keep running.
+In return: a free public data network every startup, school, and lab in the city can build on; open data and open software; a public report the city can cite — and a resilience layer that comes with it at no extra cost.
 
 ---
 
@@ -315,6 +379,21 @@ In return: an open network, open data, open software, a public report the city c
 - Noto restoration timeline (NTT East): [business.ntt-east.co.jp](https://business.ntt-east.co.jp/column/bizdrive/noto-quake-comms-restoration.html) · isolated communities: [news.yahoo.co.jp](https://news.yahoo.co.jp/articles/1a38ae9b46e3adaca052c56b409aa15e154f370a)
 - Helene blackout analysis: [benton.org](https://www.benton.org/headlines/helene-created-unprecedented-communications-blackout-year-later-vulnerabilities-remain) · WNC mesh deployment: [constellationresponse.com](https://constellationresponse.com/blogs/news/the-details-are-not-the-details-they-make-the-design) · community account: [qrper.com](https://qrper.com/2024/10/helene-aftermath-update-adopting-an-off-grid-community-radio-network-thursday-october-24-2024/)
 - County programs: [Jefferson Co. FL](https://www.wtxl.com/news/local-news/in-your-neighborhood/monticello/monticello-council-considers-new-emergency-communication-system-proposal) · [Kerr Co. TX](https://www.ksat.com/news/local/2026/07/03/west-kerr-county-pushes-training-on-new-emergency-warning-systems/) · [Marion Co. FL](https://www.wcjb.com/2026/07/11/marion-county-residents-build-off-grid-mesh-network-emergency-messaging/) · [RegionMesh LA](https://www.regionmesh.com/mesh-network-los-angeles/)
+
+**Economics of open networks**
+- Broadband → growth (causal, OECD panel): [Czernich et al., *The Economic Journal* 121:552 (2011)](https://doi.org/10.1111/j.1468-0297.2011.02420.x) · World Bank 2009 (+1.21–1.38pp): [IC4D Ch.3](https://documents1.worldbank.org/curated/en/645821468337815208/pdf/487910PUB0EPI1101Official0Use0Only1.pdf) · ITU 2020: [economic contribution of broadband](https://www.itu.int/dms_pub/itu-d/opb/pref/D-PREF-EF.BDR-2020-PDF-E.pdf)
+- Zero-price theory: Hotelling 1938 / Vickrey 1963, via [Frischmann & Hogendorn, *JEP* 29(1) 2015](https://pubs.aeaweb.org/doi/pdf/10.1257/jep.29.1.193) · IMF infrastructure multiplier: [WEO Oct 2014, Ch.3](https://www.elibrary.imf.org/display/book/9781498331555/ch003.xml)
+- Unlicensed spectrum: [Milgrom, Levin & Eilat 2011 (Stanford)](https://web.stanford.edu/~jdlevin/Papers/UnlicensedSpectrum.pdf) · Wi-Fi value (industry-commissioned): [Wi-Fi Alliance 2021](https://www.wi-fi.org/system/files/Global_Economic_Value_of_Wi-Fi_2021-2025_202109.pdf) · [WifiForward 2024](https://wififorward.org/wp-content/uploads/2024/09/Assessing-the-Economic-Value-of-Wi-Fi.pdf)
+- Free-data multiplier: [Landsat $25.6B/yr (USGS 2023)](https://www.usgs.gov/news/featured-story/landsats-economic-value-increases-256-billion-2023) · paid-market contrast: [Copenhagen City Data Exchange lessons](https://thelivinglib.org/city-data-exchange-lessons-learned-from-a-publicprivate-data-collaboration/)
+- Community networks: [Chattanooga 10-yr study (EPB-commissioned)](https://assets.epb.com/media/Lobo%20-%20Ten%20Years%20of%20Fiber%20Infrastructure%20in%20Hamilton%20County%20TN_Published.pdf) · [guifi.net, *Computer Networks* 90 (2015)](https://people.ac.upc.edu/leandro/pubs/crowds-guifi-en.pdf) · [The Things Network](https://www.thethingsnetwork.org/)
+- Japan: [令和7年版 情報通信白書 (ICT = 10.0% GDP)](https://www.soumu.go.jp/johotsusintokei/whitepaper/ja/r07/pdf/n2110000.pdf) · [総務省 ICT経済分析 2024 (+0.51pp)](https://www.soumu.go.jp/johotsusintokei/linkdata/r05_01.pdf) · [H29白書 IoT/AI +¥132T](https://www.soumu.go.jp/johotsusintokei/whitepaper/ja/h29/html/nc135220.html)
+- Fukuoka: [開業率 4.9% No.1 (Fukuoka Facts)](http://facts.city.fukuoka.lg.jp/data/business-opening/) · [FGN 653 startups / ¥42.2B](https://prtimes.jp/main/html/rd/p/000000054.000037341.html) · [2017 LoRaWAN (NTT West PDF)](https://www.ntt-west.co.jp/newscms/kyushu2/11186/20170704.pdf) · [NTT技術ジャーナル](https://journal.ntt.co.jp/article/5426)
+
+**Large-scale events**
+- DEF CON 33 official recap (2,000+ nodes): [meshtastic.org blog](https://meshtastic.org/blog/that-one-time-at-defcon/) · field report (peak 2,333): [shellntel](https://blog.shellntel.com/p/def-con-33-and-meshtastic-on-the-lilygo-t-deck-plus) · DC32 event firmware: [github.com/meshtastic/defcontastic](https://github.com/meshtastic/defcontastic)
+- Burning Mesh project: [burningmesh.org](https://www.burningmesh.org) · docs/FAQ (node counts, default-preset limits): [docs.burningmesh.org](https://docs.burningmesh.org) · official 2024 firmware: [github.com/meshtastic/burntastic](https://github.com/meshtastic/burntastic)
+- Burning Man 2025 field report (1,606 nodes, storm coordination): [Burners Without Borders](https://burnerswithoutborders.org/projects/meshtastic-meets-burning-man/)
+- LongFast scaling limits (official): [meshtastic.org blog](https://meshtastic.org/blog/why-your-mesh-should-switch-from-longfast/)
 
 **Japan municipal precedent**
 - Fukuoka City LoRaWAN 2017: [businessnetwork.jp](https://businessnetwork.jp/article/6208/) · city page ([archived](http://web.archive.org/web/20170724121321/http://www.city.fukuoka.lg.jp/keizai/kagakugijutsu/business/lorawan.html))
@@ -347,6 +426,6 @@ In return: an open network, open data, open software, a public report the city c
 
 # Thank you
 
-**DaimyoMesh** — a network the city owns, that no disaster can take away.
+**DaimyoMesh** — roads carried Fukuoka's last century of growth. Public networks carry the next.
 
 <a class="deck-link" href="/en/">← OfflineSNS home</a>
